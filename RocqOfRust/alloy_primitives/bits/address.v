@@ -2340,49 +2340,52 @@ Module bits.
                                                 ]
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              let β := M.deref (| M.read (| out |) |) in
-                                              M.write (|
-                                                β,
-                                                M.call_closure (|
-                                                  Ty.path "u8",
-                                                  BinOp.Wrap.bit_xor,
-                                                  [
-                                                    M.read (| β |);
-                                                    M.call_closure (|
-                                                      Ty.path "u8",
-                                                      BinOp.Wrap.mul,
-                                                      [
-                                                        Value.Integer IntegerKind.U8 32;
-                                                        M.cast
-                                                          (Ty.path "u8")
-                                                          (M.call_closure (|
-                                                            Ty.path "bool",
-                                                            BinOp.Wrap.bit_and,
-                                                            [
-                                                              M.call_closure (|
-                                                                Ty.path "bool",
-                                                                BinOp.ge,
-                                                                [
-                                                                  M.read (|
-                                                                    M.deref (| M.read (| out |) |)
-                                                                  |);
-                                                                  Value.Integer IntegerKind.U8 97
-                                                                ]
-                                                              |);
-                                                              M.call_closure (|
-                                                                Ty.path "bool",
-                                                                BinOp.ge,
-                                                                [
-                                                                  M.read (| hash_nibble |);
-                                                                  Value.Integer IntegerKind.U8 8
-                                                                ]
-                                                              |)
-                                                            ]
-                                                          |))
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
+                                                    Ty.path "u8",
+                                                    BinOp.Wrap.mul,
+                                                    [
+                                                      Value.Integer IntegerKind.U8 32;
+                                                      M.cast
+                                                        (Ty.path "u8")
+                                                        (M.call_closure (|
+                                                          Ty.path "bool",
+                                                          BinOp.Wrap.bit_and,
+                                                          [
+                                                            M.call_closure (|
+                                                              Ty.path "bool",
+                                                              BinOp.ge,
+                                                              [
+                                                                M.read (|
+                                                                  M.deref (| M.read (| out |) |)
+                                                                |);
+                                                                Value.Integer IntegerKind.U8 97
+                                                              ]
+                                                            |);
+                                                            M.call_closure (|
+                                                              Ty.path "bool",
+                                                              BinOp.ge,
+                                                              [
+                                                                M.read (| hash_nibble |);
+                                                                Value.Integer IntegerKind.U8 8
+                                                              ]
+                                                            |)
+                                                          ]
+                                                        |))
+                                                    ]
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (let β := M.deref (| M.read (| out |) |) in
+                                                    M.write (|
+                                                      β,
+                                                      M.call_closure (|
+                                                        Ty.path "u8",
+                                                        BinOp.Wrap.bit_xor,
+                                                        [ M.read (| β |); rhs' ]
+                                                      |)
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)))

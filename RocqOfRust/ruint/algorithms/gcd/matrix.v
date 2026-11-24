@@ -1187,9 +1187,19 @@ Module algorithms.
                                 |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (| M.deref (| M.read (| a |) |), M.read (| c |) |) in
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| c |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (| M.deref (| M.read (| a |) |), rhs' |)))
+                                  |) in
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (| M.deref (| M.read (| b |) |), M.read (| d |) |) in
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| d |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (| M.deref (| M.read (| b |) |), rhs' |)))
+                                  |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                               |)))
                         ]
@@ -2086,55 +2096,64 @@ Module algorithms.
                                   [ M.read (| r0 |); M.read (| r1 |) ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β := r0 in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    BinOp.Wrap.sub,
-                                    [
-                                      M.read (| β |);
-                                      M.call_closure (|
-                                        Ty.path "u64",
-                                        BinOp.Wrap.mul,
-                                        [ M.read (| q |); M.read (| r1 |) ]
-                                      |)
-                                    ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "u64",
+                                      BinOp.Wrap.mul,
+                                      [ M.read (| q |); M.read (| r1 |) ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := r0 in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.sub,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β := q00 in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| β |);
-                                      M.call_closure (|
-                                        Ty.path "u64",
-                                        BinOp.Wrap.mul,
-                                        [ M.read (| q |); M.read (| q10 |) ]
-                                      |)
-                                    ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "u64",
+                                      BinOp.Wrap.mul,
+                                      [ M.read (| q |); M.read (| q10 |) ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := q00 in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.add,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β := q01 in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| β |);
-                                      M.call_closure (|
-                                        Ty.path "u64",
-                                        BinOp.Wrap.mul,
-                                        [ M.read (| q |); M.read (| q11 |) ]
-                                      |)
-                                    ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "u64",
+                                      BinOp.Wrap.mul,
+                                      [ M.read (| q |); M.read (| q11 |) ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := q01 in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.add,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
                                 M.match_operator (|
@@ -2184,55 +2203,64 @@ Module algorithms.
                                   [ M.read (| r1 |); M.read (| r0 |) ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β := r1 in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    BinOp.Wrap.sub,
-                                    [
-                                      M.read (| β |);
-                                      M.call_closure (|
-                                        Ty.path "u64",
-                                        BinOp.Wrap.mul,
-                                        [ M.read (| q |); M.read (| r0 |) ]
-                                      |)
-                                    ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "u64",
+                                      BinOp.Wrap.mul,
+                                      [ M.read (| q |); M.read (| r0 |) ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := r1 in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.sub,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β := q10 in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| β |);
-                                      M.call_closure (|
-                                        Ty.path "u64",
-                                        BinOp.Wrap.mul,
-                                        [ M.read (| q |); M.read (| q00 |) ]
-                                      |)
-                                    ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "u64",
+                                      BinOp.Wrap.mul,
+                                      [ M.read (| q |); M.read (| q00 |) ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := q10 in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.add,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β := q11 in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| β |);
-                                      M.call_closure (|
-                                        Ty.path "u64",
-                                        BinOp.Wrap.mul,
-                                        [ M.read (| q |); M.read (| q01 |) ]
-                                      |)
-                                    ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "u64",
+                                      BinOp.Wrap.mul,
+                                      [ M.read (| q |); M.read (| q01 |) ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β := q11 in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.add,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.tuple [],
@@ -2971,38 +2999,44 @@ Module algorithms.
                                             [ M.read (| a3 |); M.read (| a2 |) ]
                                           |) in
                                         let~ _ : Ty.tuple [] :=
-                                          let β := a3 in
-                                          M.write (|
-                                            β,
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              BinOp.Wrap.sub,
-                                              [
-                                                M.read (| β |);
-                                                M.call_closure (|
-                                                  Ty.path "u64",
-                                                  BinOp.Wrap.mul,
-                                                  [ M.read (| q |); M.read (| a2 |) ]
-                                                |)
-                                              ]
-                                            |)
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| q |); M.read (| a2 |) ]
+                                              |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (let β := a3 in
+                                                M.write (|
+                                                  β,
+                                                  M.call_closure (|
+                                                    Ty.path "u64",
+                                                    BinOp.Wrap.sub,
+                                                    [ M.read (| β |); rhs' ]
+                                                  |)
+                                                |)))
                                           |) in
                                         let~ _ : Ty.tuple [] :=
-                                          let β := k3 in
-                                          M.write (|
-                                            β,
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              BinOp.Wrap.add,
-                                              [
-                                                M.read (| β |);
-                                                M.call_closure (|
-                                                  Ty.path "u64",
-                                                  BinOp.Wrap.mul,
-                                                  [ M.read (| q |); M.read (| k2 |) ]
-                                                |)
-                                              ]
-                                            |)
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| q |); M.read (| k2 |) ]
+                                              |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (let β := k3 in
+                                                M.write (|
+                                                  β,
+                                                  M.call_closure (|
+                                                    Ty.path "u64",
+                                                    BinOp.Wrap.add,
+                                                    [ M.read (| β |); rhs' ]
+                                                  |)
+                                                |)))
                                           |) in
                                         let~ _ : Ty.tuple [] :=
                                           M.match_operator (|
@@ -3195,38 +3229,44 @@ Module algorithms.
                                             [ M.read (| a3 |); M.read (| a2 |) ]
                                           |) in
                                         let~ _ : Ty.tuple [] :=
-                                          let β := a3 in
-                                          M.write (|
-                                            β,
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              BinOp.Wrap.sub,
-                                              [
-                                                M.read (| β |);
-                                                M.call_closure (|
-                                                  Ty.path "u64",
-                                                  BinOp.Wrap.mul,
-                                                  [ M.read (| q |); M.read (| a2 |) ]
-                                                |)
-                                              ]
-                                            |)
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| q |); M.read (| a2 |) ]
+                                              |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (let β := a3 in
+                                                M.write (|
+                                                  β,
+                                                  M.call_closure (|
+                                                    Ty.path "u64",
+                                                    BinOp.Wrap.sub,
+                                                    [ M.read (| β |); rhs' ]
+                                                  |)
+                                                |)))
                                           |) in
                                         let~ _ : Ty.tuple [] :=
-                                          let β := k3 in
-                                          M.write (|
-                                            β,
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              BinOp.Wrap.add,
-                                              [
-                                                M.read (| β |);
-                                                M.call_closure (|
-                                                  Ty.path "u64",
-                                                  BinOp.Wrap.mul,
-                                                  [ M.read (| q |); M.read (| k2 |) ]
-                                                |)
-                                              ]
-                                            |)
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| q |); M.read (| k2 |) ]
+                                              |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (let β := k3 in
+                                                M.write (|
+                                                  β,
+                                                  M.call_closure (|
+                                                    Ty.path "u64",
+                                                    BinOp.Wrap.add,
+                                                    [ M.read (| β |); rhs' ]
+                                                  |)
+                                                |)))
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                       |)));

@@ -3742,21 +3742,22 @@ Module result.
                         [ Ty.apply (Ty.path "core::result::Result") [] [ T; E ] ],
                       γ0_1
                     |) in
-                  M.write (|
-                    M.deref (| M.read (| to |) |),
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::result::Result") [] [ T; E ],
-                      M.get_trait_method (|
-                        "core::clone::Clone",
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
                         Ty.apply (Ty.path "core::result::Result") [] [ T; E ],
-                        [],
-                        [],
-                        "clone",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |) ]
-                    |)
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.apply (Ty.path "core::result::Result") [] [ T; E ],
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| from |) |) |) ]
+                      |))),
+                    fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| to |) |), rhs' |)))
                   |)))
             ]
           |)))
@@ -5410,12 +5411,7 @@ Module result.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::ops::try_trait::Yeet", 0 |) in
-                  let e :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_0
-                    |) in
+                  let e := M.copy (| E, γ0_0 |) in
                   Value.StructTuple
                     "core::result::Result::Err"
                     []

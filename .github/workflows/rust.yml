@@ -72,7 +72,6 @@ jobs:
             cd third-party/rust/library/alloc
             cp ../../../../rust-toolchain ./
             time cargo build
-            touch src/lib.rs
             time cargo rocq-of-rust
             rsync -rcv src/ ../../../../RocqOfRust/alloc/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ../../../..
@@ -81,11 +80,8 @@ jobs:
             cd third-party/rust/library/core
             cp ../../../../rust-toolchain ./
             time cargo build
-            touch src/lib.rs
             export RUST_MIN_STACK=800000000
             time cargo rocq-of-rust
-            sed -i 's/Module Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T./(* Module Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T./' src/array/mod.v
-            sed -i 's/End Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T./End Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T. *)/' src/array/mod.v
             rsync -rcv src/ ../../../../RocqOfRust/core/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ../../../..
           endGroup
@@ -107,8 +103,6 @@ jobs:
 
               (
                 cd "$crate_path"
-                cargo rocq-of-rust
-                touch src/lib.rs
                 cargo rocq-of-rust --with-json
                 mkdir -p "$output_path"
                 rsync -rcv src/ "$output_path/" \
@@ -133,16 +127,12 @@ jobs:
             cd third-party/uint
             cp ../../rust-toolchain ./
             cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust
             rsync -rcv src/ ../../RocqOfRust/ruint/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ../..
           endGroup
           startGroup "Translate alloy-core"
             cd third-party/alloy-rs-core/crates/primitives
             cp ../../../../rust-toolchain ./
-            cargo rocq-of-rust
-            touch src/lib.rs
             cargo rocq-of-rust
             rsync -rcv src/ ../../../../RocqOfRust/alloy_primitives/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ../../../..
@@ -151,8 +141,6 @@ jobs:
             cd third-party/bytes
             cp ../../rust-toolchain ./
             grep -q workspace Cargo.toml || echo '[workspace]' >> Cargo.toml
-            cargo rocq-of-rust
-            touch src/lib.rs
             cargo rocq-of-rust
             rsync -rcv src/ ../../RocqOfRust/bytes/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ../..
@@ -164,35 +152,25 @@ jobs:
             # move-abstract-stack
             cd move-abstract-stack
             cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust
             rsync -rcv src/ ../../../../RocqOfRust/move_sui/translations/move_abstract_stack/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # move-binary-format
             cd move-binary-format
-            cargo rocq-of-rust
-            touch src/lib.rs
             cargo rocq-of-rust
             rsync -rcv src/ ../../../../RocqOfRust/move_sui/translations/move_binary_format/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # move-bytecode-verifier
             cd move-bytecode-verifier
             cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust
             rsync -rcv src/ ../../../../RocqOfRust/move_sui/translations/move_bytecode_verifier/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # move-bytecode-verifier-meter
             cd move-bytecode-verifier-meter
             cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust
             rsync -rcv src/ ../../../../RocqOfRust/move_sui/translations/move_bytecode_verifier_meter/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # move-core-types
             cd move-core-types
-            cargo rocq-of-rust
-            touch src/lib.rs
             cargo rocq-of-rust
             rsync -rcv src/ ../../../../RocqOfRust/move_sui/translations/move_core_types/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
@@ -204,21 +182,15 @@ jobs:
             # Pinocchio Token program
             cd pinocchio/program
             cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust
             rsync -rcv ./src/ ../../../../RocqOfRust/solana_program_token/pinocchio --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ../..
             # Original Token program
             cd program
             cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust
             rsync -rcv ./src/ ../../../RocqOfRust/solana_program_token/program --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # SPL Token Interface
             cd interface
-            cargo rocq-of-rust
-            touch src/lib.rs
             cargo rocq-of-rust
             rsync -rcv ./src/ ../../../RocqOfRust/solana_program_token/interface --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
@@ -230,42 +202,30 @@ jobs:
             # account-info
             cd account-info
             cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust
             rsync -rcv ./src/ ../../../RocqOfRust/anza_xyz_solana_sdk/account_info --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # address
             cd address
-            cargo rocq-of-rust
-            touch src/lib.rs
             cargo rocq-of-rust
             rsync -rcv ./src/ ../../../RocqOfRust/anza_xyz_solana_sdk/address --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # program-error
             cd program-error
             cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust
             rsync -rcv ./src/ ../../../RocqOfRust/anza_xyz_solana_sdk/program_error --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # program-option
             cd program-option
-            cargo rocq-of-rust
-            touch src/lib.rs
             cargo rocq-of-rust
             rsync -rcv ./src/ ../../../RocqOfRust/anza_xyz_solana_sdk/program_option --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # program-pack
             cd program-pack
             cargo rocq-of-rust
-            touch src/lib.rs
-            cargo rocq-of-rust
             rsync -rcv ./src/ ../../../RocqOfRust/anza_xyz_solana_sdk/program_pack --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # pubkey
             cd pubkey
-            cargo rocq-of-rust
-            touch src/lib.rs
             cargo rocq-of-rust
             rsync -rcv ./src/ ../../../RocqOfRust/anza_xyz_solana_sdk/pubkey --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
@@ -278,6 +238,8 @@ jobs:
           endGroup
           startGroup "Check that the diff is empty (excluding submodules)"
             git -c color.ui=always diff --exit-code --ignore-submodules=dirty
+            untracked=$(git ls-files --others --exclude-standard -- RocqOfRust)
+            if [ -n "$untracked" ]; then echo "$untracked"; exit 1; fi
           endGroup
           startGroup "Save space again"
             cd third-party
@@ -288,6 +250,12 @@ jobs:
               cd ..
             done
             cd ..
+          endGroup
+          startGroup "Compare Rust and Rocq semantics"
+            cargo build --locked --bins
+            LD_LIBRARY_PATH="$(rustc --print sysroot)/lib:${LD_LIBRARY_PATH:-}" python3 tests/cargo_translation.py target/debug
+            LD_LIBRARY_PATH="$(rustc --print sysroot)/lib:${LD_LIBRARY_PATH:-}" python3 tests/standalone.py target/debug/rocq-of-rust
+            bash tests/semantics/check.sh target/debug/rocq-of-rust
           endGroup
           startGroup "Compile Rocq translations"
             cd RocqOfRust

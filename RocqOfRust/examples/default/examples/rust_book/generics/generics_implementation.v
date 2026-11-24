@@ -120,7 +120,8 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             "generics_implementation::Val"
             []
             []
-            [ ("val", M.read (| UnsupportedLiteral |)) ] in
+            [ ("val", M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |))
+            ] in
         let~ y : Ty.apply (Ty.path "generics_implementation::GenVal") [] [ Ty.path "i32" ] :=
           Value.mkStructRecord
             "generics_implementation::GenVal"

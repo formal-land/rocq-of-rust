@@ -533,22 +533,28 @@ Module interpreter.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
-                    "bytecode_hash"
-                  |),
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                        [ Value.Integer IntegerKind.Usize 32 ]
-                        []
-                    ]
-                    [ M.read (| hash |) ]
+                M.let_ (|
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          []
+                      ]
+                      [ M.read (| hash |) ])),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+                          "bytecode_hash"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               hash
             |)))
@@ -1240,17 +1246,23 @@ Module interpreter.
                   Value.Bool false
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
-                    "action"
-                  |),
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ]
-                    [ M.read (| action |) ]
+                M.let_ (|
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      []
+                      [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ]
+                      [ M.read (| action |) ])),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+                          "action"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1333,31 +1345,37 @@ Module interpreter.
             let offset := M.alloc (| Ty.path "isize", offset |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
-                    "instruction_pointer"
-                  |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                    M.get_associated_function (|
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                      "offset",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (|
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                        "offset",
+                        [],
+                        []
+                      |),
+                      [
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+                            "instruction_pointer"
+                          |)
+                        |);
+                        M.read (| offset |)
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
                         M.SubPointer.get_struct_record_field (|
                           M.deref (| M.read (| self |) |),
                           "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
                           "instruction_pointer"
-                        |)
-                      |);
-                      M.read (| offset |)
-                    ]
-                  |)
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1384,103 +1402,112 @@ Module interpreter.
             let offset := M.alloc (| Ty.path "usize", offset |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
-                    "instruction_pointer"
-                  |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                    M.get_associated_function (|
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [
-                      M.call_closure (|
+                      M.get_associated_function (|
                         Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                          "as_ptr",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::Deref",
-                                  Ty.path "bytes::bytes::Bytes",
-                                  [],
-                                  [],
-                                  "deref",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                                        M.get_trait_method (|
-                                          "core::ops::deref::Deref",
-                                          Ty.path "alloy_primitives::bytes_::Bytes",
-                                          [],
-                                          [],
-                                          "deref",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                                                M.get_associated_function (|
-                                                  Ty.path "revm_bytecode::bytecode::Bytecode",
-                                                  "bytes_ref",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
-                                                      "base"
+                        "add",
+                        [],
+                        []
+                      |),
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                            "as_ptr",
+                            [],
+                            []
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::Deref",
+                                    Ty.path "bytes::bytes::Bytes",
+                                    [],
+                                    [],
+                                    "deref",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "bytes::bytes::Bytes" ],
+                                          M.get_trait_method (|
+                                            "core::ops::deref::Deref",
+                                            Ty.path "alloy_primitives::bytes_::Bytes",
+                                            [],
+                                            [],
+                                            "deref",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                                                  M.get_associated_function (|
+                                                    Ty.path "revm_bytecode::bytecode::Bytecode",
+                                                    "bytes_ref",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+                                                        "base"
+                                                      |)
                                                     |)
-                                                  |)
-                                                ]
+                                                  ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        ]
+                                          ]
+                                        |)
                                       |)
                                     |)
-                                  |)
-                                ]
+                                  ]
+                                |)
                               |)
                             |)
-                          |)
-                        ]
-                      |);
-                      M.read (| offset |)
-                    ]
-                  |)
+                          ]
+                        |);
+                        M.read (| offset |)
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+                          "instruction_pointer"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))

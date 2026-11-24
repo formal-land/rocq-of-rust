@@ -557,8 +557,13 @@ Module processor.
                                                         |),
                                                         [
                                                           M.read (|
-                                                            get_constant (|
-                                                              "pinocchio_token_interface::state::Transmutable::LEN",
+                                                            get_trait_constant (|
+                                                              "pinocchio_token_interface::state::Transmutable",
+                                                              Ty.path
+                                                                "pinocchio_token_interface::state::account::Account",
+                                                              [],
+                                                              [],
+                                                              "LEN",
                                                               Ty.path "usize"
                                                             |)
                                                           |)

@@ -22,6 +22,7 @@ use std::vec;
 
 pub(crate) struct TopLevelOptions {
     pub(crate) axiomatize: bool,
+    pub(crate) fold_scalar_constants: bool,
 }
 
 #[derive(Debug)]
@@ -712,7 +713,12 @@ fn compile_top_level_item_without_local_items<'a>(
                         .skip(1)
                         .filter_map(|generic_arg| {
                             generic_arg.as_const().as_ref().map(|ct| {
-                                crate::thir_expression::compile_const(env, &item.span, ct)
+                                crate::thir_expression::compile_const(
+                                    env,
+                                    &item.span,
+                                    impl_generics,
+                                    ct,
+                                )
                             })
                         })
                         .collect();
@@ -934,8 +940,28 @@ fn compile_function_body(
     is_axiom: bool,
     ret_ty: Option<Rc<RocqType>>,
 ) -> Option<Rc<Expr>> {
-    if env.axiomatize || is_axiom {
+    // rustc supplies a diverging placeholder for this bodyless intrinsic.
+    // Its slice behaviour is specified at the Rocq intrinsic boundary.
+    let owner = body.value.hir_id.owner.def_id;
+    if env.axiomatize
+        || is_axiom
+        || env
+            .tcx
+            .is_intrinsic(owner.to_def_id(), rustc_span::sym::ptr_metadata)
+    {
         return None;
+    }
+
+    if env
+        .tcx
+        .is_intrinsic(owner.to_def_id(), rustc_span::sym::assume)
+    {
+        let arg = &args.expect("assume has a signature")[0].0;
+        return Some(Rc::new(Expr::Call {
+            func: Expr::local_var("M.assume"),
+            args: vec![Expr::local_var(arg)],
+            kind: CallKind::Effectful,
+        }));
     }
 
     let ret_ty = ret_ty.unwrap_or_else(|| RocqType::path(&["Expected ret_ty"]));
@@ -1228,6 +1254,8 @@ fn compile_top_level(tcx: &TyCtxt, opts: TopLevelOptions) -> Rc<TopLevel> {
     let env = Env {
         tcx: *tcx,
         axiomatize: opts.axiomatize,
+        fold_scalar_constants: opts.fold_scalar_constants,
+        hir_scope: None,
     };
     let results = get_item_ids_for_parent(&env, rustc_hir::def_id::CRATE_DEF_ID.into())
         .iter()

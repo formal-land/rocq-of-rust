@@ -3087,40 +3087,46 @@ Module num.
                                                           ]
                                                         |) in
                                                       let~ _ : Ty.tuple [] :=
-                                                        M.write (|
-                                                          M.SubPointer.get_array_field (|
-                                                            M.deref (| M.read (| buf |) |),
-                                                            M.read (| i |)
-                                                          |),
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path
-                                                                "core::mem::maybe_uninit::MaybeUninit")
-                                                              []
-                                                              [ Ty.path "u8" ],
-                                                            M.get_associated_function (|
+                                                        M.let_ (|
+                                                          ltac:(M.monadic
+                                                            (M.call_closure (|
                                                               Ty.apply
                                                                 (Ty.path
                                                                   "core::mem::maybe_uninit::MaybeUninit")
                                                                 []
                                                                 [ Ty.path "u8" ],
-                                                              "new",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.call_closure (|
-                                                                Ty.path "u8",
-                                                                BinOp.Wrap.add,
-                                                                [
-                                                                  Value.Integer IntegerKind.U8 48;
-                                                                  M.cast
-                                                                    (Ty.path "u8")
-                                                                    (M.read (| q |))
-                                                                ]
-                                                              |)
-                                                            ]
-                                                          |)
+                                                              M.get_associated_function (|
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::mem::maybe_uninit::MaybeUninit")
+                                                                  []
+                                                                  [ Ty.path "u8" ],
+                                                                "new",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.call_closure (|
+                                                                  Ty.path "u8",
+                                                                  BinOp.Wrap.add,
+                                                                  [
+                                                                    Value.Integer IntegerKind.U8 48;
+                                                                    M.cast
+                                                                      (Ty.path "u8")
+                                                                      (M.read (| q |))
+                                                                  ]
+                                                                |)
+                                                              ]
+                                                            |))),
+                                                          fun rhs' =>
+                                                            ltac:(M.monadic
+                                                              (M.write (|
+                                                                M.SubPointer.get_array_field (|
+                                                                  M.deref (| M.read (| buf |) |),
+                                                                  M.read (| i |)
+                                                                |),
+                                                                rhs'
+                                                              |)))
                                                         |) in
                                                       let~ _ : Ty.tuple [] :=
                                                         let β := i in
@@ -3854,40 +3860,48 @@ Module num.
                                                             ]
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
-                                                          M.write (|
-                                                            M.SubPointer.get_array_field (|
-                                                              M.deref (| M.read (| buf |) |),
-                                                              M.read (| i |)
-                                                            |),
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path
-                                                                  "core::mem::maybe_uninit::MaybeUninit")
-                                                                []
-                                                                [ Ty.path "u8" ],
-                                                              M.get_associated_function (|
+                                                          M.let_ (|
+                                                            ltac:(M.monadic
+                                                              (M.call_closure (|
                                                                 Ty.apply
                                                                   (Ty.path
                                                                     "core::mem::maybe_uninit::MaybeUninit")
                                                                   []
                                                                   [ Ty.path "u8" ],
-                                                                "new",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.call_closure (|
-                                                                  Ty.path "u8",
-                                                                  BinOp.Wrap.add,
-                                                                  [
-                                                                    Value.Integer IntegerKind.U8 48;
-                                                                    M.cast
-                                                                      (Ty.path "u8")
-                                                                      (M.read (| q |))
-                                                                  ]
-                                                                |)
-                                                              ]
-                                                            |)
+                                                                M.get_associated_function (|
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "core::mem::maybe_uninit::MaybeUninit")
+                                                                    []
+                                                                    [ Ty.path "u8" ],
+                                                                  "new",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.path "u8",
+                                                                    BinOp.Wrap.add,
+                                                                    [
+                                                                      Value.Integer
+                                                                        IntegerKind.U8
+                                                                        48;
+                                                                      M.cast
+                                                                        (Ty.path "u8")
+                                                                        (M.read (| q |))
+                                                                    ]
+                                                                  |)
+                                                                ]
+                                                              |))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (M.write (|
+                                                                  M.SubPointer.get_array_field (|
+                                                                    M.deref (| M.read (| buf |) |),
+                                                                    M.read (| i |)
+                                                                  |),
+                                                                  rhs'
+                                                                |)))
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
                                                           let β := i in
@@ -4582,14 +4596,19 @@ Module num.
                                               ]
                                             |) in
                                           let~ _ : Ty.tuple [] :=
-                                            let β := plus1w in
-                                            M.write (|
-                                              β,
-                                              M.call_closure (|
-                                                Ty.path "u64",
-                                                BinOp.Wrap.add,
-                                                [ M.read (| β |); M.read (| ten_kappa |) ]
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic (M.read (| ten_kappa |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (let β := plus1w in
+                                                  M.write (|
+                                                    β,
+                                                    M.call_closure (|
+                                                      Ty.path "u64",
+                                                      BinOp.Wrap.add,
+                                                      [ M.read (| β |); rhs' ]
+                                                    |)
+                                                  |)))
                                             |) in
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                         |)));
@@ -6273,40 +6292,46 @@ Module num.
                                                           ]
                                                         |) in
                                                       let~ _ : Ty.tuple [] :=
-                                                        M.write (|
-                                                          M.SubPointer.get_array_field (|
-                                                            M.deref (| M.read (| buf |) |),
-                                                            M.read (| i |)
-                                                          |),
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path
-                                                                "core::mem::maybe_uninit::MaybeUninit")
-                                                              []
-                                                              [ Ty.path "u8" ],
-                                                            M.get_associated_function (|
+                                                        M.let_ (|
+                                                          ltac:(M.monadic
+                                                            (M.call_closure (|
                                                               Ty.apply
                                                                 (Ty.path
                                                                   "core::mem::maybe_uninit::MaybeUninit")
                                                                 []
                                                                 [ Ty.path "u8" ],
-                                                              "new",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.call_closure (|
-                                                                Ty.path "u8",
-                                                                BinOp.Wrap.add,
-                                                                [
-                                                                  Value.Integer IntegerKind.U8 48;
-                                                                  M.cast
-                                                                    (Ty.path "u8")
-                                                                    (M.read (| q |))
-                                                                ]
-                                                              |)
-                                                            ]
-                                                          |)
+                                                              M.get_associated_function (|
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::mem::maybe_uninit::MaybeUninit")
+                                                                  []
+                                                                  [ Ty.path "u8" ],
+                                                                "new",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.call_closure (|
+                                                                  Ty.path "u8",
+                                                                  BinOp.Wrap.add,
+                                                                  [
+                                                                    Value.Integer IntegerKind.U8 48;
+                                                                    M.cast
+                                                                      (Ty.path "u8")
+                                                                      (M.read (| q |))
+                                                                  ]
+                                                                |)
+                                                              ]
+                                                            |))),
+                                                          fun rhs' =>
+                                                            ltac:(M.monadic
+                                                              (M.write (|
+                                                                M.SubPointer.get_array_field (|
+                                                                  M.deref (| M.read (| buf |) |),
+                                                                  M.read (| i |)
+                                                                |),
+                                                                rhs'
+                                                              |)))
                                                         |) in
                                                       let~ _ : Ty.tuple [] :=
                                                         let β := i in
@@ -7210,44 +7235,50 @@ Module num.
                                                                       ]
                                                                     |) in
                                                                   let~ _ : Ty.tuple [] :=
-                                                                    M.write (|
-                                                                      M.SubPointer.get_array_field (|
-                                                                        M.deref (|
-                                                                          M.read (| buf |)
-                                                                        |),
-                                                                        M.read (| i |)
-                                                                      |),
-                                                                      M.call_closure (|
-                                                                        Ty.apply
-                                                                          (Ty.path
-                                                                            "core::mem::maybe_uninit::MaybeUninit")
-                                                                          []
-                                                                          [ Ty.path "u8" ],
-                                                                        M.get_associated_function (|
+                                                                    M.let_ (|
+                                                                      ltac:(M.monadic
+                                                                        (M.call_closure (|
                                                                           Ty.apply
                                                                             (Ty.path
                                                                               "core::mem::maybe_uninit::MaybeUninit")
                                                                             []
                                                                             [ Ty.path "u8" ],
-                                                                          "new",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.call_closure (|
-                                                                            Ty.path "u8",
-                                                                            BinOp.Wrap.add,
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.U8
-                                                                                48;
-                                                                              M.cast
-                                                                                (Ty.path "u8")
-                                                                                (M.read (| q |))
-                                                                            ]
-                                                                          |)
-                                                                        ]
-                                                                      |)
+                                                                          M.get_associated_function (|
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "core::mem::maybe_uninit::MaybeUninit")
+                                                                              []
+                                                                              [ Ty.path "u8" ],
+                                                                            "new",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.call_closure (|
+                                                                              Ty.path "u8",
+                                                                              BinOp.Wrap.add,
+                                                                              [
+                                                                                Value.Integer
+                                                                                  IntegerKind.U8
+                                                                                  48;
+                                                                                M.cast
+                                                                                  (Ty.path "u8")
+                                                                                  (M.read (| q |))
+                                                                              ]
+                                                                            |)
+                                                                          ]
+                                                                        |))),
+                                                                      fun rhs' =>
+                                                                        ltac:(M.monadic
+                                                                          (M.write (|
+                                                                            M.SubPointer.get_array_field (|
+                                                                              M.deref (|
+                                                                                M.read (| buf |)
+                                                                              |),
+                                                                              M.read (| i |)
+                                                                            |),
+                                                                            rhs'
+                                                                          |)))
                                                                     |) in
                                                                   let~ _ : Ty.tuple [] :=
                                                                     let β := i in
@@ -8245,29 +8276,37 @@ Module num.
                                                             |) in
                                                           M.read (|
                                                             let~ _ : Ty.tuple [] :=
-                                                              M.write (|
-                                                                M.SubPointer.get_array_field (|
-                                                                  M.deref (| M.read (| buf |) |),
-                                                                  M.read (| len |)
-                                                                |),
-                                                                M.call_closure (|
-                                                                  Ty.apply
-                                                                    (Ty.path
-                                                                      "core::mem::maybe_uninit::MaybeUninit")
-                                                                    []
-                                                                    [ Ty.path "u8" ],
-                                                                  M.get_associated_function (|
+                                                              M.let_ (|
+                                                                ltac:(M.monadic
+                                                                  (M.call_closure (|
                                                                     Ty.apply
                                                                       (Ty.path
                                                                         "core::mem::maybe_uninit::MaybeUninit")
                                                                       []
                                                                       [ Ty.path "u8" ],
-                                                                    "new",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [ M.read (| c |) ]
-                                                                |)
+                                                                    M.get_associated_function (|
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                                        []
+                                                                        [ Ty.path "u8" ],
+                                                                      "new",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [ M.read (| c |) ]
+                                                                  |))),
+                                                                fun rhs' =>
+                                                                  ltac:(M.monadic
+                                                                    (M.write (|
+                                                                      M.SubPointer.get_array_field (|
+                                                                        M.deref (|
+                                                                          M.read (| buf |)
+                                                                        |),
+                                                                        M.read (| len |)
+                                                                      |),
+                                                                      rhs'
+                                                                    |)))
                                                               |) in
                                                             let~ _ : Ty.tuple [] :=
                                                               let β := len in

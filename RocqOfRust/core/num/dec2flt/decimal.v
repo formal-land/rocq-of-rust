@@ -555,8 +555,12 @@ Module num.
                       BinOp.le,
                       [
                         M.read (|
-                          get_constant (|
-                            "core::num::dec2flt::float::RawFloat::MIN_EXPONENT_FAST_PATH",
+                          get_trait_constant (|
+                            "core::num::dec2flt::float::RawFloat",
+                            F,
+                            [],
+                            [],
+                            "MIN_EXPONENT_FAST_PATH",
                             Ty.path "i64"
                           |)
                         |);
@@ -582,8 +586,12 @@ Module num.
                             |)
                           |);
                           M.read (|
-                            get_constant (|
-                              "core::num::dec2flt::float::RawFloat::MAX_EXPONENT_DISGUISED_FAST_PATH",
+                            get_trait_constant (|
+                              "core::num::dec2flt::float::RawFloat",
+                              F,
+                              [],
+                              [],
+                              "MAX_EXPONENT_DISGUISED_FAST_PATH",
                               Ty.path "i64"
                             |)
                           |)
@@ -603,8 +611,12 @@ Module num.
                           |)
                         |);
                         M.read (|
-                          get_constant (|
-                            "core::num::dec2flt::float::RawFloat::MAX_MANTISSA_FAST_PATH",
+                          get_trait_constant (|
+                            "core::num::dec2flt::float::RawFloat",
+                            F,
+                            [],
+                            [],
+                            "MAX_MANTISSA_FAST_PATH",
                             Ty.path "u64"
                           |)
                         |)
@@ -758,8 +770,12 @@ Module num.
                                         |)
                                       |);
                                       M.read (|
-                                        get_constant (|
-                                          "core::num::dec2flt::float::RawFloat::MAX_EXPONENT_FAST_PATH",
+                                        get_trait_constant (|
+                                          "core::num::dec2flt::float::RawFloat",
+                                          F,
+                                          [],
+                                          [],
+                                          "MAX_EXPONENT_FAST_PATH",
                                           Ty.path "i64"
                                         |)
                                       |)
@@ -926,8 +942,12 @@ Module num.
                                         |)
                                       |);
                                       M.read (|
-                                        get_constant (|
-                                          "core::num::dec2flt::float::RawFloat::MAX_EXPONENT_FAST_PATH",
+                                        get_trait_constant (|
+                                          "core::num::dec2flt::float::RawFloat",
+                                          F,
+                                          [],
+                                          [],
+                                          "MAX_EXPONENT_FAST_PATH",
                                           Ty.path "i64"
                                         |)
                                       |)
@@ -1082,8 +1102,12 @@ Module num.
                                                 [
                                                   M.read (| mantissa |);
                                                   M.read (|
-                                                    get_constant (|
-                                                      "core::num::dec2flt::float::RawFloat::MAX_MANTISSA_FAST_PATH",
+                                                    get_trait_constant (|
+                                                      "core::num::dec2flt::float::RawFloat",
+                                                      F,
+                                                      [],
+                                                      [],
+                                                      "MAX_MANTISSA_FAST_PATH",
                                                       Ty.path "u64"
                                                     |)
                                                   |)
@@ -1151,8 +1175,12 @@ Module num.
                                           M.cast
                                             (Ty.path "usize")
                                             (M.read (|
-                                              get_constant (|
-                                                "core::num::dec2flt::float::RawFloat::MAX_EXPONENT_FAST_PATH",
+                                              get_trait_constant (|
+                                                "core::num::dec2flt::float::RawFloat",
+                                                F,
+                                                [],
+                                                [],
+                                                "MAX_EXPONENT_FAST_PATH",
                                                 Ty.path "i64"
                                               |)
                                             |))

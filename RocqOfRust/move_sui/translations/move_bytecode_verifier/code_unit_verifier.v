@@ -1180,17 +1180,20 @@ Module code_unit_verifier.
                                                       ]
                                                     |) in
                                                   let~ _ : Ty.tuple [] :=
-                                                    let β := total_back_edges in
-                                                    M.write (|
-                                                      β,
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        BinOp.Wrap.add,
-                                                        [
-                                                          M.read (| β |);
-                                                          M.read (| num_back_edges |)
-                                                        ]
-                                                      |)
+                                                    M.let_ (|
+                                                      ltac:(M.monadic
+                                                        (M.read (| num_back_edges |))),
+                                                      fun rhs' =>
+                                                        ltac:(M.monadic
+                                                          (let β := total_back_edges in
+                                                          M.write (|
+                                                            β,
+                                                            M.call_closure (|
+                                                              Ty.path "usize",
+                                                              BinOp.Wrap.add,
+                                                              [ M.read (| β |); rhs' ]
+                                                            |)
+                                                          |)))
                                                     |) in
                                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                 |)))
@@ -2394,7 +2397,11 @@ Module code_unit_verifier.
                                 []
                                 []
                                 [];
-                              M.read (| UnsupportedLiteral |)
+                              M.read (|
+                                M.impossible (|
+                                  "[ROR003] floating-point literal in code_unit_verifier::CodeUnitVerifier::<'a>::verify_function"
+                                |)
+                              |)
                             ]
                           |)
                         ]

@@ -9,14 +9,17 @@ use clap::{Parser, Subcommand};
 
 #[derive(Args)]
 struct Translate {
-    /// Sets a path to rust file
+    /// Rust source file or directory with one conventional crate root
     #[arg(short, long, value_name = "PATH", value_parser = is_valid_path)]
     path: PathBuf,
     /// Axiomatize the definitions
     #[arg(long, value_name = "axiomatize", default_value_t = false)]
     axiomatize: bool,
+    /// Inline monomorphic integer and boolean constants using rustc's target values
+    #[arg(long)]
+    fold_scalar_constants: bool,
     /// Output path where to place the translation
-    #[arg(long, value_name = "output_path", value_parser = is_valid_path, default_value = "rocq_translation")]
+    #[arg(long, value_name = "output_path", default_value = "rocq_translation")]
     output_path: PathBuf,
 }
 
@@ -46,7 +49,7 @@ struct Cli {
     debug: u8,
 }
 
-fn main() {
+fn main() -> std::io::Result<()> {
     use rocq_of_rust_lib::core;
     let cli = Cli::parse();
 
@@ -57,8 +60,10 @@ fn main() {
                 path: t.path,
                 output: t.output_path,
                 axiomatize: t.axiomatize,
-            });
+                fold_scalar_constants: t.fold_scalar_constants,
+            })?;
             println!("Finished.");
         }
     }
+    Ok(())
 }

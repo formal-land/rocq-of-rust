@@ -52,12 +52,17 @@ impl Pattern {
     pub(crate) fn compile(env: &Env, pattern: &rustc_hir::Pat) -> Rc<Pattern> {
         match pattern.kind {
             rustc_hir::PatKind::Wild => Rc::new(Pattern::Wild),
-            rustc_hir::PatKind::Binding(binding_annotation, _, ident, sub_pattern) => {
+            rustc_hir::PatKind::Binding(binding_annotation, binding_id, ident, sub_pattern) => {
                 Rc::new(Pattern::Binding {
                     name: to_valid_rocq_name(IsValue::Yes, ident.as_str()),
-                    ty: RocqType::path(&[
-                        "Type for variables in patterns in function parameters is not handled",
-                    ]),
+                    ty: crate::thir_ty::compile_type(
+                        env,
+                        &pattern.span,
+                        env.tcx.generics_of(binding_id.owner.def_id),
+                        &env.tcx
+                            .typeck(binding_id.owner.def_id)
+                            .node_type(binding_id),
+                    ),
                     by_ref: match binding_annotation {
                         rustc_hir::BindingMode(rustc_hir::ByRef::No, _) => ByRef::No,
                         rustc_hir::BindingMode(rustc_hir::ByRef::Yes(_, mutability), _) => {
@@ -82,12 +87,15 @@ impl Pattern {
 
                 Rc::new(Pattern::StructRecord(path, fields))
             }
-            rustc_hir::PatKind::TupleStruct(qpath, fields, _) => {
+            rustc_hir::PatKind::TupleStruct(qpath, fields, rest) => {
                 let path = compile_qpath(env, pattern.hir_id, &qpath);
-                let fields = fields
-                    .iter()
-                    .map(|field| Pattern::compile(env, field))
-                    .collect();
+                let fields = Self::tuple_fields(env, fields, rest, || {
+                    let types = env.tcx.typeck(pattern.hir_id.owner.def_id);
+                    let adt = types.pat_ty(pattern).peel_refs().ty_adt_def().unwrap();
+                    adt.variant_of_res(types.qpath_res(&qpath, pattern.hir_id))
+                        .fields
+                        .len()
+                });
 
                 Rc::new(Pattern::StructTuple(path, fields))
             }
@@ -115,8 +123,11 @@ impl Pattern {
 
                 Rc::new(Pattern::StructTuple(path, vec![]))
             }
-            rustc_hir::PatKind::Tuple(pats, _) => {
-                let patterns = pats.iter().map(|pat| Pattern::compile(env, pat)).collect();
+            rustc_hir::PatKind::Tuple(pats, rest) => {
+                let patterns = Self::tuple_fields(env, pats, rest, || {
+                    let types = env.tcx.typeck(pattern.hir_id.owner.def_id);
+                    types.pat_ty(pattern).peel_refs().tuple_fields().len()
+                });
 
                 Rc::new(Pattern::Tuple(patterns))
             }
@@ -143,6 +154,22 @@ impl Pattern {
                 Rc::new(Pattern::Literal(Rc::new(Literal::Error)))
             }
         }
+    }
+
+    fn tuple_fields(
+        env: &Env,
+        pats: &[rustc_hir::Pat],
+        rest: rustc_hir::DotDotPos,
+        arity: impl FnOnce() -> usize,
+    ) -> Vec<Rc<Pattern>> {
+        let mut fields: Vec<_> = pats.iter().map(|p| Self::compile(env, p)).collect();
+        if let Some(i) = rest.as_opt_usize().filter(|i| *i < pats.len()) {
+            fields.splice(
+                i..i,
+                std::iter::repeat_n(Rc::new(Pattern::Wild), arity() - pats.len()),
+            );
+        }
+        fields
     }
 
     /// We return a vector, and we know that each variable of this vector is unique

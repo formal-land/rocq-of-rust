@@ -1550,23 +1550,27 @@ Module interpreter.
                     |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.deref (| M.read (| bytecode_ref |) |),
-                        M.read (| bytecode |)
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| bytecode |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (| M.deref (| M.read (| bytecode_ref |) |), rhs' |)))
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.deref (| M.read (| gas |) |),
-                        M.call_closure (|
-                          Ty.path "revm_interpreter::gas::Gas",
-                          M.get_associated_function (|
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (M.call_closure (|
                             Ty.path "revm_interpreter::gas::Gas",
-                            "new",
-                            [],
-                            []
-                          |),
-                          [ M.read (| gas_limit |) ]
-                        |)
+                            M.get_associated_function (|
+                              Ty.path "revm_interpreter::gas::Gas",
+                              "new",
+                              [],
+                              []
+                            |),
+                            [ M.read (| gas_limit |) ]
+                          |))),
+                        fun rhs' =>
+                          ltac:(M.monadic (M.write (| M.deref (| M.read (| gas |) |), rhs' |)))
                       |) in
                     let~ _ : Ty.tuple [] :=
                       M.match_operator (|
@@ -1651,18 +1655,21 @@ Module interpreter.
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.deref (| M.read (| stack |) |),
-                                    M.call_closure (|
-                                      Ty.path "revm_interpreter::interpreter::stack::Stack",
-                                      M.get_associated_function (|
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.call_closure (|
                                         Ty.path "revm_interpreter::interpreter::stack::Stack",
-                                        "new",
-                                        [],
+                                        M.get_associated_function (|
+                                          Ty.path "revm_interpreter::interpreter::stack::Stack",
+                                          "new",
+                                          [],
+                                          []
+                                        |),
                                         []
-                                      |),
-                                      []
-                                    |)
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (| M.deref (| M.read (| stack |) |), rhs' |)))
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                               |)));
@@ -1732,35 +1739,52 @@ Module interpreter.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (| M.deref (| M.read (| memory_ref |) |), M.read (| memory |) |) in
-                    let~ _ : Ty.tuple [] :=
-                      M.write (| M.deref (| M.read (| input_ref |) |), M.read (| input |) |) in
-                    let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.deref (| M.read (| runtime_flag |) |),
-                        Value.mkStructRecord
-                          "revm_interpreter::interpreter::runtime_flags::RuntimeFlags"
-                          []
-                          []
-                          [ ("spec_id", M.read (| spec_id |)); ("is_static", M.read (| is_static |))
-                          ]
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| memory |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (| M.deref (| M.read (| memory_ref |) |), rhs' |)))
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.deref (| M.read (| extend |) |),
-                        M.call_closure (|
-                          EXT,
-                          M.get_trait_method (|
-                            "core::default::Default",
-                            EXT,
-                            [],
-                            [],
-                            "default",
-                            [],
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| input |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (| M.deref (| M.read (| input_ref |) |), rhs' |)))
+                      |) in
+                    let~ _ : Ty.tuple [] :=
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (Value.mkStructRecord
+                            "revm_interpreter::interpreter::runtime_flags::RuntimeFlags"
                             []
-                          |),
-                          []
-                        |)
+                            []
+                            [
+                              ("spec_id", M.read (| spec_id |));
+                              ("is_static", M.read (| is_static |))
+                            ])),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (| M.deref (| M.read (| runtime_flag |) |), rhs' |)))
+                      |) in
+                    let~ _ : Ty.tuple [] :=
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (M.call_closure (|
+                            EXT,
+                            M.get_trait_method (|
+                              "core::default::Default",
+                              EXT,
+                              [],
+                              [],
+                              "default",
+                              [],
+                              []
+                            |),
+                            []
+                          |))),
+                        fun rhs' =>
+                          ltac:(M.monadic (M.write (| M.deref (| M.read (| extend |) |), rhs' |)))
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                   |)))
@@ -1808,22 +1832,28 @@ Module interpreter.
           let bytecode := M.alloc (| Ty.path "revm_bytecode::bytecode::Bytecode", bytecode |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_interpreter::interpreter::Interpreter",
-                  "bytecode"
-                |),
-                M.call_closure (|
-                  Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
-                    "new",
-                    [],
-                    []
-                  |),
-                  [ M.read (| bytecode |) ]
-                |)
+                    M.get_associated_function (|
+                      Ty.path "revm_interpreter::interpreter::ext_bytecode::ExtBytecode",
+                      "new",
+                      [],
+                      []
+                    |),
+                    [ M.read (| bytecode |) ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_interpreter::interpreter::Interpreter",
+                        "bytecode"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -1869,17 +1899,22 @@ Module interpreter.
           let spec_id := M.alloc (| Ty.path "revm_primitives::hardfork::SpecId", spec_id |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_interpreter::interpreter::Interpreter",
-                    "runtime_flag"
-                  |),
-                  "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
-                  "spec_id"
-                |),
-                M.read (| spec_id |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| spec_id |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter::Interpreter",
+                          "runtime_flag"
+                        |),
+                        "revm_interpreter::interpreter::runtime_flags::RuntimeFlags",
+                        "spec_id"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

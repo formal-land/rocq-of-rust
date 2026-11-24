@@ -495,7 +495,9 @@ fn get_if_conditions<'a>(
     let expr = thir.exprs.get(*expr_id).unwrap();
 
     match &expr.kind {
-        thir::ExprKind::Scope { value, .. } => get_if_conditions(env, generics, thir, value),
+        thir::ExprKind::Scope {
+            value, lint_level, ..
+        } => get_if_conditions(&env.in_scope(*lint_level), generics, thir, value),
         thir::ExprKind::Let { expr, pat, .. } => {
             let pattern = crate::thir_pattern::compile_pattern(env, generics, pat);
             let expr = compile_expr(env, generics, thir, expr);
@@ -575,6 +577,19 @@ fn compile_pointer_coercion(
     }
 }
 
+/// Bind an effectful right operand before evaluating or reading the destination.
+fn with_assignment_rhs(rhs: Rc<Expr>, write: impl FnOnce(Rc<Expr>) -> Rc<Expr>) -> Rc<Expr> {
+    if matches!(rhs.as_ref(), Expr::Literal(_) | Expr::LocalVar(_)) {
+        return write(rhs);
+    }
+    // Rust identifiers cannot contain an apostrophe.
+    Rc::new(Expr::Bind {
+        name: "rhs'".to_owned(),
+        init: rhs,
+        body: write(Expr::local_var("rhs'")),
+    })
+}
+
 pub(crate) fn compile_expr<'a>(
     env: &Env<'a>,
     generics: &'a rustc_middle::ty::Generics,
@@ -585,7 +600,9 @@ pub(crate) fn compile_expr<'a>(
     let ty = compile_type(env, &expr.span, generics, &expr.ty);
 
     match &expr.kind {
-        thir::ExprKind::Scope { value, .. } => compile_expr(env, generics, thir, value),
+        thir::ExprKind::Scope {
+            value, lint_level, ..
+        } => compile_expr(&env.in_scope(*lint_level), generics, thir, value),
         thir::ExprKind::Box { value } => {
             let value_ty = compile_type(
                 env,
@@ -810,17 +827,21 @@ pub(crate) fn compile_expr<'a>(
         }
         thir::ExprKind::Block { block: block_id } => compile_block(env, generics, thir, block_id),
         thir::ExprKind::Assign { lhs, rhs } => {
-            let func = Expr::local_var("M.write");
-            let args = vec![
-                compile_expr(env, generics, thir, lhs),
-                compile_expr(env, generics, thir, rhs).read(),
-            ];
-
-            Rc::new(Expr::Call {
-                func,
-                args,
-                kind: CallKind::Effectful,
-            })
+            let place = compile_expr(env, generics, thir, lhs);
+            let rhs = compile_expr(env, generics, thir, rhs).read();
+            let simple_place = matches!(place.as_ref(), Expr::LocalVar(_));
+            let write = |value| {
+                Rc::new(Expr::Call {
+                    func: Expr::local_var("M.write"),
+                    args: vec![place, value],
+                    kind: CallKind::Effectful,
+                })
+            };
+            if simple_place {
+                write(rhs)
+            } else {
+                with_assignment_rhs(rhs, write)
+            }
             .alloc(ty)
         }
         thir::ExprKind::AssignOp { op, lhs, rhs } => {
@@ -829,24 +850,26 @@ pub(crate) fn compile_expr<'a>(
             let bin_op = BinOp::from(*op);
             let (path, result_ty) = path_and_ty_of_bin_op(&bin_op, ty_lhs);
             let lhs = compile_expr(env, generics, thir, lhs);
-            let rhs = compile_expr(env, generics, thir, rhs);
+            let rhs = compile_expr(env, generics, thir, rhs).read();
 
-            Rc::new(Expr::Let {
-                name: Some("β".to_string()),
-                ty: None,
-                init: lhs,
-                body: Rc::new(Expr::Call {
-                    func: Expr::local_var("M.write"),
-                    args: vec![
-                        Expr::local_var("β"),
-                        Rc::new(Expr::Call {
-                            func: Expr::local_var(path),
-                            args: vec![Expr::local_var("β").read(), rhs.read()],
-                            kind: CallKind::Closure(result_ty),
-                        }),
-                    ],
-                    kind: CallKind::Effectful,
-                }),
+            with_assignment_rhs(rhs, |value| {
+                Rc::new(Expr::Let {
+                    name: Some("β".to_string()),
+                    ty: None,
+                    init: lhs,
+                    body: Rc::new(Expr::Call {
+                        func: Expr::local_var("M.write"),
+                        args: vec![
+                            Expr::local_var("β"),
+                            Rc::new(Expr::Call {
+                                func: Expr::local_var(path),
+                                args: vec![Expr::local_var("β").read(), value],
+                                kind: CallKind::Closure(result_ty),
+                            }),
+                        ],
+                        kind: CallKind::Effectful,
+                    }),
+                })
             })
             .alloc(ty)
         }
@@ -938,10 +961,16 @@ pub(crate) fn compile_expr<'a>(
             kind: CallKind::Effectful,
         })
         .alloc(ty),
+        thir::ExprKind::Break { value: Some(_), .. } => {
+            env.unsupported(expr.span, "ROR001", "value-carrying break")
+        }
+        thir::ExprKind::Break { .. } | thir::ExprKind::Continue { .. } if env.labeled_exit() => {
+            env.unsupported(expr.span, "ROR002", "labeled loop or block exit")
+        }
         thir::ExprKind::Break { .. } => Rc::new(Expr::ControlFlow(LoopControlFlow::Break)),
         thir::ExprKind::Continue { .. } => Rc::new(Expr::ControlFlow(LoopControlFlow::Continue)),
         thir::ExprKind::ConstContinue { .. } => {
-            Rc::new(Expr::ControlFlow(LoopControlFlow::Continue))
+            env.unsupported(expr.span, "ROR001", "const-continue with a value")
         }
         thir::ExprKind::Return { value } => {
             let value = match value {
@@ -968,7 +997,7 @@ pub(crate) fn compile_expr<'a>(
             let func = Expr::local_var("lib.repeat");
             let args = vec![
                 compile_expr(env, generics, thir, value).read(),
-                compile_const(env, &expr.span, count),
+                compile_const(env, &expr.span, generics, count),
             ];
 
             Rc::new(Expr::Call {
@@ -1155,6 +1184,9 @@ pub(crate) fn compile_expr<'a>(
             rustc_ast::LitKind::Bool(c) => {
                 Rc::new(Expr::Literal(Rc::new(Literal::Bool(c)))).alloc(ty)
             }
+            rustc_ast::LitKind::Float(..) => {
+                env.unsupported(expr.span, "ROR003", "floating-point literal")
+            }
             _ => Rc::new(Expr::Literal(Rc::new(Literal::Error))),
         },
         thir::ExprKind::NonHirLiteral { lit, .. } => {
@@ -1188,7 +1220,7 @@ pub(crate) fn compile_expr<'a>(
                                     generic_arg
                                         .as_const()
                                         .as_ref()
-                                        .map(|ct| compile_const(env, &expr.span, ct))
+                                        .map(|ct| compile_const(env, &expr.span, generics, ct))
                                 })
                                 .collect();
                             let generic_tys = generic_args
@@ -1235,7 +1267,7 @@ pub(crate) fn compile_expr<'a>(
                                     generic_arg
                                         .as_const()
                                         .as_ref()
-                                        .map(|ct| compile_const(env, &expr.span, ct))
+                                        .map(|ct| compile_const(env, &expr.span, generics, ct))
                                 })
                                 .collect::<Vec<_>>();
                             let method_name = symbol.unwrap().to_string();
@@ -1246,7 +1278,7 @@ pub(crate) fn compile_expr<'a>(
                                     generic_arg
                                         .as_const()
                                         .as_ref()
-                                        .map(|ct| compile_const(env, &expr.span, ct))
+                                        .map(|ct| compile_const(env, &expr.span, generics, ct))
                                 })
                                 .collect::<Vec<_>>();
                             let generic_tys = generic_args
@@ -1278,7 +1310,7 @@ pub(crate) fn compile_expr<'a>(
                                     generic_arg
                                         .as_const()
                                         .as_ref()
-                                        .map(|ct| compile_const(env, &expr.span, ct))
+                                        .map(|ct| compile_const(env, &expr.span, generics, ct))
                                 })
                                 .collect::<Vec<_>>();
                             let generic_tys = generic_args
@@ -1306,7 +1338,7 @@ pub(crate) fn compile_expr<'a>(
                                     generic_arg
                                         .as_const()
                                         .as_ref()
-                                        .map(|ct| compile_const(env, &expr.span, ct))
+                                        .map(|ct| compile_const(env, &expr.span, generics, ct))
                                 })
                                 .collect::<Vec<_>>();
                             let generic_tys = generic_args
@@ -1375,6 +1407,26 @@ pub(crate) fn compile_expr<'a>(
             }
         }
         thir::ExprKind::NamedConst { def_id, args, .. } => {
+            // These constants are evaluated by rustc at the use site. In
+            // particular, usize::BITS depends on the compilation target.
+            // Keep symbolic lookup for generic and non-scalar constants.
+            if env.fold_scalar_constants
+                && args.is_empty()
+                && matches!(
+                    expr.ty.kind(),
+                    TyKind::Int(_) | TyKind::Uint(_) | TyKind::Bool
+                )
+            {
+                let constant = rustc_middle::ty::UnevaluatedConst::new(*def_id, args);
+                let typing_env = rustc_middle::ty::TypingEnv::fully_monomorphized();
+                if let Ok(Ok(tree)) = env
+                    .tcx
+                    .const_eval_resolve_for_typeck(typing_env, constant, expr.span)
+                {
+                    let value = Const::new_value(env.tcx, tree, expr.ty);
+                    return compile_const(env, &expr.span, generics, &value).alloc(ty);
+                }
+            }
             let path = compile_def_id(env, *def_id);
             let symbol = env.tcx.def_key(*def_id).get_opt_name();
             let parent = env.tcx.opt_parent(*def_id).unwrap();
@@ -1383,6 +1435,41 @@ pub(crate) fn compile_expr<'a>(
 
             match parent_kind {
                 DefKind::Variant => Rc::new(Expr::GetConstant { path, return_ty }),
+                DefKind::Trait => {
+                    let self_ty = compile_type(env, &expr.span, generics, &args.type_at(0));
+                    let mut constants = Vec::new();
+                    let mut types = Vec::new();
+                    for arg in args.iter().skip(1) {
+                        if let Some(c) = arg.as_const() {
+                            constants.push(compile_const(env, &expr.span, generics, &c));
+                        }
+                        if let Some(t) = arg.as_type() {
+                            types.push(Rc::new(Expr::Ty(compile_type(
+                                env, &expr.span, generics, &t,
+                            ))));
+                        }
+                    }
+                    Rc::new(Expr::Call {
+                        func: Expr::local_var("get_trait_constant"),
+                        args: vec![
+                            Rc::new(Expr::InternalString(
+                                compile_def_id(env, parent).to_string(),
+                            )),
+                            Rc::new(Expr::Ty(self_ty)),
+                            Rc::new(Expr::Array {
+                                elements: constants,
+                                is_internal: true,
+                            }),
+                            Rc::new(Expr::Array {
+                                elements: types,
+                                is_internal: true,
+                            }),
+                            Rc::new(Expr::InternalString(symbol.unwrap().to_string())),
+                            Rc::new(Expr::Ty(return_ty)),
+                        ],
+                        kind: CallKind::Effectful,
+                    })
+                }
                 DefKind::Impl { .. } => {
                     let parent_type = env.tcx.type_of(parent).instantiate(env.tcx, args);
                     let ty = compile_type(env, &expr.span, generics, &parent_type);
@@ -1547,6 +1634,7 @@ fn compile_block<'a>(
 pub(crate) fn compile_const<'tcx>(
     env: &Env<'tcx>,
     span: &rustc_span::Span,
+    generics: &'tcx rustc_middle::ty::Generics,
     const_: &Const<'tcx>,
 ) -> Rc<Expr> {
     match &const_.kind() {
@@ -1558,17 +1646,41 @@ pub(crate) fn compile_const<'tcx>(
         ConstKind::Infer(_) => Expr::local_var("InferConst"),
         ConstKind::Bound(_, _) => Expr::local_var("BoundConst"),
         ConstKind::Placeholder(_) => Expr::local_var("PlaceholderConst"),
-        ConstKind::Unevaluated(unevaluated_const) => {
-            // We do not know yet how to handle this kind of constant. We return something that
-            // type-check for now.
-            let path = compile_def_id(env, unevaluated_const.def);
-
-            Rc::new(Expr::Call {
-                func: Expr::local_var("M.unevaluated_const"),
-                args: vec![Rc::new(Expr::Literal(Rc::new(Literal::String(
-                    path.to_name().as_str().to_string(),
-                ))))],
-                kind: CallKind::Pure,
+        ConstKind::Unevaluated(uv) => {
+            let tcx = env.tcx;
+            let typing_env = rustc_middle::ty::TypingEnv::post_analysis(tcx, uv.def);
+            match tcx.const_eval_resolve_for_typeck(typing_env, *uv, *span) {
+                Ok(Ok(tree)) => {
+                    let ty = tcx.type_of(uv.def).instantiate(tcx, uv.args);
+                    return compile_const(env, span, generics, &Const::new_value(tcx, tree, ty));
+                }
+                Err(rustc_middle::mir::interpret::ErrorHandled::TooGeneric(_)) => {}
+                Err(error) => error.emit_note(tcx),
+                Ok(Err(_)) => emit_warning_with_note(
+                    env,
+                    span,
+                    "The evaluated constant cannot be represented as a value tree",
+                    Some("Its symbolic identity is retained"),
+                ),
+            }
+            // rustc's verbose DefPath includes impl and anonymous-const disambiguators.
+            let owner = format!(
+                "{}{}",
+                tcx.crate_name(uv.def.krate),
+                tcx.def_path(uv.def).to_string_no_crate_verbose()
+            );
+            Rc::new(Expr::SymbolicConst {
+                owner,
+                consts: uv
+                    .args
+                    .consts()
+                    .map(|c| compile_const(env, span, generics, &c))
+                    .collect(),
+                tys: uv
+                    .args
+                    .types()
+                    .map(|t| compile_type(env, span, generics, &t))
+                    .collect(),
             })
         }
         ConstKind::Value(value) => match *value.valtree {
@@ -1576,15 +1688,21 @@ pub(crate) fn compile_const<'tcx>(
                 TyKind::Bool => Rc::new(Expr::Literal(Rc::new(Literal::Bool(
                     leaf.try_to_bool().unwrap(),
                 )))),
-                TyKind::Int(_) | TyKind::Uint(_) => Rc::new(Expr::Literal(Rc::new(
-                    Literal::Integer(compile_literal_integer(
-                        env,
-                        span,
-                        &value.ty,
-                        false,
-                        leaf.to_uint(leaf.size()),
-                    )),
-                ))),
+                TyKind::Int(_) => {
+                    let signed = leaf.to_int(leaf.size());
+                    Rc::new(Expr::Literal(Rc::new(Literal::Integer(
+                        compile_literal_integer(
+                            env,
+                            span,
+                            &value.ty,
+                            signed < 0,
+                            signed.unsigned_abs(),
+                        ),
+                    ))))
+                }
+                TyKind::Uint(_) => Rc::new(Expr::Literal(Rc::new(Literal::Integer(
+                    compile_literal_integer(env, span, &value.ty, false, leaf.to_uint(leaf.size())),
+                )))),
                 _ => {
                     emit_warning_with_note(
                         env,
@@ -1605,7 +1723,7 @@ pub(crate) fn compile_const<'tcx>(
                 let fields = destructured
                     .fields
                     .iter()
-                    .map(|field| compile_const(env, span, field))
+                    .map(|field| compile_const(env, span, generics, field))
                     .collect();
 
                 match value.ty.kind() {

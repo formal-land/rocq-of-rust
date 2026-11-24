@@ -27,9 +27,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       (M.read (|
         let~ x : Ty.path "u8" := Value.Integer IntegerKind.U8 1 in
         let~ y : Ty.path "u32" := Value.Integer IntegerKind.U32 2 in
-        let~ z : Ty.path "f32" := M.read (| UnsupportedLiteral |) in
+        let~ z : Ty.path "f32" :=
+          M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |) in
         let~ i : Ty.path "i32" := Value.Integer IntegerKind.I32 1 in
-        let~ f : Ty.path "f64" := M.read (| UnsupportedLiteral |) in
+        let~ f : Ty.path "f64" :=
+          M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |) in
         let~ _ : Ty.tuple [] :=
           M.read (|
             let~ _ : Ty.tuple [] :=

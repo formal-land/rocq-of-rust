@@ -1,0 +1,10 @@
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/hello_world/formatted_print.rs:57:23
+   |
+57 |     let number: f64 = 1.0;
+   |                       ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: 1 warning emitted
+

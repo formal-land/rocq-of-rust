@@ -2745,13 +2745,21 @@ Module effects.
                                                                     |) in
                                                                   let data :=
                                                                     M.copy (| V, γ1_0 |) in
-                                                                  M.write (|
-                                                                    M.deref (| M.read (| r |) |),
-                                                                    Value.StructTuple
-                                                                      "move_core_types::effects::Op::Modify"
-                                                                      []
-                                                                      [ V ]
-                                                                      [ M.read (| data |) ]
+                                                                  M.let_ (|
+                                                                    ltac:(M.monadic
+                                                                      (Value.StructTuple
+                                                                        "move_core_types::effects::Op::Modify"
+                                                                        []
+                                                                        [ V ]
+                                                                        [ M.read (| data |) ])),
+                                                                    fun rhs' =>
+                                                                      ltac:(M.monadic
+                                                                        (M.write (|
+                                                                          M.deref (|
+                                                                            M.read (| r |)
+                                                                          |),
+                                                                          rhs'
+                                                                        |)))
                                                                   |)));
                                                               fun γ =>
                                                                 ltac:(M.monadic
@@ -2779,13 +2787,21 @@ Module effects.
                                                                     |) in
                                                                   let data :=
                                                                     M.copy (| V, γ1_0 |) in
-                                                                  M.write (|
-                                                                    M.deref (| M.read (| r |) |),
-                                                                    Value.StructTuple
-                                                                      "move_core_types::effects::Op::New"
-                                                                      []
-                                                                      [ V ]
-                                                                      [ M.read (| data |) ]
+                                                                  M.let_ (|
+                                                                    ltac:(M.monadic
+                                                                      (Value.StructTuple
+                                                                        "move_core_types::effects::Op::New"
+                                                                        []
+                                                                        [ V ]
+                                                                        [ M.read (| data |) ])),
+                                                                    fun rhs' =>
+                                                                      ltac:(M.monadic
+                                                                        (M.write (|
+                                                                          M.deref (|
+                                                                            M.read (| r |)
+                                                                          |),
+                                                                          rhs'
+                                                                        |)))
                                                                   |)));
                                                               fun γ =>
                                                                 ltac:(M.monadic
@@ -2810,13 +2826,21 @@ Module effects.
                                                                       γ0_1,
                                                                       "move_core_types::effects::Op::Delete"
                                                                     |) in
-                                                                  M.write (|
-                                                                    M.deref (| M.read (| r |) |),
-                                                                    Value.StructTuple
-                                                                      "move_core_types::effects::Op::Delete"
-                                                                      []
-                                                                      [ V ]
-                                                                      []
+                                                                  M.let_ (|
+                                                                    ltac:(M.monadic
+                                                                      (Value.StructTuple
+                                                                        "move_core_types::effects::Op::Delete"
+                                                                        []
+                                                                        [ V ]
+                                                                        [])),
+                                                                    fun rhs' =>
+                                                                      ltac:(M.monadic
+                                                                        (M.write (|
+                                                                          M.deref (|
+                                                                            M.read (| r |)
+                                                                          |),
+                                                                          rhs'
+                                                                        |)))
                                                                   |)));
                                                               fun γ =>
                                                                 ltac:(M.monadic
@@ -2843,13 +2867,21 @@ Module effects.
                                                                     |) in
                                                                   let data :=
                                                                     M.copy (| V, γ1_0 |) in
-                                                                  M.write (|
-                                                                    M.deref (| M.read (| r |) |),
-                                                                    Value.StructTuple
-                                                                      "move_core_types::effects::Op::Modify"
-                                                                      []
-                                                                      [ V ]
-                                                                      [ M.read (| data |) ]
+                                                                  M.let_ (|
+                                                                    ltac:(M.monadic
+                                                                      (Value.StructTuple
+                                                                        "move_core_types::effects::Op::Modify"
+                                                                        []
+                                                                        [ V ]
+                                                                        [ M.read (| data |) ])),
+                                                                    fun rhs' =>
+                                                                      ltac:(M.monadic
+                                                                        (M.write (|
+                                                                          M.deref (|
+                                                                            M.read (| r |)
+                                                                          |),
+                                                                          rhs'
+                                                                        |)))
                                                                   |)));
                                                               fun γ =>
                                                                 ltac:(M.monadic

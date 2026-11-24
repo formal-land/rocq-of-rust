@@ -384,7 +384,13 @@ Module default.
     *)
     Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [] => ltac:(M.monadic (M.read (| UnsupportedLiteral |)))
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.read (|
+            M.impossible (|
+              "[ROR003] floating-point literal in <f16 as default::Default>::default"
+            |)
+          |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -407,7 +413,13 @@ Module default.
     *)
     Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [] => ltac:(M.monadic (M.read (| UnsupportedLiteral |)))
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.read (|
+            M.impossible (|
+              "[ROR003] floating-point literal in <f32 as default::Default>::default"
+            |)
+          |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -430,7 +442,13 @@ Module default.
     *)
     Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [] => ltac:(M.monadic (M.read (| UnsupportedLiteral |)))
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.read (|
+            M.impossible (|
+              "[ROR003] floating-point literal in <f64 as default::Default>::default"
+            |)
+          |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -453,7 +471,13 @@ Module default.
     *)
     Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [] => ltac:(M.monadic (M.read (| UnsupportedLiteral |)))
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.read (|
+            M.impossible (|
+              "[ROR003] floating-point literal in <f128 as default::Default>::default"
+            |)
+          |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     

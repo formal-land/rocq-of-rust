@@ -215,9 +215,14 @@ Module algorithms.
                                                   |)
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.deref (| M.read (| limb |) |),
-                                                  M.read (| value |)
+                                                M.let_ (|
+                                                  ltac:(M.monadic (M.read (| value |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
+                                                        M.deref (| M.read (| limb |) |),
+                                                        rhs'
+                                                      |)))
                                                 |) in
                                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                             |)))
@@ -516,9 +521,14 @@ Module algorithms.
                                                   |)
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.deref (| M.read (| limb |) |),
-                                                  M.read (| value |)
+                                                M.let_ (|
+                                                  ltac:(M.monadic (M.read (| value |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
+                                                        M.deref (| M.read (| limb |) |),
+                                                        rhs'
+                                                      |)))
                                                 |) in
                                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                             |)))

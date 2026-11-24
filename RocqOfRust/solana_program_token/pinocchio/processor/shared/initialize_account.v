@@ -110,10 +110,7 @@ Module processor.
                       [
                         Ty.apply
                           (Ty.path "array")
-                          [
-                            M.unevaluated_const
-                              (mk_str (| "pinocchio_pubkey_Pubkey_discriminant" |))
-                          ]
+                          [ Value.Integer IntegerKind.Usize 32 ]
                           [ Ty.path "u8" ]
                       ]
                   ],
@@ -2171,48 +2168,59 @@ Module processor.
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| account |) |),
-                                "pinocchio_token_interface::state::account::Account",
-                                "mint"
-                              |),
-                              M.read (|
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (|
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 32 ]
+                                            [ Ty.path "u8" ]
+                                        ],
+                                      M.get_associated_function (|
+                                        Ty.path "pinocchio::account_info::AccountInfo",
+                                        "key",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 32 ]
-                                          [ Ty.path "u8" ]
-                                      ],
-                                    M.get_associated_function (|
-                                      Ty.path "pinocchio::account_info::AccountInfo",
-                                      "key",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| mint_info |) |)
-                                      |)
-                                    ]
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| mint_info |) |)
+                                        |)
+                                      ]
+                                    |)
                                   |)
-                                |)
-                              |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| account |) |),
+                                      "pinocchio_token_interface::state::account::Account",
+                                      "mint"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| account |) |),
-                                "pinocchio_token_interface::state::account::Account",
-                                "owner"
-                              |),
-                              M.read (| M.deref (| M.read (| owner |) |) |)
+                            M.let_ (|
+                              ltac:(M.monadic (M.read (| M.deref (| M.read (| owner |) |) |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| account |) |),
+                                      "pinocchio_token_interface::state::account::Account",
+                                      "owner"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|

@@ -1106,13 +1106,18 @@ Module frame.
           let finished := M.alloc (| Ty.path "bool", finished |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_handler::frame::EthFrame",
-                  "is_finished"
-                |),
-                M.read (| finished |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| finished |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_handler::frame::EthFrame",
+                        "is_finished"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1324,11 +1329,25 @@ Module frame.
                     |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
-                      M.write (| M.deref (| M.read (| data_ref |) |), M.read (| data |) |) in
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| data |))),
+                        fun rhs' =>
+                          ltac:(M.monadic (M.write (| M.deref (| M.read (| data_ref |) |), rhs' |)))
+                      |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (| M.deref (| M.read (| input_ref |) |), M.read (| input |) |) in
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| input |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (| M.deref (| M.read (| input_ref |) |), rhs' |)))
+                      |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (| M.deref (| M.read (| depth_ref |) |), M.read (| depth |) |) in
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| depth |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (| M.deref (| M.read (| depth_ref |) |), rhs' |)))
+                      |) in
                     let~ _ : Ty.tuple [] :=
                       M.write (| M.deref (| M.read (| is_finished_ref |) |), Value.Bool false |) in
                     let~ _ : Ty.tuple [] :=
@@ -1366,9 +1385,11 @@ Module frame.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.deref (| M.read (| checkpoint_ref |) |),
-                        M.read (| checkpoint |)
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| checkpoint |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (| M.deref (| M.read (| checkpoint_ref |) |), rhs' |)))
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                   |)))
@@ -9913,17 +9934,23 @@ Module frame.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| interpreter_result |) |),
-                                  "revm_interpreter::interpreter::InterpreterResult",
-                                  "result"
-                                |),
-                                Value.StructTuple
-                                  "revm_interpreter::instruction_result::InstructionResult::CreateContractStartingWithEF"
-                                  []
-                                  []
-                                  []
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (Value.StructTuple
+                                    "revm_interpreter::instruction_result::InstructionResult::CreateContractStartingWithEF"
+                                    []
+                                    []
+                                    [])),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| interpreter_result |) |),
+                                        "revm_interpreter::interpreter::InterpreterResult",
+                                        "result"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.return_ (| Value.Tuple [] |)
                           |)
@@ -10036,17 +10063,23 @@ Module frame.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| interpreter_result |) |),
-                                  "revm_interpreter::interpreter::InterpreterResult",
-                                  "result"
-                                |),
-                                Value.StructTuple
-                                  "revm_interpreter::instruction_result::InstructionResult::CreateContractSizeLimit"
-                                  []
-                                  []
-                                  []
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (Value.StructTuple
+                                    "revm_interpreter::instruction_result::InstructionResult::CreateContractSizeLimit"
+                                    []
+                                    []
+                                    [])),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| interpreter_result |) |),
+                                        "revm_interpreter::interpreter::InterpreterResult",
+                                        "result"
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.return_ (| Value.Tuple [] |)
                           |)
@@ -10200,17 +10233,23 @@ Module frame.
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| interpreter_result |) |),
-                                          "revm_interpreter::interpreter::InterpreterResult",
-                                          "result"
-                                        |),
-                                        Value.StructTuple
-                                          "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
-                                          []
-                                          []
-                                          []
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (Value.StructTuple
+                                            "revm_interpreter::instruction_result::InstructionResult::OutOfGas"
+                                            []
+                                            []
+                                            [])),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| interpreter_result |) |),
+                                                "revm_interpreter::interpreter::InterpreterResult",
+                                                "result"
+                                              |),
+                                              rhs'
+                                            |)))
                                       |) in
                                     M.return_ (| Value.Tuple [] |)
                                   |)
@@ -10219,22 +10258,28 @@ Module frame.
                               ltac:(M.monadic
                                 (M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| interpreter_result |) |),
-                                        "revm_interpreter::interpreter::InterpreterResult",
-                                        "output"
-                                      |),
-                                      M.call_closure (|
-                                        Ty.path "alloy_primitives::bytes_::Bytes",
-                                        M.get_associated_function (|
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.call_closure (|
                                           Ty.path "alloy_primitives::bytes_::Bytes",
-                                          "new",
-                                          [],
+                                          M.get_associated_function (|
+                                            Ty.path "alloy_primitives::bytes_::Bytes",
+                                            "new",
+                                            [],
+                                            []
+                                          |),
                                           []
-                                        |),
-                                        []
-                                      |)
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| interpreter_result |) |),
+                                              "revm_interpreter::interpreter::InterpreterResult",
+                                              "output"
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                 |)))
@@ -10310,17 +10355,23 @@ Module frame.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| interpreter_result |) |),
-                    "revm_interpreter::interpreter::InterpreterResult",
-                    "result"
-                  |),
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::Return"
-                    []
-                    []
-                    []
+                M.let_ (|
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "revm_interpreter::instruction_result::InstructionResult::Return"
+                      []
+                      []
+                      [])),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| interpreter_result |) |),
+                          "revm_interpreter::interpreter::InterpreterResult",
+                          "result"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))

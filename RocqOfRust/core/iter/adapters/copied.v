@@ -1332,8 +1332,12 @@ Module iter.
             : M :=
           let Self : Ty.t := Self I in
           ltac:(M.monadic
-            (get_constant (|
-              "core::iter::adapters::zip::TrustedRandomAccessNoCoerce::MAY_HAVE_SIDE_EFFECT",
+            (get_trait_constant (|
+              "core::iter::adapters::zip::TrustedRandomAccessNoCoerce",
+              I,
+              [],
+              [],
+              "MAY_HAVE_SIDE_EFFECT",
               Ty.path "bool"
             |))).
         
@@ -1563,8 +1567,12 @@ Module iter.
                           fun γ =>
                             ltac:(M.monadic
                               (let γ :=
-                                get_constant (|
-                                  "core::mem::SizedTypeProperties::IS_ZST",
+                                get_trait_constant (|
+                                  "core::mem::SizedTypeProperties",
+                                  T,
+                                  [],
+                                  [],
+                                  "IS_ZST",
                                   Ty.path "bool"
                                 |) in
                               let _ :=
@@ -2397,8 +2405,12 @@ Module iter.
             : M :=
           let Self : Ty.t := Self I in
           ltac:(M.monadic
-            (get_constant (|
-              "core::iter::traits::marker::InPlaceIterable::EXPAND_BY",
+            (get_trait_constant (|
+              "core::iter::traits::marker::InPlaceIterable",
+              I,
+              [],
+              [],
+              "EXPAND_BY",
               Ty.apply
                 (Ty.path "core::option::Option")
                 []
@@ -2418,8 +2430,12 @@ Module iter.
             : M :=
           let Self : Ty.t := Self I in
           ltac:(M.monadic
-            (get_constant (|
-              "core::iter::traits::marker::InPlaceIterable::MERGE_BY",
+            (get_trait_constant (|
+              "core::iter::traits::marker::InPlaceIterable",
+              I,
+              [],
+              [],
+              "MERGE_BY",
               Ty.apply
                 (Ty.path "core::option::Option")
                 []

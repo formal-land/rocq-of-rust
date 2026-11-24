@@ -1524,14 +1524,15 @@ Module Impl_erc1155_Contract.
               ]
             |) in
           let~ _ : Ty.tuple [] :=
-            let β := sender_balance in
-            M.write (|
-              β,
-              M.call_closure (|
-                Ty.path "u128",
-                BinOp.Wrap.sub,
-                [ M.read (| β |); M.read (| value |) ]
-              |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| value |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (let β := sender_balance in
+                  M.write (|
+                    β,
+                    M.call_closure (| Ty.path "u128", BinOp.Wrap.sub, [ M.read (| β |); rhs' ] |)
+                  |)))
             |) in
           let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ] :=
             M.call_closure (|
@@ -1606,14 +1607,15 @@ Module Impl_erc1155_Contract.
               ]
             |) in
           let~ _ : Ty.tuple [] :=
-            let β := recipient_balance in
-            M.write (|
-              β,
-              M.call_closure (|
-                Ty.path "u128",
-                BinOp.Wrap.add,
-                [ M.read (| β |); M.read (| value |) ]
-              |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| value |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (let β := recipient_balance in
+                  M.write (|
+                    β,
+                    M.call_closure (| Ty.path "u128", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                  |)))
             |) in
           let~ _ : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u32" ] :=
             M.call_closure (|

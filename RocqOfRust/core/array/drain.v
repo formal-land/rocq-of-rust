@@ -101,8 +101,12 @@ Module array.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          get_constant (|
-                            "core::mem::SizedTypeProperties::IS_ZST",
+                          get_trait_constant (|
+                            "core::mem::SizedTypeProperties",
+                            T,
+                            [],
+                            [],
+                            "IS_ZST",
                             Ty.path "bool"
                           |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -326,8 +330,12 @@ Module array.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -378,33 +386,41 @@ Module array.
                                   |)
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |),
-                                    "core::array::drain::Drain",
-                                    "ptr"
-                                  |),
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                    M.get_associated_function (|
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
                                       Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.read (|
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                        "add",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (|
+                                              M.read (| M.deref (| M.read (| self |) |) |)
+                                            |),
+                                            "core::array::drain::Drain",
+                                            "ptr"
+                                          |)
+                                        |);
+                                        Value.Integer IntegerKind.Usize 1
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
                                         M.SubPointer.get_struct_record_field (|
                                           M.deref (|
                                             M.read (| M.deref (| M.read (| self |) |) |)
                                           |),
                                           "core::array::drain::Drain",
                                           "ptr"
-                                        |)
-                                      |);
-                                      Value.Integer IntegerKind.Usize 1
-                                    ]
-                                  |)
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 U,
@@ -525,8 +541,12 @@ Module array.
                           UnOp.not,
                           [
                             M.read (|
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |)
                             |)

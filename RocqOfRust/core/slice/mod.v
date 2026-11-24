@@ -9371,14 +9371,19 @@ Module slice.
                                         |)
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β := size in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.sub,
-                                          [ M.read (| β |); M.read (| half |) ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic (M.read (| half |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := size in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.sub,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)));
@@ -11719,24 +11724,30 @@ Module slice.
                                           M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ0_0 |) in
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.deref (| M.read (| el |) |),
-                                              M.call_closure (|
-                                                T,
-                                                M.get_trait_method (|
-                                                  "core::ops::function::FnMut",
-                                                  F,
-                                                  [],
-                                                  [ Ty.tuple [] ],
-                                                  "call_mut",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, f |);
-                                                  Value.Tuple []
-                                                ]
-                                              |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.call_closure (|
+                                                  T,
+                                                  M.get_trait_method (|
+                                                    "core::ops::function::FnMut",
+                                                    F,
+                                                    [],
+                                                    [ Ty.tuple [] ],
+                                                    "call_mut",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (| Pointer.Kind.MutRef, f |);
+                                                    Value.Tuple []
+                                                  ]
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
+                                                    M.deref (| M.read (| el |) |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                         |)))
@@ -12434,15 +12445,23 @@ Module slice.
                               Ty.path "bool",
                               LogicalOp.or (|
                                 M.read (|
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    U,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |)
                                 |),
                                 ltac:(M.monadic
                                   (M.read (|
-                                    get_constant (|
-                                      "core::mem::SizedTypeProperties::IS_ZST",
+                                    get_trait_constant (|
+                                      "core::mem::SizedTypeProperties",
+                                      T,
+                                      [],
+                                      [],
+                                      "IS_ZST",
                                       Ty.path "bool"
                                     |)
                                   |)))
@@ -12991,15 +13010,23 @@ Module slice.
                               Ty.path "bool",
                               LogicalOp.or (|
                                 M.read (|
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    U,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |)
                                 |),
                                 ltac:(M.monadic
                                   (M.read (|
-                                    get_constant (|
-                                      "core::mem::SizedTypeProperties::IS_ZST",
+                                    get_trait_constant (|
+                                      "core::mem::SizedTypeProperties",
+                                      T,
+                                      [],
+                                      [],
+                                      "IS_ZST",
                                       Ty.path "bool"
                                     |)
                                   |)))
@@ -14403,29 +14430,32 @@ Module slice.
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β := i in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.add,
-                                          [
-                                            M.read (| β |);
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.sub,
-                                              [
-                                                M.read (|
-                                                  get_constant (|
-                                                    "core::slice::is_sorted::CHUNK_SIZE",
-                                                    Ty.path "usize"
-                                                  |)
-                                                |);
-                                                Value.Integer IntegerKind.Usize 1
-                                              ]
-                                            |)
-                                          ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.sub,
+                                            [
+                                              M.read (|
+                                                get_constant (|
+                                                  "core::slice::is_sorted::CHUNK_SIZE",
+                                                  Ty.path "usize"
+                                                |)
+                                              |);
+                                              Value.Integer IntegerKind.Usize 1
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := i in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)));
@@ -15253,12 +15283,18 @@ Module slice.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.deref (| M.read (| self |) |),
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| back |) |)
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| back |) |)
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (|
                                               Ty.apply
@@ -15296,12 +15332,18 @@ Module slice.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.deref (| M.read (| self |) |),
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| front |) |)
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| front |) |)
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (|
                                               Ty.apply
@@ -15703,12 +15745,18 @@ Module slice.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.deref (| M.read (| self |) |),
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| back |) |)
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| back |) |)
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (|
                                               Ty.apply
@@ -15746,12 +15794,18 @@ Module slice.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.deref (| M.read (| self |) |),
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| front |) |)
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| front |) |)
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (|
                                               Ty.apply
@@ -15885,9 +15939,11 @@ Module slice.
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.deref (| M.read (| self |) |),
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| rem |) |) |)
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| rem |) |) |))),
+                            fun rhs' =>
+                              ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                           |) in
                         M.alloc (|
                           Ty.apply
@@ -16063,9 +16119,11 @@ Module slice.
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.deref (| M.read (| self |) |),
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| rem |) |) |)
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| rem |) |) |))),
+                            fun rhs' =>
+                              ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                           |) in
                         M.alloc (|
                           Ty.apply
@@ -16189,9 +16247,11 @@ Module slice.
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.deref (| M.read (| self |) |),
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| rem |) |) |)
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| rem |) |) |))),
+                            fun rhs' =>
+                              ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                           |) in
                         M.alloc (|
                           Ty.apply
@@ -16367,9 +16427,11 @@ Module slice.
                         |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.deref (| M.read (| self |) |),
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| rem |) |) |)
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| rem |) |) |))),
+                            fun rhs' =>
+                              ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                           |) in
                         M.alloc (|
                           Ty.apply
@@ -17403,8 +17465,12 @@ Module slice.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            get_constant (|
-                              "core::mem::SizedTypeProperties::IS_ZST",
+                            get_trait_constant (|
+                              "core::mem::SizedTypeProperties",
+                              T,
+                              [],
+                              [],
+                              "IS_ZST",
                               Ty.path "bool"
                             |) in
                           let _ :=
@@ -17654,8 +17720,12 @@ Module slice.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            get_constant (|
-                              "core::mem::SizedTypeProperties::IS_ZST",
+                            get_trait_constant (|
+                              "core::mem::SizedTypeProperties",
+                              T,
+                              [],
+                              [],
+                              "IS_ZST",
                               Ty.path "bool"
                             |) in
                           let _ :=
@@ -18058,8 +18128,12 @@ Module slice.
                   fun γ =>
                     ltac:(M.monadic
                       (let γ :=
-                        get_constant (|
-                          "core::mem::SizedTypeProperties::IS_ZST",
+                        get_trait_constant (|
+                          "core::mem::SizedTypeProperties",
+                          T,
+                          [],
+                          [],
+                          "IS_ZST",
                           Ty.path "bool"
                         |) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -18219,8 +18293,12 @@ Module slice.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            get_constant (|
-                              "core::mem::SizedTypeProperties::IS_ZST",
+                            get_trait_constant (|
+                              "core::mem::SizedTypeProperties",
+                              T,
+                              [],
+                              [],
+                              "IS_ZST",
                               Ty.path "bool"
                             |) in
                           let _ :=

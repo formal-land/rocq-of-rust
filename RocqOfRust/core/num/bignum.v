@@ -738,9 +738,14 @@ Module num.
                   Value.Integer IntegerKind.Usize 40
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_array_field (| base, Value.Integer IntegerKind.Usize 0 |),
-                  M.read (| v |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| v |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_array_field (| base, Value.Integer IntegerKind.Usize 0 |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (|
                 Ty.path "core::num::bignum::Big32x40",
@@ -817,28 +822,39 @@ Module num.
                                   |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
-                                    M.write (|
-                                      M.SubPointer.get_array_field (| base, M.read (| sz |) |),
-                                      M.cast (Ty.path "u32") (M.read (| v |))
+                                    M.let_ (|
+                                      ltac:(M.monadic (M.cast (Ty.path "u32") (M.read (| v |)))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (M.write (|
+                                            M.SubPointer.get_array_field (|
+                                              base,
+                                              M.read (| sz |)
+                                            |),
+                                            rhs'
+                                          |)))
                                     |) in
                                   let~ _ : Ty.tuple [] :=
-                                    let β := v in
-                                    M.write (|
-                                      β,
-                                      M.call_closure (|
-                                        Ty.path "u64",
-                                        BinOp.Wrap.shr,
-                                        [
-                                          M.read (| β |);
-                                          M.read (|
-                                            get_associated_constant (|
-                                              Ty.path "u32",
-                                              "BITS",
-                                              Ty.path "u32"
-                                            |)
+                                    M.let_ (|
+                                      ltac:(M.monadic
+                                        (M.read (|
+                                          get_associated_constant (|
+                                            Ty.path "u32",
+                                            "BITS",
+                                            Ty.path "u32"
                                           |)
-                                        ]
-                                      |)
+                                        |))),
+                                      fun rhs' =>
+                                        ltac:(M.monadic
+                                          (let β := v in
+                                          M.write (|
+                                            β,
+                                            M.call_closure (|
+                                              Ty.path "u64",
+                                              BinOp.Wrap.shr,
+                                              [ M.read (| β |); rhs' ]
+                                            |)
+                                          |)))
                                     |) in
                                   let~ _ : Ty.tuple [] :=
                                     let β := sz in
@@ -1669,9 +1685,14 @@ Module num.
                                                             M.copy (| Ty.path "bool", γ0_1 |) in
                                                           M.read (|
                                                             let~ _ : Ty.tuple [] :=
-                                                              M.write (|
-                                                                M.deref (| M.read (| a |) |),
-                                                                M.read (| v |)
+                                                              M.let_ (|
+                                                                ltac:(M.monadic (M.read (| v |))),
+                                                                fun rhs' =>
+                                                                  ltac:(M.monadic
+                                                                    (M.write (|
+                                                                      M.deref (| M.read (| a |) |),
+                                                                      rhs'
+                                                                    |)))
                                                               |) in
                                                             let~ _ : Ty.tuple [] :=
                                                               M.write (| carry, M.read (| c |) |) in
@@ -1730,13 +1751,18 @@ Module num.
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::num::bignum::Big32x40",
-                        "size"
-                      |),
-                      M.read (| sz |)
+                    M.let_ (|
+                      ltac:(M.monadic (M.read (| sz |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::num::bignum::Big32x40",
+                              "size"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "&mut") [] [ Ty.path "core::num::bignum::Big32x40" ],
@@ -1815,16 +1841,21 @@ Module num.
                         let~ carry : Ty.path "bool" := M.read (| γ0_1 |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_array_field (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::num::bignum::Big32x40",
-                                  "base"
-                                |),
-                                Value.Integer IntegerKind.Usize 0
-                              |),
-                              M.read (| v |)
+                            M.let_ (|
+                              ltac:(M.monadic (M.read (| v |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_array_field (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::num::bignum::Big32x40",
+                                        "base"
+                                      |),
+                                      Value.Integer IntegerKind.Usize 0
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           let~ i : Ty.path "usize" := Value.Integer IntegerKind.Usize 1 in
                           let~ _ : Ty.tuple [] :=
@@ -1885,16 +1916,21 @@ Module num.
                                                     let c := M.copy (| Ty.path "bool", γ0_1 |) in
                                                     M.read (|
                                                       let~ _ : Ty.tuple [] :=
-                                                        M.write (|
-                                                          M.SubPointer.get_array_field (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "core::num::bignum::Big32x40",
-                                                              "base"
-                                                            |),
-                                                            M.read (| i |)
-                                                          |),
-                                                          M.read (| v |)
+                                                        M.let_ (|
+                                                          ltac:(M.monadic (M.read (| v |))),
+                                                          fun rhs' =>
+                                                            ltac:(M.monadic
+                                                              (M.write (|
+                                                                M.SubPointer.get_array_field (|
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (| M.read (| self |) |),
+                                                                    "core::num::bignum::Big32x40",
+                                                                    "base"
+                                                                  |),
+                                                                  M.read (| i |)
+                                                                |),
+                                                                rhs'
+                                                              |)))
                                                         |) in
                                                       let~ _ : Ty.tuple [] :=
                                                         M.write (| carry, M.read (| c |) |) in
@@ -1961,13 +1997,18 @@ Module num.
                                       |) in
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
-                                        M.write (|
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "core::num::bignum::Big32x40",
-                                            "size"
-                                          |),
-                                          M.read (| i |)
+                                        M.let_ (|
+                                          ltac:(M.monadic (M.read (| i |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (M.write (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "core::num::bignum::Big32x40",
+                                                  "size"
+                                                |),
+                                                rhs'
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));
@@ -2386,9 +2427,14 @@ Module num.
                                                             M.copy (| Ty.path "bool", γ0_1 |) in
                                                           M.read (|
                                                             let~ _ : Ty.tuple [] :=
-                                                              M.write (|
-                                                                M.deref (| M.read (| a |) |),
-                                                                M.read (| v |)
+                                                              M.let_ (|
+                                                                ltac:(M.monadic (M.read (| v |))),
+                                                                fun rhs' =>
+                                                                  ltac:(M.monadic
+                                                                    (M.write (|
+                                                                      M.deref (| M.read (| a |) |),
+                                                                      rhs'
+                                                                    |)))
                                                               |) in
                                                             let~ _ : Ty.tuple [] :=
                                                               M.write (|
@@ -2440,13 +2486,18 @@ Module num.
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::num::bignum::Big32x40",
-                        "size"
-                      |),
-                      M.read (| sz |)
+                    M.let_ (|
+                      ltac:(M.monadic (M.read (| sz |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::num::bignum::Big32x40",
+                              "size"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "&mut") [] [ Ty.path "core::num::bignum::Big32x40" ],
@@ -2688,9 +2739,14 @@ Module num.
                                                             M.copy (| Ty.path "u32", γ0_1 |) in
                                                           M.read (|
                                                             let~ _ : Ty.tuple [] :=
-                                                              M.write (|
-                                                                M.deref (| M.read (| a |) |),
-                                                                M.read (| v |)
+                                                              M.let_ (|
+                                                                ltac:(M.monadic (M.read (| v |))),
+                                                                fun rhs' =>
+                                                                  ltac:(M.monadic
+                                                                    (M.write (|
+                                                                      M.deref (| M.read (| a |) |),
+                                                                      rhs'
+                                                                    |)))
                                                               |) in
                                                             let~ _ : Ty.tuple [] :=
                                                               M.write (| carry, M.read (| c |) |) in
@@ -2730,16 +2786,21 @@ Module num.
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_array_field (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::num::bignum::Big32x40",
-                                      "base"
-                                    |),
-                                    M.read (| sz |)
-                                  |),
-                                  M.read (| carry |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| carry |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_array_field (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::num::bignum::Big32x40",
+                                            "base"
+                                          |),
+                                          M.read (| sz |)
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               let~ _ : Ty.tuple [] :=
                                 let β := sz in
@@ -2757,13 +2818,18 @@ Module num.
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::num::bignum::Big32x40",
-                        "size"
-                      |),
-                      M.read (| sz |)
+                    M.let_ (|
+                      ltac:(M.monadic (M.read (| sz |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::num::bignum::Big32x40",
+                              "size"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "&mut") [] [ Ty.path "core::num::bignum::Big32x40" ],
@@ -3377,29 +3443,38 @@ Module num.
                                                   let i := M.copy (| Ty.path "usize", γ0_0 |) in
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      M.write (|
-                                                        M.SubPointer.get_array_field (|
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| self |) |),
-                                                            "core::num::bignum::Big32x40",
-                                                            "base"
-                                                          |),
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.add,
-                                                            [ M.read (| i |); M.read (| digits |) ]
-                                                          |)
-                                                        |),
-                                                        M.read (|
-                                                          M.SubPointer.get_array_field (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "core::num::bignum::Big32x40",
-                                                              "base"
-                                                            |),
-                                                            M.read (| i |)
-                                                          |)
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic
+                                                          (M.read (|
+                                                            M.SubPointer.get_array_field (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "core::num::bignum::Big32x40",
+                                                                "base"
+                                                              |),
+                                                              M.read (| i |)
+                                                            |)
+                                                          |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (M.write (|
+                                                              M.SubPointer.get_array_field (|
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| self |) |),
+                                                                  "core::num::bignum::Big32x40",
+                                                                  "base"
+                                                                |),
+                                                                M.call_closure (|
+                                                                  Ty.path "usize",
+                                                                  BinOp.Wrap.add,
+                                                                  [
+                                                                    M.read (| i |);
+                                                                    M.read (| digits |)
+                                                                  ]
+                                                                |)
+                                                              |),
+                                                              rhs'
+                                                            |)))
                                                       |) in
                                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                   |)))
@@ -3624,16 +3699,21 @@ Module num.
                                           |) in
                                         M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.SubPointer.get_array_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::num::bignum::Big32x40",
-                                                  "base"
-                                                |),
-                                                M.read (| last |)
-                                              |),
-                                              M.read (| overflow |)
+                                            M.let_ (|
+                                              ltac:(M.monadic (M.read (| overflow |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
+                                                    M.SubPointer.get_array_field (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "core::num::bignum::Big32x40",
+                                                        "base"
+                                                      |),
+                                                      M.read (| last |)
+                                                    |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           let~ _ : Ty.tuple [] :=
                                             let β := sz in
@@ -3829,83 +3909,91 @@ Module num.
                                                                 |) in
                                                               M.read (|
                                                                 let~ _ : Ty.tuple [] :=
-                                                                  M.write (|
-                                                                    M.SubPointer.get_array_field (|
-                                                                      M.SubPointer.get_struct_record_field (|
-                                                                        M.deref (|
-                                                                          M.read (| self |)
-                                                                        |),
-                                                                        "core::num::bignum::Big32x40",
-                                                                        "base"
-                                                                      |),
-                                                                      M.read (| i |)
-                                                                    |),
-                                                                    M.call_closure (|
-                                                                      Ty.path "u32",
-                                                                      BinOp.Wrap.bit_or,
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.path "u32",
-                                                                          BinOp.Wrap.shl,
-                                                                          [
-                                                                            M.read (|
-                                                                              M.SubPointer.get_array_field (|
-                                                                                M.SubPointer.get_struct_record_field (|
-                                                                                  M.deref (|
-                                                                                    M.read (|
-                                                                                      self
-                                                                                    |)
+                                                                  M.let_ (|
+                                                                    ltac:(M.monadic
+                                                                      (M.call_closure (|
+                                                                        Ty.path "u32",
+                                                                        BinOp.Wrap.bit_or,
+                                                                        [
+                                                                          M.call_closure (|
+                                                                            Ty.path "u32",
+                                                                            BinOp.Wrap.shl,
+                                                                            [
+                                                                              M.read (|
+                                                                                M.SubPointer.get_array_field (|
+                                                                                  M.SubPointer.get_struct_record_field (|
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        self
+                                                                                      |)
+                                                                                    |),
+                                                                                    "core::num::bignum::Big32x40",
+                                                                                    "base"
                                                                                   |),
-                                                                                  "core::num::bignum::Big32x40",
-                                                                                  "base"
-                                                                                |),
-                                                                                M.read (| i |)
-                                                                              |)
-                                                                            |);
-                                                                            M.read (| bits |)
-                                                                          ]
-                                                                        |);
-                                                                        M.call_closure (|
-                                                                          Ty.path "u32",
-                                                                          BinOp.Wrap.shr,
-                                                                          [
-                                                                            M.read (|
-                                                                              M.SubPointer.get_array_field (|
-                                                                                M.SubPointer.get_struct_record_field (|
-                                                                                  M.deref (|
-                                                                                    M.read (|
-                                                                                      self
-                                                                                    |)
-                                                                                  |),
-                                                                                  "core::num::bignum::Big32x40",
-                                                                                  "base"
-                                                                                |),
-                                                                                M.call_closure (|
-                                                                                  Ty.path "usize",
-                                                                                  BinOp.Wrap.sub,
-                                                                                  [
-                                                                                    M.read (| i |);
-                                                                                    Value.Integer
-                                                                                      IntegerKind.Usize
-                                                                                      1
-                                                                                  ]
+                                                                                  M.read (| i |)
                                                                                 |)
+                                                                              |);
+                                                                              M.read (| bits |)
+                                                                            ]
+                                                                          |);
+                                                                          M.call_closure (|
+                                                                            Ty.path "u32",
+                                                                            BinOp.Wrap.shr,
+                                                                            [
+                                                                              M.read (|
+                                                                                M.SubPointer.get_array_field (|
+                                                                                  M.SubPointer.get_struct_record_field (|
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        self
+                                                                                      |)
+                                                                                    |),
+                                                                                    "core::num::bignum::Big32x40",
+                                                                                    "base"
+                                                                                  |),
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "usize",
+                                                                                    BinOp.Wrap.sub,
+                                                                                    [
+                                                                                      M.read (|
+                                                                                        i
+                                                                                      |);
+                                                                                      Value.Integer
+                                                                                        IntegerKind.Usize
+                                                                                        1
+                                                                                    ]
+                                                                                  |)
+                                                                                |)
+                                                                              |);
+                                                                              M.call_closure (|
+                                                                                Ty.path "usize",
+                                                                                BinOp.Wrap.sub,
+                                                                                [
+                                                                                  M.read (|
+                                                                                    digitbits
+                                                                                  |);
+                                                                                  M.read (| bits |)
+                                                                                ]
                                                                               |)
-                                                                            |);
-                                                                            M.call_closure (|
-                                                                              Ty.path "usize",
-                                                                              BinOp.Wrap.sub,
-                                                                              [
-                                                                                M.read (|
-                                                                                  digitbits
-                                                                                |);
-                                                                                M.read (| bits |)
-                                                                              ]
-                                                                            |)
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |)
+                                                                            ]
+                                                                          |)
+                                                                        ]
+                                                                      |))),
+                                                                    fun rhs' =>
+                                                                      ltac:(M.monadic
+                                                                        (M.write (|
+                                                                          M.SubPointer.get_array_field (|
+                                                                            M.SubPointer.get_struct_record_field (|
+                                                                              M.deref (|
+                                                                                M.read (| self |)
+                                                                              |),
+                                                                              "core::num::bignum::Big32x40",
+                                                                              "base"
+                                                                            |),
+                                                                            M.read (| i |)
+                                                                          |),
+                                                                          rhs'
+                                                                        |)))
                                                                   |) in
                                                                 M.alloc (|
                                                                   Ty.tuple [],
@@ -3922,22 +4010,27 @@ Module num.
                                     |))
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β :=
-                                  M.SubPointer.get_array_field (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::num::bignum::Big32x40",
-                                      "base"
-                                    |),
-                                    M.read (| digits |)
-                                  |) in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "u32",
-                                    BinOp.Wrap.shl,
-                                    [ M.read (| β |); M.read (| bits |) ]
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| bits |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β :=
+                                        M.SubPointer.get_array_field (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::num::bignum::Big32x40",
+                                            "base"
+                                          |),
+                                          M.read (| digits |)
+                                        |) in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "u32",
+                                          BinOp.Wrap.shl,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)));
@@ -3945,13 +4038,18 @@ Module num.
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::num::bignum::Big32x40",
-                        "size"
-                      |),
-                      M.read (| sz |)
+                    M.let_ (|
+                      ltac:(M.monadic (M.read (| sz |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::num::bignum::Big32x40",
+                              "size"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "&mut") [] [ Ty.path "core::num::bignum::Big32x40" ],
@@ -4100,14 +4198,19 @@ Module num.
                                                       ]
                                                     |) in
                                                   let~ _ : Ty.tuple [] :=
-                                                    let β := e in
-                                                    M.write (|
-                                                      β,
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        BinOp.Wrap.sub,
-                                                        [ M.read (| β |); M.read (| small_e |) ]
-                                                      |)
+                                                    M.let_ (|
+                                                      ltac:(M.monadic (M.read (| small_e |))),
+                                                      fun rhs' =>
+                                                        ltac:(M.monadic
+                                                          (let β := e in
+                                                          M.write (|
+                                                            β,
+                                                            M.call_closure (|
+                                                              Ty.path "usize",
+                                                              BinOp.Wrap.sub,
+                                                              [ M.read (| β |); rhs' ]
+                                                            |)
+                                                          |)))
                                                     |) in
                                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                 |)));
@@ -4523,22 +4626,32 @@ Module num.
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::num::bignum::Big32x40",
-                        "base"
-                      |),
-                      M.read (| ret |)
+                    M.let_ (|
+                      ltac:(M.monadic (M.read (| ret |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::num::bignum::Big32x40",
+                              "base"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::num::bignum::Big32x40",
-                        "size"
-                      |),
-                      M.read (| retsz |)
+                    M.let_ (|
+                      ltac:(M.monadic (M.read (| retsz |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::num::bignum::Big32x40",
+                              "size"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "&mut") [] [ Ty.path "core::num::bignum::Big32x40" ],
@@ -4860,9 +4973,14 @@ Module num.
                                                       let r := M.copy (| Ty.path "u32", γ0_1 |) in
                                                       M.read (|
                                                         let~ _ : Ty.tuple [] :=
-                                                          M.write (|
-                                                            M.deref (| M.read (| a |) |),
-                                                            M.read (| q |)
+                                                          M.let_ (|
+                                                            ltac:(M.monadic (M.read (| q |))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (M.write (|
+                                                                  M.deref (| M.read (| a |) |),
+                                                                  rhs'
+                                                                |)))
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
                                                           M.write (| borrow, M.read (| r |) |) in
@@ -6315,9 +6433,17 @@ Module num.
                     Value.Integer IntegerKind.Usize 3
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_array_field (| base, Value.Integer IntegerKind.Usize 0 |),
-                    M.read (| v |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| v |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_array_field (|
+                            base,
+                            Value.Integer IntegerKind.Usize 0
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 M.alloc (|
                   Ty.path "core::num::bignum::tests::Big8x3",
@@ -6394,28 +6520,39 @@ Module num.
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      M.write (|
-                                        M.SubPointer.get_array_field (| base, M.read (| sz |) |),
-                                        M.cast (Ty.path "u8") (M.read (| v |))
+                                      M.let_ (|
+                                        ltac:(M.monadic (M.cast (Ty.path "u8") (M.read (| v |)))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.SubPointer.get_array_field (|
+                                                base,
+                                                M.read (| sz |)
+                                              |),
+                                              rhs'
+                                            |)))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β := v in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          BinOp.Wrap.shr,
-                                          [
-                                            M.read (| β |);
-                                            M.read (|
-                                              get_associated_constant (|
-                                                Ty.path "u8",
-                                                "BITS",
-                                                Ty.path "u32"
-                                              |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.read (|
+                                            get_associated_constant (|
+                                              Ty.path "u8",
+                                              "BITS",
+                                              Ty.path "u32"
                                             |)
-                                          ]
-                                        |)
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := v in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.shr,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
                                       let β := sz in
@@ -7257,9 +7394,16 @@ Module num.
                                                               M.copy (| Ty.path "bool", γ0_1 |) in
                                                             M.read (|
                                                               let~ _ : Ty.tuple [] :=
-                                                                M.write (|
-                                                                  M.deref (| M.read (| a |) |),
-                                                                  M.read (| v |)
+                                                                M.let_ (|
+                                                                  ltac:(M.monadic (M.read (| v |))),
+                                                                  fun rhs' =>
+                                                                    ltac:(M.monadic
+                                                                      (M.write (|
+                                                                        M.deref (|
+                                                                          M.read (| a |)
+                                                                        |),
+                                                                        rhs'
+                                                                      |)))
                                                                 |) in
                                                               let~ _ : Ty.tuple [] :=
                                                                 M.write (|
@@ -7321,13 +7465,18 @@ Module num.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::num::bignum::tests::Big8x3",
-                          "size"
-                        |),
-                        M.read (| sz |)
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| sz |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::bignum::tests::Big8x3",
+                                "size"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     M.alloc (|
                       Ty.apply (Ty.path "&mut") [] [ Ty.path "core::num::bignum::tests::Big8x3" ],
@@ -7406,16 +7555,21 @@ Module num.
                           let~ carry : Ty.path "bool" := M.read (| γ0_1 |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_array_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::num::bignum::tests::Big8x3",
-                                    "base"
-                                  |),
-                                  Value.Integer IntegerKind.Usize 0
-                                |),
-                                M.read (| v |)
+                              M.let_ (|
+                                ltac:(M.monadic (M.read (| v |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_array_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::num::bignum::tests::Big8x3",
+                                          "base"
+                                        |),
+                                        Value.Integer IntegerKind.Usize 0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ i : Ty.path "usize" := Value.Integer IntegerKind.Usize 1 in
                             let~ _ : Ty.tuple [] :=
@@ -7476,16 +7630,23 @@ Module num.
                                                       let c := M.copy (| Ty.path "bool", γ0_1 |) in
                                                       M.read (|
                                                         let~ _ : Ty.tuple [] :=
-                                                          M.write (|
-                                                            M.SubPointer.get_array_field (|
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                M.deref (| M.read (| self |) |),
-                                                                "core::num::bignum::tests::Big8x3",
-                                                                "base"
-                                                              |),
-                                                              M.read (| i |)
-                                                            |),
-                                                            M.read (| v |)
+                                                          M.let_ (|
+                                                            ltac:(M.monadic (M.read (| v |))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (M.write (|
+                                                                  M.SubPointer.get_array_field (|
+                                                                    M.SubPointer.get_struct_record_field (|
+                                                                      M.deref (|
+                                                                        M.read (| self |)
+                                                                      |),
+                                                                      "core::num::bignum::tests::Big8x3",
+                                                                      "base"
+                                                                    |),
+                                                                    M.read (| i |)
+                                                                  |),
+                                                                  rhs'
+                                                                |)))
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
                                                           M.write (| carry, M.read (| c |) |) in
@@ -7554,13 +7715,18 @@ Module num.
                                         |) in
                                       M.read (|
                                         let~ _ : Ty.tuple [] :=
-                                          M.write (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::num::bignum::tests::Big8x3",
-                                              "size"
-                                            |),
-                                            M.read (| i |)
+                                          M.let_ (|
+                                            ltac:(M.monadic (M.read (| i |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (M.write (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::num::bignum::tests::Big8x3",
+                                                    "size"
+                                                  |),
+                                                  rhs'
+                                                |)))
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                       |)));
@@ -7986,9 +8152,16 @@ Module num.
                                                               M.copy (| Ty.path "bool", γ0_1 |) in
                                                             M.read (|
                                                               let~ _ : Ty.tuple [] :=
-                                                                M.write (|
-                                                                  M.deref (| M.read (| a |) |),
-                                                                  M.read (| v |)
+                                                                M.let_ (|
+                                                                  ltac:(M.monadic (M.read (| v |))),
+                                                                  fun rhs' =>
+                                                                    ltac:(M.monadic
+                                                                      (M.write (|
+                                                                        M.deref (|
+                                                                          M.read (| a |)
+                                                                        |),
+                                                                        rhs'
+                                                                      |)))
                                                                 |) in
                                                               let~ _ : Ty.tuple [] :=
                                                                 M.write (|
@@ -8040,13 +8213,18 @@ Module num.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::num::bignum::tests::Big8x3",
-                          "size"
-                        |),
-                        M.read (| sz |)
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| sz |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::bignum::tests::Big8x3",
+                                "size"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     M.alloc (|
                       Ty.apply (Ty.path "&mut") [] [ Ty.path "core::num::bignum::tests::Big8x3" ],
@@ -8292,9 +8470,16 @@ Module num.
                                                               M.copy (| Ty.path "u8", γ0_1 |) in
                                                             M.read (|
                                                               let~ _ : Ty.tuple [] :=
-                                                                M.write (|
-                                                                  M.deref (| M.read (| a |) |),
-                                                                  M.read (| v |)
+                                                                M.let_ (|
+                                                                  ltac:(M.monadic (M.read (| v |))),
+                                                                  fun rhs' =>
+                                                                    ltac:(M.monadic
+                                                                      (M.write (|
+                                                                        M.deref (|
+                                                                          M.read (| a |)
+                                                                        |),
+                                                                        rhs'
+                                                                      |)))
                                                                 |) in
                                                               let~ _ : Ty.tuple [] :=
                                                                 M.write (|
@@ -8337,16 +8522,21 @@ Module num.
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_array_field (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::num::bignum::tests::Big8x3",
-                                        "base"
-                                      |),
-                                      M.read (| sz |)
-                                    |),
-                                    M.read (| carry |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| carry |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_array_field (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::num::bignum::tests::Big8x3",
+                                              "base"
+                                            |),
+                                            M.read (| sz |)
+                                          |),
+                                          rhs'
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := sz in
@@ -8364,13 +8554,18 @@ Module num.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::num::bignum::tests::Big8x3",
-                          "size"
-                        |),
-                        M.read (| sz |)
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| sz |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::bignum::tests::Big8x3",
+                                "size"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     M.alloc (|
                       Ty.apply (Ty.path "&mut") [] [ Ty.path "core::num::bignum::tests::Big8x3" ],
@@ -8987,30 +9182,38 @@ Module num.
                                                     let i := M.copy (| Ty.path "usize", γ0_0 |) in
                                                     M.read (|
                                                       let~ _ : Ty.tuple [] :=
-                                                        M.write (|
-                                                          M.SubPointer.get_array_field (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "core::num::bignum::tests::Big8x3",
-                                                              "base"
-                                                            |),
-                                                            M.call_closure (|
-                                                              Ty.path "usize",
-                                                              BinOp.Wrap.add,
-                                                              [ M.read (| i |); M.read (| digits |)
-                                                              ]
-                                                            |)
-                                                          |),
-                                                          M.read (|
-                                                            M.SubPointer.get_array_field (|
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                M.deref (| M.read (| self |) |),
-                                                                "core::num::bignum::tests::Big8x3",
-                                                                "base"
-                                                              |),
-                                                              M.read (| i |)
-                                                            |)
-                                                          |)
+                                                        M.let_ (|
+                                                          ltac:(M.monadic
+                                                            (M.read (|
+                                                              M.SubPointer.get_array_field (|
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| self |) |),
+                                                                  "core::num::bignum::tests::Big8x3",
+                                                                  "base"
+                                                                |),
+                                                                M.read (| i |)
+                                                              |)
+                                                            |))),
+                                                          fun rhs' =>
+                                                            ltac:(M.monadic
+                                                              (M.write (|
+                                                                M.SubPointer.get_array_field (|
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (| M.read (| self |) |),
+                                                                    "core::num::bignum::tests::Big8x3",
+                                                                    "base"
+                                                                  |),
+                                                                  M.call_closure (|
+                                                                    Ty.path "usize",
+                                                                    BinOp.Wrap.add,
+                                                                    [
+                                                                      M.read (| i |);
+                                                                      M.read (| digits |)
+                                                                    ]
+                                                                  |)
+                                                                |),
+                                                                rhs'
+                                                              |)))
                                                         |) in
                                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                     |)))
@@ -9240,16 +9443,21 @@ Module num.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_array_field (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::num::bignum::tests::Big8x3",
-                                                    "base"
-                                                  |),
-                                                  M.read (| last |)
-                                                |),
-                                                M.read (| overflow |)
+                                              M.let_ (|
+                                                ltac:(M.monadic (M.read (| overflow |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_array_field (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "core::num::bignum::tests::Big8x3",
+                                                          "base"
+                                                        |),
+                                                        M.read (| last |)
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             let~ _ : Ty.tuple [] :=
                                               let β := sz in
@@ -9447,85 +9655,94 @@ Module num.
                                                                   |) in
                                                                 M.read (|
                                                                   let~ _ : Ty.tuple [] :=
-                                                                    M.write (|
-                                                                      M.SubPointer.get_array_field (|
-                                                                        M.SubPointer.get_struct_record_field (|
-                                                                          M.deref (|
-                                                                            M.read (| self |)
-                                                                          |),
-                                                                          "core::num::bignum::tests::Big8x3",
-                                                                          "base"
-                                                                        |),
-                                                                        M.read (| i |)
-                                                                      |),
-                                                                      M.call_closure (|
-                                                                        Ty.path "u8",
-                                                                        BinOp.Wrap.bit_or,
-                                                                        [
-                                                                          M.call_closure (|
-                                                                            Ty.path "u8",
-                                                                            BinOp.Wrap.shl,
-                                                                            [
-                                                                              M.read (|
-                                                                                M.SubPointer.get_array_field (|
-                                                                                  M.SubPointer.get_struct_record_field (|
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        self
-                                                                                      |)
+                                                                    M.let_ (|
+                                                                      ltac:(M.monadic
+                                                                        (M.call_closure (|
+                                                                          Ty.path "u8",
+                                                                          BinOp.Wrap.bit_or,
+                                                                          [
+                                                                            M.call_closure (|
+                                                                              Ty.path "u8",
+                                                                              BinOp.Wrap.shl,
+                                                                              [
+                                                                                M.read (|
+                                                                                  M.SubPointer.get_array_field (|
+                                                                                    M.SubPointer.get_struct_record_field (|
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          self
+                                                                                        |)
+                                                                                      |),
+                                                                                      "core::num::bignum::tests::Big8x3",
+                                                                                      "base"
                                                                                     |),
-                                                                                    "core::num::bignum::tests::Big8x3",
-                                                                                    "base"
-                                                                                  |),
-                                                                                  M.read (| i |)
-                                                                                |)
-                                                                              |);
-                                                                              M.read (| bits |)
-                                                                            ]
-                                                                          |);
-                                                                          M.call_closure (|
-                                                                            Ty.path "u8",
-                                                                            BinOp.Wrap.shr,
-                                                                            [
-                                                                              M.read (|
-                                                                                M.SubPointer.get_array_field (|
-                                                                                  M.SubPointer.get_struct_record_field (|
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        self
-                                                                                      |)
-                                                                                    |),
-                                                                                    "core::num::bignum::tests::Big8x3",
-                                                                                    "base"
-                                                                                  |),
-                                                                                  M.call_closure (|
-                                                                                    Ty.path "usize",
-                                                                                    BinOp.Wrap.sub,
-                                                                                    [
-                                                                                      M.read (|
-                                                                                        i
-                                                                                      |);
-                                                                                      Value.Integer
-                                                                                        IntegerKind.Usize
-                                                                                        1
-                                                                                    ]
+                                                                                    M.read (| i |)
                                                                                   |)
+                                                                                |);
+                                                                                M.read (| bits |)
+                                                                              ]
+                                                                            |);
+                                                                            M.call_closure (|
+                                                                              Ty.path "u8",
+                                                                              BinOp.Wrap.shr,
+                                                                              [
+                                                                                M.read (|
+                                                                                  M.SubPointer.get_array_field (|
+                                                                                    M.SubPointer.get_struct_record_field (|
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          self
+                                                                                        |)
+                                                                                      |),
+                                                                                      "core::num::bignum::tests::Big8x3",
+                                                                                      "base"
+                                                                                    |),
+                                                                                    M.call_closure (|
+                                                                                      Ty.path
+                                                                                        "usize",
+                                                                                      BinOp.Wrap.sub,
+                                                                                      [
+                                                                                        M.read (|
+                                                                                          i
+                                                                                        |);
+                                                                                        Value.Integer
+                                                                                          IntegerKind.Usize
+                                                                                          1
+                                                                                      ]
+                                                                                    |)
+                                                                                  |)
+                                                                                |);
+                                                                                M.call_closure (|
+                                                                                  Ty.path "usize",
+                                                                                  BinOp.Wrap.sub,
+                                                                                  [
+                                                                                    M.read (|
+                                                                                      digitbits
+                                                                                    |);
+                                                                                    M.read (|
+                                                                                      bits
+                                                                                    |)
+                                                                                  ]
                                                                                 |)
-                                                                              |);
-                                                                              M.call_closure (|
-                                                                                Ty.path "usize",
-                                                                                BinOp.Wrap.sub,
-                                                                                [
-                                                                                  M.read (|
-                                                                                    digitbits
-                                                                                  |);
-                                                                                  M.read (| bits |)
-                                                                                ]
-                                                                              |)
-                                                                            ]
-                                                                          |)
-                                                                        ]
-                                                                      |)
+                                                                              ]
+                                                                            |)
+                                                                          ]
+                                                                        |))),
+                                                                      fun rhs' =>
+                                                                        ltac:(M.monadic
+                                                                          (M.write (|
+                                                                            M.SubPointer.get_array_field (|
+                                                                              M.SubPointer.get_struct_record_field (|
+                                                                                M.deref (|
+                                                                                  M.read (| self |)
+                                                                                |),
+                                                                                "core::num::bignum::tests::Big8x3",
+                                                                                "base"
+                                                                              |),
+                                                                              M.read (| i |)
+                                                                            |),
+                                                                            rhs'
+                                                                          |)))
                                                                     |) in
                                                                   M.alloc (|
                                                                     Ty.tuple [],
@@ -9542,22 +9759,27 @@ Module num.
                                       |))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  let β :=
-                                    M.SubPointer.get_array_field (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::num::bignum::tests::Big8x3",
-                                        "base"
-                                      |),
-                                      M.read (| digits |)
-                                    |) in
-                                  M.write (|
-                                    β,
-                                    M.call_closure (|
-                                      Ty.path "u8",
-                                      BinOp.Wrap.shl,
-                                      [ M.read (| β |); M.read (| bits |) ]
-                                    |)
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| bits |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (let β :=
+                                          M.SubPointer.get_array_field (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::num::bignum::tests::Big8x3",
+                                              "base"
+                                            |),
+                                            M.read (| digits |)
+                                          |) in
+                                        M.write (|
+                                          β,
+                                          M.call_closure (|
+                                            Ty.path "u8",
+                                            BinOp.Wrap.shl,
+                                            [ M.read (| β |); rhs' ]
+                                          |)
+                                        |)))
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                               |)));
@@ -9565,13 +9787,18 @@ Module num.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::num::bignum::tests::Big8x3",
-                          "size"
-                        |),
-                        M.read (| sz |)
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| sz |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::bignum::tests::Big8x3",
+                                "size"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     M.alloc (|
                       Ty.apply (Ty.path "&mut") [] [ Ty.path "core::num::bignum::tests::Big8x3" ],
@@ -9727,14 +9954,19 @@ Module num.
                                                         ]
                                                       |) in
                                                     let~ _ : Ty.tuple [] :=
-                                                      let β := e in
-                                                      M.write (|
-                                                        β,
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.sub,
-                                                          [ M.read (| β |); M.read (| small_e |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic (M.read (| small_e |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (let β := e in
+                                                            M.write (|
+                                                              β,
+                                                              M.call_closure (|
+                                                                Ty.path "usize",
+                                                                BinOp.Wrap.sub,
+                                                                [ M.read (| β |); rhs' ]
+                                                              |)
+                                                            |)))
                                                       |) in
                                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                   |)));
@@ -10166,22 +10398,32 @@ Module num.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::num::bignum::tests::Big8x3",
-                          "base"
-                        |),
-                        M.read (| ret |)
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| ret |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::bignum::tests::Big8x3",
+                                "base"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::num::bignum::tests::Big8x3",
-                          "size"
-                        |),
-                        M.read (| retsz |)
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| retsz |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::bignum::tests::Big8x3",
+                                "size"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     M.alloc (|
                       Ty.apply (Ty.path "&mut") [] [ Ty.path "core::num::bignum::tests::Big8x3" ],
@@ -10508,9 +10750,14 @@ Module num.
                                                         let r := M.copy (| Ty.path "u8", γ0_1 |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
-                                                            M.write (|
-                                                              M.deref (| M.read (| a |) |),
-                                                              M.read (| q |)
+                                                            M.let_ (|
+                                                              ltac:(M.monadic (M.read (| q |))),
+                                                              fun rhs' =>
+                                                                ltac:(M.monadic
+                                                                  (M.write (|
+                                                                    M.deref (| M.read (| a |) |),
+                                                                    rhs'
+                                                                  |)))
                                                             |) in
                                                           let~ _ : Ty.tuple [] :=
                                                             M.write (| borrow, M.read (| r |) |) in

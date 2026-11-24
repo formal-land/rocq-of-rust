@@ -853,26 +853,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -913,33 +917,37 @@ Module num.
             let other := M.alloc (| Ty.path "usize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "add",
+                        [],
                         []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "usize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1050,26 +1058,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "sub",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1110,33 +1122,37 @@ Module num.
             let other := M.alloc (| Ty.path "usize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "sub",
+                        [],
                         []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "usize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1247,26 +1263,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "mul",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1307,33 +1327,37 @@ Module num.
             let other := M.alloc (| Ty.path "usize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "mul",
+                        [],
                         []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "usize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1444,26 +1468,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1504,33 +1532,37 @@ Module num.
             let other := M.alloc (| Ty.path "usize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "div",
+                        [],
                         []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "usize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1649,26 +1681,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1709,33 +1745,37 @@ Module num.
             let other := M.alloc (| Ty.path "usize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "rem",
+                        [],
                         []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "usize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1900,26 +1940,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "bitxor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1960,33 +2004,37 @@ Module num.
             let other := M.alloc (| Ty.path "usize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "bitxor",
+                        [],
                         []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "usize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -2097,26 +2145,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -2157,33 +2209,37 @@ Module num.
             let other := M.alloc (| Ty.path "usize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "bitor",
+                        [],
                         []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "usize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -2294,26 +2350,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "bitand",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -2354,33 +2414,37 @@ Module num.
             let other := M.alloc (| Ty.path "usize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "usize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "usize" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "usize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "usize" ]
+                        ],
+                        "bitand",
+                        [],
                         []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "usize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -2491,22 +2555,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -2547,29 +2612,30 @@ Module num.
             let other := M.alloc (| Ty.path "u8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "add",
+                        [],
                         []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -2680,22 +2746,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "sub",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -2736,29 +2803,30 @@ Module num.
             let other := M.alloc (| Ty.path "u8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "sub",
+                        [],
                         []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -2869,22 +2937,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "mul",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -2925,29 +2994,30 @@ Module num.
             let other := M.alloc (| Ty.path "u8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "mul",
+                        [],
                         []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3058,22 +3128,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3114,29 +3185,30 @@ Module num.
             let other := M.alloc (| Ty.path "u8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "div",
+                        [],
                         []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3255,22 +3327,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3311,29 +3384,30 @@ Module num.
             let other := M.alloc (| Ty.path "u8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "rem",
+                        [],
                         []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3498,22 +3572,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "bitxor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3554,29 +3629,30 @@ Module num.
             let other := M.alloc (| Ty.path "u8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "bitxor",
+                        [],
                         []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3687,22 +3763,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3743,29 +3820,30 @@ Module num.
             let other := M.alloc (| Ty.path "u8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "bitor",
+                        [],
                         []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3876,22 +3954,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "bitand",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3932,29 +4011,30 @@ Module num.
             let other := M.alloc (| Ty.path "u8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u8" ]
+                        ],
+                        "bitand",
+                        [],
                         []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -4065,22 +4145,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -4121,29 +4206,34 @@ Module num.
             let other := M.alloc (| Ty.path "u16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "add",
+                        [],
                         []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -4254,22 +4344,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "sub",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -4310,29 +4405,34 @@ Module num.
             let other := M.alloc (| Ty.path "u16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "sub",
+                        [],
                         []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -4443,22 +4543,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "mul",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -4499,29 +4604,34 @@ Module num.
             let other := M.alloc (| Ty.path "u16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "mul",
+                        [],
                         []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -4632,22 +4742,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -4688,29 +4803,34 @@ Module num.
             let other := M.alloc (| Ty.path "u16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "div",
+                        [],
                         []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -4829,22 +4949,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -4885,29 +5010,34 @@ Module num.
             let other := M.alloc (| Ty.path "u16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "rem",
+                        [],
                         []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -5072,22 +5202,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "bitxor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -5128,29 +5263,34 @@ Module num.
             let other := M.alloc (| Ty.path "u16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "bitxor",
+                        [],
                         []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -5261,22 +5401,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -5317,29 +5462,34 @@ Module num.
             let other := M.alloc (| Ty.path "u16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "bitor",
+                        [],
                         []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -5450,22 +5600,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "bitand",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -5506,29 +5661,34 @@ Module num.
             let other := M.alloc (| Ty.path "u16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u16" ]
+                        ],
+                        "bitand",
+                        [],
                         []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -5639,22 +5799,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -5695,29 +5860,34 @@ Module num.
             let other := M.alloc (| Ty.path "u32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "add",
+                        [],
                         []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -5828,22 +5998,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "sub",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -5884,29 +6059,34 @@ Module num.
             let other := M.alloc (| Ty.path "u32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "sub",
+                        [],
                         []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -6017,22 +6197,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "mul",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -6073,29 +6258,34 @@ Module num.
             let other := M.alloc (| Ty.path "u32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "mul",
+                        [],
                         []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -6206,22 +6396,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -6262,29 +6457,34 @@ Module num.
             let other := M.alloc (| Ty.path "u32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "div",
+                        [],
                         []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -6403,22 +6603,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -6459,29 +6664,34 @@ Module num.
             let other := M.alloc (| Ty.path "u32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "rem",
+                        [],
                         []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -6646,22 +6856,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "bitxor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -6702,29 +6917,34 @@ Module num.
             let other := M.alloc (| Ty.path "u32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "bitxor",
+                        [],
                         []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -6835,22 +7055,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -6891,29 +7116,34 @@ Module num.
             let other := M.alloc (| Ty.path "u32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "bitor",
+                        [],
                         []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7024,22 +7254,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "bitand",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7080,29 +7315,34 @@ Module num.
             let other := M.alloc (| Ty.path "u32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u32" ]
+                        ],
+                        "bitand",
+                        [],
                         []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7213,22 +7453,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7269,29 +7514,34 @@ Module num.
             let other := M.alloc (| Ty.path "u64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "add",
+                        [],
                         []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7402,22 +7652,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "sub",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7458,29 +7713,34 @@ Module num.
             let other := M.alloc (| Ty.path "u64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "sub",
+                        [],
                         []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7591,22 +7851,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "mul",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7647,29 +7912,34 @@ Module num.
             let other := M.alloc (| Ty.path "u64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "mul",
+                        [],
                         []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7780,22 +8050,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7836,29 +8111,34 @@ Module num.
             let other := M.alloc (| Ty.path "u64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "div",
+                        [],
                         []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -7977,22 +8257,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -8033,29 +8318,34 @@ Module num.
             let other := M.alloc (| Ty.path "u64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "rem",
+                        [],
                         []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -8220,22 +8510,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "bitxor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -8276,29 +8571,34 @@ Module num.
             let other := M.alloc (| Ty.path "u64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "bitxor",
+                        [],
                         []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -8409,22 +8709,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -8465,29 +8770,34 @@ Module num.
             let other := M.alloc (| Ty.path "u64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "bitor",
+                        [],
                         []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -8598,22 +8908,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "bitand",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -8654,29 +8969,34 @@ Module num.
             let other := M.alloc (| Ty.path "u64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u64" ]
+                        ],
+                        "bitand",
+                        [],
                         []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -8787,22 +9107,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -8843,29 +9171,37 @@ Module num.
             let other := M.alloc (| Ty.path "u128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "add",
+                        [],
                         []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -8976,22 +9312,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "sub",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -9032,29 +9376,37 @@ Module num.
             let other := M.alloc (| Ty.path "u128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "sub",
+                        [],
                         []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -9165,22 +9517,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "mul",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -9221,29 +9581,37 @@ Module num.
             let other := M.alloc (| Ty.path "u128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "mul",
+                        [],
                         []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -9354,22 +9722,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -9410,29 +9786,37 @@ Module num.
             let other := M.alloc (| Ty.path "u128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "div",
+                        [],
                         []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -9551,22 +9935,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -9607,29 +9999,37 @@ Module num.
             let other := M.alloc (| Ty.path "u128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "rem",
+                        [],
                         []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -9794,22 +10194,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "bitxor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -9850,29 +10258,37 @@ Module num.
             let other := M.alloc (| Ty.path "u128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "bitxor",
+                        [],
                         []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -9983,22 +10399,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -10039,29 +10463,37 @@ Module num.
             let other := M.alloc (| Ty.path "u128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "bitor",
+                        [],
                         []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -10172,22 +10604,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "bitand",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -10228,29 +10668,37 @@ Module num.
             let other := M.alloc (| Ty.path "u128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "u128" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "u128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "u128" ]
+                        ],
+                        "bitand",
+                        [],
                         []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "u128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -10361,26 +10809,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -10421,33 +10873,37 @@ Module num.
             let other := M.alloc (| Ty.path "isize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "add",
+                        [],
                         []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "isize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -10558,26 +11014,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "sub",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -10618,33 +11078,37 @@ Module num.
             let other := M.alloc (| Ty.path "isize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "sub",
+                        [],
                         []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "isize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -10755,26 +11219,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "mul",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -10815,33 +11283,37 @@ Module num.
             let other := M.alloc (| Ty.path "isize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "mul",
+                        [],
                         []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "isize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -10952,26 +11424,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -11012,33 +11488,37 @@ Module num.
             let other := M.alloc (| Ty.path "isize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "div",
+                        [],
                         []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "isize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -11157,26 +11637,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -11217,33 +11701,37 @@ Module num.
             let other := M.alloc (| Ty.path "isize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "rem",
+                        [],
                         []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "isize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -11408,26 +11896,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "bitxor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -11468,33 +11960,37 @@ Module num.
             let other := M.alloc (| Ty.path "isize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "bitxor",
+                        [],
                         []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "isize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -11605,26 +12101,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -11665,33 +12165,37 @@ Module num.
             let other := M.alloc (| Ty.path "isize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "bitor",
+                        [],
                         []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "isize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -11802,26 +12306,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "bitand",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -11862,33 +12370,37 @@ Module num.
             let other := M.alloc (| Ty.path "isize", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "isize" ],
-                      [],
-                      [
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
                         Ty.apply
                           (Ty.path "core::num::saturating::Saturating")
                           []
-                          [ Ty.path "isize" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                          [ Ty.path "isize" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "isize" ]
+                        ],
+                        "bitand",
+                        [],
                         []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "isize" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -11999,22 +12511,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -12055,29 +12568,30 @@ Module num.
             let other := M.alloc (| Ty.path "i8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "add",
+                        [],
                         []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -12188,22 +12702,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "sub",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -12244,29 +12759,30 @@ Module num.
             let other := M.alloc (| Ty.path "i8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "sub",
+                        [],
                         []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -12377,22 +12893,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "mul",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -12433,29 +12950,30 @@ Module num.
             let other := M.alloc (| Ty.path "i8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "mul",
+                        [],
                         []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -12566,22 +13084,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -12622,29 +13141,30 @@ Module num.
             let other := M.alloc (| Ty.path "i8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "div",
+                        [],
                         []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -12763,22 +13283,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -12819,29 +13340,30 @@ Module num.
             let other := M.alloc (| Ty.path "i8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "rem",
+                        [],
                         []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -13006,22 +13528,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "bitxor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -13062,29 +13585,30 @@ Module num.
             let other := M.alloc (| Ty.path "i8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "bitxor",
+                        [],
                         []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -13195,22 +13719,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -13251,29 +13776,30 @@ Module num.
             let other := M.alloc (| Ty.path "i8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "bitor",
+                        [],
                         []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -13384,22 +13910,23 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "bitand",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -13440,29 +13967,30 @@ Module num.
             let other := M.alloc (| Ty.path "i8", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i8" ]
+                        ],
+                        "bitand",
+                        [],
                         []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i8" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -13573,22 +14101,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -13629,29 +14162,34 @@ Module num.
             let other := M.alloc (| Ty.path "i16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "add",
+                        [],
                         []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -13762,22 +14300,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "sub",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -13818,29 +14361,34 @@ Module num.
             let other := M.alloc (| Ty.path "i16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "sub",
+                        [],
                         []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -13951,22 +14499,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "mul",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -14007,29 +14560,34 @@ Module num.
             let other := M.alloc (| Ty.path "i16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "mul",
+                        [],
                         []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -14140,22 +14698,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -14196,29 +14759,34 @@ Module num.
             let other := M.alloc (| Ty.path "i16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "div",
+                        [],
                         []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -14337,22 +14905,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -14393,29 +14966,34 @@ Module num.
             let other := M.alloc (| Ty.path "i16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "rem",
+                        [],
                         []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -14580,22 +15158,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "bitxor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -14636,29 +15219,34 @@ Module num.
             let other := M.alloc (| Ty.path "i16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "bitxor",
+                        [],
                         []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -14769,22 +15357,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -14825,29 +15418,34 @@ Module num.
             let other := M.alloc (| Ty.path "i16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "bitor",
+                        [],
                         []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -14958,22 +15556,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "bitand",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -15014,29 +15617,34 @@ Module num.
             let other := M.alloc (| Ty.path "i16", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i16" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i16" ]
+                        ],
+                        "bitand",
+                        [],
                         []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i16" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -15147,22 +15755,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -15203,29 +15816,34 @@ Module num.
             let other := M.alloc (| Ty.path "i32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "add",
+                        [],
                         []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -15336,22 +15954,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "sub",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -15392,29 +16015,34 @@ Module num.
             let other := M.alloc (| Ty.path "i32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "sub",
+                        [],
                         []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -15525,22 +16153,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "mul",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -15581,29 +16214,34 @@ Module num.
             let other := M.alloc (| Ty.path "i32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "mul",
+                        [],
                         []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -15714,22 +16352,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -15770,29 +16413,34 @@ Module num.
             let other := M.alloc (| Ty.path "i32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "div",
+                        [],
                         []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -15911,22 +16559,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -15967,29 +16620,34 @@ Module num.
             let other := M.alloc (| Ty.path "i32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "rem",
+                        [],
                         []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -16154,22 +16812,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "bitxor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -16210,29 +16873,34 @@ Module num.
             let other := M.alloc (| Ty.path "i32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "bitxor",
+                        [],
                         []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -16343,22 +17011,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -16399,29 +17072,34 @@ Module num.
             let other := M.alloc (| Ty.path "i32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "bitor",
+                        [],
                         []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -16532,22 +17210,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "bitand",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -16588,29 +17271,34 @@ Module num.
             let other := M.alloc (| Ty.path "i32", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i32" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i32" ]
+                        ],
+                        "bitand",
+                        [],
                         []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i32" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -16721,22 +17409,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -16777,29 +17470,34 @@ Module num.
             let other := M.alloc (| Ty.path "i64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "add",
+                        [],
                         []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -16910,22 +17608,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "sub",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -16966,29 +17669,34 @@ Module num.
             let other := M.alloc (| Ty.path "i64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "sub",
+                        [],
                         []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -17099,22 +17807,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "mul",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -17155,29 +17868,34 @@ Module num.
             let other := M.alloc (| Ty.path "i64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "mul",
+                        [],
                         []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -17288,22 +18006,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -17344,29 +18067,34 @@ Module num.
             let other := M.alloc (| Ty.path "i64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "div",
+                        [],
                         []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -17485,22 +18213,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -17541,29 +18274,34 @@ Module num.
             let other := M.alloc (| Ty.path "i64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "rem",
+                        [],
                         []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -17728,22 +18466,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "bitxor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -17784,29 +18527,34 @@ Module num.
             let other := M.alloc (| Ty.path "i64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "bitxor",
+                        [],
                         []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -17917,22 +18665,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -17973,29 +18726,34 @@ Module num.
             let other := M.alloc (| Ty.path "i64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "bitor",
+                        [],
                         []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -18106,22 +18864,27 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "bitand",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -18162,29 +18925,34 @@ Module num.
             let other := M.alloc (| Ty.path "i64", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i64" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i64" ]
+                        ],
+                        "bitand",
+                        [],
                         []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i64" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -18295,22 +19063,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -18351,29 +19127,37 @@ Module num.
             let other := M.alloc (| Ty.path "i128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Add",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Add",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "add",
+                        [],
                         []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -18484,22 +19268,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "sub",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -18540,29 +19332,37 @@ Module num.
             let other := M.alloc (| Ty.path "i128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Sub",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "sub",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Sub",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "sub",
+                        [],
                         []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -18673,22 +19473,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "mul",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -18729,29 +19537,37 @@ Module num.
             let other := M.alloc (| Ty.path "i128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Mul",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "mul",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Mul",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "mul",
+                        [],
                         []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -18862,22 +19678,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "div",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -18918,29 +19742,37 @@ Module num.
             let other := M.alloc (| Ty.path "i128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Div",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "div",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Div",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "div",
+                        [],
                         []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -19059,22 +19891,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "rem",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -19115,29 +19955,37 @@ Module num.
             let other := M.alloc (| Ty.path "i128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::arith::Rem",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "rem",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::arith::Rem",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "rem",
+                        [],
                         []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -19302,22 +20150,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "bitxor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -19358,29 +20214,37 @@ Module num.
             let other := M.alloc (| Ty.path "i128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitXor",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "bitxor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitXor",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "bitxor",
+                        [],
                         []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -19491,22 +20355,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "bitor",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -19547,29 +20419,37 @@ Module num.
             let other := M.alloc (| Ty.path "i128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitOr",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "bitor",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitOr",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "bitor",
+                        [],
                         []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -19680,22 +20560,30 @@ Module num.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "bitand",
+                        [],
+                        []
+                      |),
+                      [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -19736,29 +20624,37 @@ Module num.
             let other := M.alloc (| Ty.path "i128", other |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.deref (| M.read (| self |) |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                    M.get_trait_method (|
-                      "core::ops::bit::BitAnd",
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
                       Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::num::saturating::Saturating") [] [ Ty.path "i128" ]
-                      ],
-                      "bitand",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::saturating::Saturating"
+                      M.get_trait_method (|
+                        "core::ops::bit::BitAnd",
+                        Ty.apply
+                          (Ty.path "core::num::saturating::Saturating")
+                          []
+                          [ Ty.path "i128" ],
+                        [],
+                        [
+                          Ty.apply
+                            (Ty.path "core::num::saturating::Saturating")
+                            []
+                            [ Ty.path "i128" ]
+                        ],
+                        "bitand",
+                        [],
                         []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
-                    ]
-                  |)
+                      |),
+                      [
+                        M.read (| M.deref (| M.read (| self |) |) |);
+                        Value.StructTuple
+                          "core::num::saturating::Saturating"
+                          []
+                          [ Ty.path "i128" ]
+                          [ M.read (| other |) ]
+                      ]
+                    |))),
+                  fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))

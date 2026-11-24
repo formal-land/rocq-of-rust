@@ -3955,16 +3955,22 @@ Module str.
                               |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::str::lossy::Utf8Chunks",
-                                    "source"
-                                  |),
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.read (| remaining |) |)
-                                  |)
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| remaining |) |)
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::str::lossy::Utf8Chunks",
+                                          "source"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply

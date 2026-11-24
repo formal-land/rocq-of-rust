@@ -2760,49 +2760,55 @@ Module range.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::range::iter::RangeFromIter",
-                                      "start"
-                                    |),
-                                    M.call_closure (|
-                                      A,
-                                      M.get_trait_method (|
-                                        "core::iter::range::Step",
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.call_closure (|
                                         A,
-                                        [],
-                                        [],
-                                        "forward",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
+                                        M.get_trait_method (|
+                                          "core::iter::range::Step",
                                           A,
-                                          M.get_trait_method (|
-                                            "core::clone::Clone",
+                                          [],
+                                          [],
+                                          "forward",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
                                             A,
-                                            [],
-                                            [],
-                                            "clone",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| self |) |),
-                                                "core::range::iter::RangeFromIter",
-                                                "start"
+                                            M.get_trait_method (|
+                                              "core::clone::Clone",
+                                              A,
+                                              [],
+                                              [],
+                                              "clone",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "core::range::iter::RangeFromIter",
+                                                  "start"
+                                                |)
                                               |)
-                                            |)
-                                          ]
-                                        |);
-                                        Value.Integer IntegerKind.Usize 1
-                                      ]
-                                    |)
+                                            ]
+                                          |);
+                                          Value.Integer IntegerKind.Usize 1
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::range::iter::RangeFromIter",
+                                            "start"
+                                          |),
+                                          rhs'
+                                        |)))
                                   |) in
                                 M.return_ (|
                                   Value.StructTuple
@@ -3055,25 +3061,31 @@ Module range.
                                                   ]
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::range::iter::RangeFromIter",
-                                                    "start"
-                                                  |),
-                                                  M.call_closure (|
-                                                    A,
-                                                    M.get_trait_method (|
-                                                      "core::clone::Clone",
+                                                M.let_ (|
+                                                  ltac:(M.monadic
+                                                    (M.call_closure (|
                                                       A,
-                                                      [],
-                                                      [],
-                                                      "clone",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.borrow (| Pointer.Kind.Ref, plus_n |) ]
-                                                  |)
+                                                      M.get_trait_method (|
+                                                        "core::clone::Clone",
+                                                        A,
+                                                        [],
+                                                        [],
+                                                        "clone",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [ M.borrow (| Pointer.Kind.Ref, plus_n |) ]
+                                                    |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "core::range::iter::RangeFromIter",
+                                                          "start"
+                                                        |),
+                                                        rhs'
+                                                      |)))
                                                 |) in
                                               M.return_ (|
                                                 Value.StructTuple
@@ -3126,40 +3138,46 @@ Module range.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::range::iter::RangeFromIter",
-                                      "start"
-                                    |),
-                                    M.call_closure (|
-                                      A,
-                                      M.get_trait_method (|
-                                        "core::iter::range::Step",
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.call_closure (|
                                         A,
-                                        [],
-                                        [],
-                                        "forward",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
+                                        M.get_trait_method (|
+                                          "core::iter::range::Step",
                                           A,
-                                          M.get_trait_method (|
-                                            "core::clone::Clone",
+                                          [],
+                                          [],
+                                          "forward",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
                                             A,
-                                            [],
-                                            [],
-                                            "clone",
-                                            [],
-                                            []
+                                            M.get_trait_method (|
+                                              "core::clone::Clone",
+                                              A,
+                                              [],
+                                              [],
+                                              "clone",
+                                              [],
+                                              []
+                                            |),
+                                            [ M.borrow (| Pointer.Kind.Ref, plus_n |) ]
+                                          |);
+                                          Value.Integer IntegerKind.Usize 1
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::range::iter::RangeFromIter",
+                                            "start"
                                           |),
-                                          [ M.borrow (| Pointer.Kind.Ref, plus_n |) ]
-                                        |);
-                                        Value.Integer IntegerKind.Usize 1
-                                      ]
-                                    |)
+                                          rhs'
+                                        |)))
                                   |) in
                                 M.return_ (|
                                   Value.StructTuple
@@ -3227,40 +3245,46 @@ Module range.
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::range::iter::RangeFromIter",
-                        "start"
-                      |),
-                      M.call_closure (|
-                        A,
-                        M.get_trait_method (|
-                          "core::iter::range::Step",
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
                           A,
-                          [],
-                          [],
-                          "forward",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
+                          M.get_trait_method (|
+                            "core::iter::range::Step",
                             A,
-                            M.get_trait_method (|
-                              "core::clone::Clone",
+                            [],
+                            [],
+                            "forward",
+                            [],
+                            []
+                          |),
+                          [
+                            M.call_closure (|
                               A,
-                              [],
-                              [],
-                              "clone",
-                              [],
-                              []
+                              M.get_trait_method (|
+                                "core::clone::Clone",
+                                A,
+                                [],
+                                [],
+                                "clone",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, plus_n |) ]
+                            |);
+                            Value.Integer IntegerKind.Usize 1
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::range::iter::RangeFromIter",
+                              "start"
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, plus_n |) ]
-                          |);
-                          Value.Integer IntegerKind.Usize 1
-                        ]
-                      |)
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::option::Option") [] [ A ],

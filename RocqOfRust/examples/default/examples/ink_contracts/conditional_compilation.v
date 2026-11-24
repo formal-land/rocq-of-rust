@@ -456,25 +456,31 @@ Module Impl_conditional_compilation_ConditionalCompilation.
           |) in
         M.read (|
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "conditional_compilation::ConditionalCompilation",
-                "value"
-              |),
-              M.call_closure (|
-                Ty.path "bool",
-                UnOp.not,
-                [
-                  M.read (|
+            M.let_ (|
+              ltac:(M.monadic
+                (M.call_closure (|
+                  Ty.path "bool",
+                  UnOp.not,
+                  [
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "conditional_compilation::ConditionalCompilation",
+                        "value"
+                      |)
+                    |)
+                  ]
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "conditional_compilation::ConditionalCompilation",
                       "value"
-                    |)
-                  |)
-                ]
-              |)
+                    |),
+                    rhs'
+                  |)))
             |) in
           let~ caller : Ty.path "conditional_compilation::AccountId" :=
             M.call_closure (|
@@ -646,25 +652,31 @@ Module Impl_conditional_compilation_ConditionalCompilation.
               ]
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "conditional_compilation::ConditionalCompilation",
-                "value"
-              |),
-              M.call_closure (|
-                Ty.path "bool",
-                UnOp.not,
-                [
-                  M.read (|
+            M.let_ (|
+              ltac:(M.monadic
+                (M.call_closure (|
+                  Ty.path "bool",
+                  UnOp.not,
+                  [
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "conditional_compilation::ConditionalCompilation",
+                        "value"
+                      |)
+                    |)
+                  ]
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "conditional_compilation::ConditionalCompilation",
                       "value"
-                    |)
-                  |)
-                ]
-              |)
+                    |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
@@ -750,25 +762,31 @@ Module Impl_conditional_compilation_Flip_for_conditional_compilation_Conditional
           |) in
         M.read (|
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "conditional_compilation::ConditionalCompilation",
-                "value"
-              |),
-              M.call_closure (|
-                Ty.path "bool",
-                UnOp.not,
-                [
-                  M.read (|
+            M.let_ (|
+              ltac:(M.monadic
+                (M.call_closure (|
+                  Ty.path "bool",
+                  UnOp.not,
+                  [
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "conditional_compilation::ConditionalCompilation",
+                        "value"
+                      |)
+                    |)
+                  ]
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
                     M.SubPointer.get_struct_record_field (|
                       M.deref (| M.read (| self |) |),
                       "conditional_compilation::ConditionalCompilation",
                       "value"
-                    |)
-                  |)
-                ]
-              |)
+                    |),
+                    rhs'
+                  |)))
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))
@@ -891,13 +909,18 @@ Module Impl_conditional_compilation_Flip_for_conditional_compilation_Conditional
               ]
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "conditional_compilation::ConditionalCompilation",
-                "value"
-              |),
-              M.read (| value |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| value |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "conditional_compilation::ConditionalCompilation",
+                      "value"
+                    |),
+                    rhs'
+                  |)))
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))

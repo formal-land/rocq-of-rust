@@ -1,0 +1,58 @@
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/primitives/tuples.rs:51:25
+   |
+51 |     let matrix = Matrix(1.1, 1.2, 2.1, 2.2);
+   |                         ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/primitives/tuples.rs:51:30
+   |
+51 |     let matrix = Matrix(1.1, 1.2, 2.1, 2.2);
+   |                              ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/primitives/tuples.rs:51:35
+   |
+51 |     let matrix = Matrix(1.1, 1.2, 2.1, 2.2);
+   |                                   ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/primitives/tuples.rs:51:40
+   |
+51 |     let matrix = Matrix(1.1, 1.2, 2.1, 2.2);
+   |                                        ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/primitives/tuples.rs:46:30
+   |
+46 |     let tuple = (1, "hello", 4.5, true);
+   |                              ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/primitives/tuples.rs:17:23
+   |
+17 |                       0.1f32, 0.2f64,
+   |                       ^^^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/primitives/tuples.rs:17:31
+   |
+17 |                       0.1f32, 0.2f64,
+   |                               ^^^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: 7 warnings emitted
+

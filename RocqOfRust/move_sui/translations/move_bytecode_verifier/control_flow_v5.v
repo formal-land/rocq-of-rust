@@ -1441,43 +1441,49 @@ Module control_flow_v5.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let last_continue := M.copy (| Ty.path "u16", γ |) in
-                                      M.write (|
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [
-                                                Ty.path
-                                                  "move_bytecode_verifier::control_flow_v5::Label"
-                                              ],
-                                            M.get_trait_method (|
-                                              "core::ops::index::IndexMut",
-                                              Ty.apply
-                                                (Ty.path "alloc::vec::Vec")
-                                                []
-                                                [
-                                                  Ty.path
-                                                    "move_bytecode_verifier::control_flow_v5::Label";
-                                                  Ty.path "alloc::alloc::Global"
-                                                ],
-                                              [],
-                                              [ Ty.path "usize" ],
-                                              "index_mut",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (| Pointer.Kind.MutRef, labels |);
-                                              M.cast (Ty.path "usize") (M.read (| loop_idx |))
-                                            ]
-                                          |)
-                                        |),
-                                        Value.mkStructRecord
-                                          "move_bytecode_verifier::control_flow_v5::Label::Loop"
-                                          []
-                                          []
-                                          [ ("last_continue", M.read (| last_continue |)) ]
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (Value.mkStructRecord
+                                            "move_bytecode_verifier::control_flow_v5::Label::Loop"
+                                            []
+                                            []
+                                            [ ("last_continue", M.read (| last_continue |)) ])),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (M.write (|
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_bytecode_verifier::control_flow_v5::Label"
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "core::ops::index::IndexMut",
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::Vec")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "move_bytecode_verifier::control_flow_v5::Label";
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ],
+                                                    [],
+                                                    [ Ty.path "usize" ],
+                                                    "index_mut",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (| Pointer.Kind.MutRef, labels |);
+                                                    M.cast (Ty.path "usize") (M.read (| loop_idx |))
+                                                  ]
+                                                |)
+                                              |),
+                                              rhs'
+                                            |)))
                                       |)))
                                 ]
                               |)))

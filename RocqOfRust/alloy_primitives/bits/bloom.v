@@ -1985,104 +1985,118 @@ Module bits.
                                                   |))
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              let β := index in
-                                              M.write (|
-                                                β,
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  BinOp.Wrap.bit_and,
-                                                  [
-                                                    M.read (| β |);
-                                                    M.read (|
-                                                      get_constant (|
-                                                        "alloy_primitives::bits::bloom::MASK",
-                                                        Ty.path "usize"
-                                                      |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.read (|
+                                                    get_constant (|
+                                                      "alloy_primitives::bits::bloom::MASK",
+                                                      Ty.path "usize"
                                                     |)
-                                                  ]
-                                                |)
-                                              |) in
-                                            let~ _ : Ty.tuple [] :=
-                                              let β :=
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ],
-                                                    M.get_trait_method (|
-                                                      "core::ops::index::IndexMut",
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "alloy_primitives::bits::fixed::FixedBytes")
-                                                        [ Value.Integer IntegerKind.Usize 256 ]
-                                                        [],
-                                                      [],
-                                                      [ Ty.path "usize" ],
-                                                      "index_mut",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.SubPointer.get_struct_tuple_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "alloy_primitives::bits::bloom::Bloom",
-                                                          0
-                                                        |)
-                                                      |);
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (let β := index in
+                                                    M.write (|
+                                                      β,
                                                       M.call_closure (|
                                                         Ty.path "usize",
-                                                        BinOp.Wrap.sub,
+                                                        BinOp.Wrap.bit_and,
+                                                        [ M.read (| β |); rhs' ]
+                                                      |)
+                                                    |)))
+                                              |) in
+                                            let~ _ : Ty.tuple [] :=
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
+                                                    Ty.path "u8",
+                                                    BinOp.Wrap.shl,
+                                                    [
+                                                      Value.Integer IntegerKind.U8 1;
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.rem,
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.sub,
-                                                            [
-                                                              M.read (|
-                                                                get_constant (|
-                                                                  "alloy_primitives::bits::bloom::BLOOM_SIZE_BYTES",
-                                                                  Ty.path "usize"
-                                                                |)
-                                                              |);
-                                                              Value.Integer IntegerKind.Usize 1
-                                                            ]
-                                                          |);
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.div,
-                                                            [
-                                                              M.read (| index |);
-                                                              Value.Integer IntegerKind.Usize 8
-                                                            ]
-                                                          |)
+                                                          M.read (| index |);
+                                                          Value.Integer IntegerKind.Usize 8
                                                         ]
                                                       |)
                                                     ]
-                                                  |)
-                                                |) in
-                                              M.write (|
-                                                β,
-                                                M.call_closure (|
-                                                  Ty.path "u8",
-                                                  BinOp.Wrap.bit_or,
-                                                  [
-                                                    M.read (| β |);
-                                                    M.call_closure (|
-                                                      Ty.path "u8",
-                                                      BinOp.Wrap.shl,
-                                                      [
-                                                        Value.Integer IntegerKind.U8 1;
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (let β :=
+                                                      M.deref (|
                                                         M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.rem,
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [ Ty.path "u8" ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::index::IndexMut",
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloy_primitives::bits::fixed::FixedBytes")
+                                                              [ Value.Integer IntegerKind.Usize 256
+                                                              ]
+                                                              [],
+                                                            [],
+                                                            [ Ty.path "usize" ],
+                                                            "index_mut",
+                                                            [],
+                                                            []
+                                                          |),
                                                           [
-                                                            M.read (| index |);
-                                                            Value.Integer IntegerKind.Usize 8
+                                                            M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.SubPointer.get_struct_tuple_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "alloy_primitives::bits::bloom::Bloom",
+                                                                0
+                                                              |)
+                                                            |);
+                                                            M.call_closure (|
+                                                              Ty.path "usize",
+                                                              BinOp.Wrap.sub,
+                                                              [
+                                                                M.call_closure (|
+                                                                  Ty.path "usize",
+                                                                  BinOp.Wrap.sub,
+                                                                  [
+                                                                    M.read (|
+                                                                      get_constant (|
+                                                                        "alloy_primitives::bits::bloom::BLOOM_SIZE_BYTES",
+                                                                        Ty.path "usize"
+                                                                      |)
+                                                                    |);
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      1
+                                                                  ]
+                                                                |);
+                                                                M.call_closure (|
+                                                                  Ty.path "usize",
+                                                                  BinOp.Wrap.div,
+                                                                  [
+                                                                    M.read (| index |);
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      8
+                                                                  ]
+                                                                |)
+                                                              ]
+                                                            |)
                                                           ]
                                                         |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
+                                                      |) in
+                                                    M.write (|
+                                                      β,
+                                                      M.call_closure (|
+                                                        Ty.path "u8",
+                                                        BinOp.Wrap.bit_or,
+                                                        [ M.read (| β |); rhs' ]
+                                                      |)
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)))
@@ -2463,79 +2477,89 @@ Module bits.
                                                 ]
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              let β :=
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "u8" ],
-                                                    M.get_trait_method (|
-                                                      "core::ops::index::IndexMut",
-                                                      Ty.path
-                                                        "alloy_primitives::bits::bloom::Bloom",
-                                                      [],
-                                                      [ Ty.path "usize" ],
-                                                      "index_mut",
-                                                      [],
-                                                      []
-                                                    |),
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
+                                                    Ty.path "u8",
+                                                    BinOp.Wrap.shl,
                                                     [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (| M.read (| self |) |)
-                                                      |);
+                                                      Value.Integer IntegerKind.U8 1;
                                                       M.call_closure (|
                                                         Ty.path "usize",
-                                                        BinOp.Wrap.sub,
+                                                        BinOp.Wrap.rem,
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.sub,
-                                                            [
-                                                              M.read (|
-                                                                get_constant (|
-                                                                  "alloy_primitives::bits::bloom::BLOOM_SIZE_BYTES",
-                                                                  Ty.path "usize"
-                                                                |)
-                                                              |);
-                                                              Value.Integer IntegerKind.Usize 1
-                                                            ]
-                                                          |);
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.div,
-                                                            [
-                                                              M.read (| bit |);
-                                                              Value.Integer IntegerKind.Usize 8
-                                                            ]
-                                                          |)
+                                                          M.read (| bit |);
+                                                          Value.Integer IntegerKind.Usize 8
                                                         ]
                                                       |)
                                                     ]
-                                                  |)
-                                                |) in
-                                              M.write (|
-                                                β,
-                                                M.call_closure (|
-                                                  Ty.path "u8",
-                                                  BinOp.Wrap.bit_or,
-                                                  [
-                                                    M.read (| β |);
-                                                    M.call_closure (|
-                                                      Ty.path "u8",
-                                                      BinOp.Wrap.shl,
-                                                      [
-                                                        Value.Integer IntegerKind.U8 1;
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (let β :=
+                                                      M.deref (|
                                                         M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.rem,
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [ Ty.path "u8" ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::index::IndexMut",
+                                                            Ty.path
+                                                              "alloy_primitives::bits::bloom::Bloom",
+                                                            [],
+                                                            [ Ty.path "usize" ],
+                                                            "index_mut",
+                                                            [],
+                                                            []
+                                                          |),
                                                           [
-                                                            M.read (| bit |);
-                                                            Value.Integer IntegerKind.Usize 8
+                                                            M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (| M.read (| self |) |)
+                                                            |);
+                                                            M.call_closure (|
+                                                              Ty.path "usize",
+                                                              BinOp.Wrap.sub,
+                                                              [
+                                                                M.call_closure (|
+                                                                  Ty.path "usize",
+                                                                  BinOp.Wrap.sub,
+                                                                  [
+                                                                    M.read (|
+                                                                      get_constant (|
+                                                                        "alloy_primitives::bits::bloom::BLOOM_SIZE_BYTES",
+                                                                        Ty.path "usize"
+                                                                      |)
+                                                                    |);
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      1
+                                                                  ]
+                                                                |);
+                                                                M.call_closure (|
+                                                                  Ty.path "usize",
+                                                                  BinOp.Wrap.div,
+                                                                  [
+                                                                    M.read (| bit |);
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      8
+                                                                  ]
+                                                                |)
+                                                              ]
+                                                            |)
                                                           ]
                                                         |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
+                                                      |) in
+                                                    M.write (|
+                                                      β,
+                                                      M.call_closure (|
+                                                        Ty.path "u8",
+                                                        BinOp.Wrap.bit_or,
+                                                        [ M.read (| β |); rhs' ]
+                                                      |)
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)))

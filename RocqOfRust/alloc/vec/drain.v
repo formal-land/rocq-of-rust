@@ -568,8 +568,12 @@ Module vec.
                               UnOp.not,
                               [
                                 M.read (|
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    T,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |)
                                 |)
@@ -1325,8 +1329,12 @@ Module vec.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=

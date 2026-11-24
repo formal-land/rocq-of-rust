@@ -4,7 +4,7 @@ This tutorial provides some examples and tips for using `rocq-of-rust`
 as well as a list of supported command line options and their
 description. The first part of the tutorial describes the cargo plugin
 version of `rocq-of-rust`, while the second part describes the
-standalone executable version. Note that this two versions of
+standalone executable version. Note that these two versions of
 `rocq-of-rust` support different sets of command line options. See our
 [build tutorial](./builds.md) for instructions on how to build either
 of those versions of `rocq-of-rust`.
@@ -14,18 +14,17 @@ of those versions of `rocq-of-rust`.
 - [Cargo plugin](#cargo-plugin)
   - [Example](#example-0)
   - [Tips](#tips-0)
-  - [Inteface](#interface-0)
+  - [Interface](#interface-0)
 - [Standalone executable](#standalone-executable)
   - [Example](#example-1)
   - [Tips](#tips-1)
-  - [Inteface](#interface-1)
+  - [Interface](#interface-1)
 
 ## Cargo plugin
 
 ### Example
 
-In any Rust project, generate a `Crate.v` file with the Rocq
-translation of the crate using this command:
+From a Cargo crate, generate one Rocq module per source file and a crate export index with this command.
 ```sh
 cargo rocq-of-rust
 ```
@@ -50,6 +49,10 @@ Options:
   Axiomatize the definitions
 - `-h`, `--help`
   Print help
+
+- `--with-json` also writes the translation as JSON.
+- `--configuration-file` and `--generate-reorder` are deprecated and ignored.
+  Supplying either option prints a warning.
 
 ## Standalone executable
 
@@ -84,7 +87,13 @@ Options:
 Usage: `rocq-of-rust translate [OPTIONS] --path <PATH>`
 
 Options:
-- `-p`, `--path <PATH>`           Sets a path to rust file
+- `-p`, `--path <PATH>`           Rust source file or directory with one conventional crate root
 - `--axiomatize`                  Axiomatize the definitions
 - `--output-path <output_path>`   Output path where to place the translation `[default: rocq_translation]`
 - `-h`, `--help`                  Print help
+
+
+A directory input must contain exactly one of `src/lib.rs`, `src/main.rs`, `lib.rs`,
+and `main.rs`. When a package has both a library and a binary, pass the desired
+source file explicitly. The translator creates the output directory and writes
+each source module to its corresponding relative path.

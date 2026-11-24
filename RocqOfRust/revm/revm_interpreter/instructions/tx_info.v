@@ -971,35 +971,17 @@ Module instructions.
                                 ]
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| index |) |),
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    [],
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "core::option::Option")
-                                      []
+                                      (Ty.path "ruint::Uint")
                                       [
-                                        Ty.apply
-                                          (Ty.path "ruint::Uint")
-                                          [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
-                                          []
-                                      ],
-                                    "unwrap_or_default",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.call_closure (|
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      [],
+                                    M.get_associated_function (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
@@ -1012,29 +994,50 @@ Module instructions.
                                             ]
                                             []
                                         ],
-                                      M.get_trait_method (|
-                                        "revm_context_interface::host::Host",
-                                        Ty.apply (Ty.path "&mut") [] [ H ],
-                                        [],
-                                        [],
-                                        "blob_hash",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            context,
-                                            "revm_interpreter::instruction_context::InstructionContext",
-                                            "host"
-                                          |)
-                                        |);
-                                        M.read (| i |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
+                                      "unwrap_or_default",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              []
+                                          ],
+                                        M.get_trait_method (|
+                                          "revm_context_interface::host::Host",
+                                          Ty.apply (Ty.path "&mut") [] [ H ],
+                                          [],
+                                          [],
+                                          "blob_hash",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              context,
+                                              "revm_interpreter::instruction_context::InstructionContext",
+                                              "host"
+                                            |)
+                                          |);
+                                          M.read (| i |)
+                                        ]
+                                      |)
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| index |) |), rhs' |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)))

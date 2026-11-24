@@ -55,7 +55,14 @@ Module Evaluate.
       { exact Execution.OutOfFuel. }
       { exact Execution.Unsupported. }
     }
-    { exact Execution.Unsupported. }
+    { destruct (@eval fuel R A e stack) as [[output next]| |].
+      { destruct output as [iteration|exception].
+        { exact (@eval fuel R Output (LinkM.Loop e k) next). }
+        { exact (@eval fuel R Output (k (Output.Exception exception)) next). }
+      }
+      { exact Execution.OutOfFuel. }
+      { exact Execution.Unsupported. }
+    }
     { exact (
         if cond then
           @eval fuel R Output e1 stack

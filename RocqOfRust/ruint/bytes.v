@@ -878,45 +878,61 @@ Module bytes.
                                     M.SubPointer.get_array_field (| bytes, M.read (| i |) |)
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_array_field (| bytes, M.read (| i |) |),
-                                    M.read (|
-                                      M.SubPointer.get_array_field (|
-                                        bytes,
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.sub,
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.sub,
-                                              [ M.read (| len |); Value.Integer IntegerKind.Usize 1
-                                              ]
-                                            |);
-                                            M.read (| i |)
-                                          ]
-                                        |)
-                                      |)
-                                    |)
-                                  |) in
-                                let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_array_field (|
-                                      bytes,
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        BinOp.Wrap.sub,
-                                        [
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.read (|
+                                        M.SubPointer.get_array_field (|
+                                          bytes,
                                           M.call_closure (|
                                             Ty.path "usize",
                                             BinOp.Wrap.sub,
-                                            [ M.read (| len |); Value.Integer IntegerKind.Usize 1 ]
-                                          |);
-                                          M.read (| i |)
-                                        ]
-                                      |)
-                                    |),
-                                    M.read (| tmp |)
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.sub,
+                                                [
+                                                  M.read (| len |);
+                                                  Value.Integer IntegerKind.Usize 1
+                                                ]
+                                              |);
+                                              M.read (| i |)
+                                            ]
+                                          |)
+                                        |)
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_array_field (| bytes, M.read (| i |) |),
+                                          rhs'
+                                        |)))
+                                  |) in
+                                let~ _ : Ty.tuple [] :=
+                                  M.let_ (|
+                                    ltac:(M.monadic (M.read (| tmp |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_array_field (|
+                                            bytes,
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.sub,
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.sub,
+                                                  [
+                                                    M.read (| len |);
+                                                    Value.Integer IntegerKind.Usize 1
+                                                  ]
+                                                |);
+                                                M.read (| i |)
+                                              ]
+                                            |)
+                                          |),
+                                          rhs'
+                                        |)))
                                   |) in
                                 let~ _ : Ty.tuple [] :=
                                   let β := i in
@@ -1581,98 +1597,104 @@ Module bytes.
                                                   |) in
                                                 M.read (|
                                                   let~ _ : Ty.tuple [] :=
-                                                    M.write (|
-                                                      M.SubPointer.get_array_field (|
-                                                        limbs,
-                                                        M.read (| i |)
-                                                      |),
-                                                      M.call_closure (|
-                                                        Ty.path "u64",
-                                                        M.get_associated_function (|
+                                                    M.let_ (|
+                                                      ltac:(M.monadic
+                                                        (M.call_closure (|
                                                           Ty.path "u64",
-                                                          "from_be_bytes",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.read (|
-                                                            M.deref (|
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path "*const")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "array")
-                                                                      [
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          8
-                                                                      ]
-                                                                      [ Ty.path "u8" ]
-                                                                  ],
-                                                                M.get_associated_function (|
+                                                          M.get_associated_function (|
+                                                            Ty.path "u64",
+                                                            "from_be_bytes",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.read (|
+                                                              M.deref (|
+                                                                M.call_closure (|
                                                                   Ty.apply
                                                                     (Ty.path "*const")
                                                                     []
-                                                                    [ Ty.path "u8" ],
-                                                                  "cast",
-                                                                  [],
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "array")
-                                                                      [
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          8
-                                                                      ]
-                                                                      [ Ty.path "u8" ]
-                                                                  ]
-                                                                |),
-                                                                [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "*const")
-                                                                      []
-                                                                      [ Ty.path "u8" ],
-                                                                    M.get_associated_function (|
-                                                                      Ty.apply
-                                                                        (Ty.path "*const")
-                                                                        []
-                                                                        [ Ty.path "u8" ],
-                                                                      "sub",
-                                                                      [],
-                                                                      []
-                                                                    |),
                                                                     [
-                                                                      M.read (| end_ |);
-                                                                      M.call_closure (|
-                                                                        Ty.path "usize",
-                                                                        BinOp.Wrap.mul,
+                                                                      Ty.apply
+                                                                        (Ty.path "array")
                                                                         [
-                                                                          M.call_closure (|
-                                                                            Ty.path "usize",
-                                                                            BinOp.Wrap.add,
-                                                                            [
-                                                                              M.read (| i |);
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                1
-                                                                            ]
-                                                                          |);
                                                                           Value.Integer
                                                                             IntegerKind.Usize
                                                                             8
                                                                         ]
-                                                                      |)
+                                                                        [ Ty.path "u8" ]
+                                                                    ],
+                                                                  M.get_associated_function (|
+                                                                    Ty.apply
+                                                                      (Ty.path "*const")
+                                                                      []
+                                                                      [ Ty.path "u8" ],
+                                                                    "cast",
+                                                                    [],
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "array")
+                                                                        [
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            8
+                                                                        ]
+                                                                        [ Ty.path "u8" ]
                                                                     ]
-                                                                  |)
-                                                                ]
+                                                                  |),
+                                                                  [
+                                                                    M.call_closure (|
+                                                                      Ty.apply
+                                                                        (Ty.path "*const")
+                                                                        []
+                                                                        [ Ty.path "u8" ],
+                                                                      M.get_associated_function (|
+                                                                        Ty.apply
+                                                                          (Ty.path "*const")
+                                                                          []
+                                                                          [ Ty.path "u8" ],
+                                                                        "sub",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.read (| end_ |);
+                                                                        M.call_closure (|
+                                                                          Ty.path "usize",
+                                                                          BinOp.Wrap.mul,
+                                                                          [
+                                                                            M.call_closure (|
+                                                                              Ty.path "usize",
+                                                                              BinOp.Wrap.add,
+                                                                              [
+                                                                                M.read (| i |);
+                                                                                Value.Integer
+                                                                                  IntegerKind.Usize
+                                                                                  1
+                                                                              ]
+                                                                            |);
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              8
+                                                                          ]
+                                                                        |)
+                                                                      ]
+                                                                    |)
+                                                                  ]
+                                                                |)
                                                               |)
                                                             |)
-                                                          |)
-                                                        ]
-                                                      |)
+                                                          ]
+                                                        |))),
+                                                      fun rhs' =>
+                                                        ltac:(M.monadic
+                                                          (M.write (|
+                                                            M.SubPointer.get_array_field (|
+                                                              limbs,
+                                                              M.read (| i |)
+                                                            |),
+                                                            rhs'
+                                                          |)))
                                                     |) in
                                                   let~ _ : Ty.tuple [] :=
                                                     let β := i in
@@ -1798,53 +1820,59 @@ Module bytes.
                                         |)
                                       |) in
                                     let~ _ : Ty.tuple [] :=
-                                      let β :=
-                                        M.SubPointer.get_array_field (|
-                                          limbs,
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.div,
-                                            [ M.read (| i |); Value.Integer IntegerKind.Usize 8 ]
-                                          |)
-                                        |) in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          BinOp.Wrap.add,
-                                          [
-                                            M.read (| β |);
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              BinOp.Wrap.shl,
-                                              [
-                                                M.cast
-                                                  (Ty.path "u64")
-                                                  (M.read (|
-                                                    M.SubPointer.get_array_field (|
-                                                      M.deref (| M.read (| bytes |) |),
-                                                      M.read (| c |)
-                                                    |)
-                                                  |));
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "u64",
+                                            BinOp.Wrap.shl,
+                                            [
+                                              M.cast
+                                                (Ty.path "u64")
+                                                (M.read (|
+                                                  M.SubPointer.get_array_field (|
+                                                    M.deref (| M.read (| bytes |) |),
+                                                    M.read (| c |)
+                                                  |)
+                                                |));
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.mul,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.rem,
+                                                    [
+                                                      M.read (| i |);
+                                                      Value.Integer IntegerKind.Usize 8
+                                                    ]
+                                                  |);
+                                                  Value.Integer IntegerKind.Usize 8
+                                                ]
+                                              |)
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β :=
+                                              M.SubPointer.get_array_field (|
+                                                limbs,
                                                 M.call_closure (|
                                                   Ty.path "usize",
-                                                  BinOp.Wrap.mul,
+                                                  BinOp.Wrap.div,
                                                   [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.rem,
-                                                      [
-                                                        M.read (| i |);
-                                                        Value.Integer IntegerKind.Usize 8
-                                                      ]
-                                                    |);
+                                                    M.read (| i |);
                                                     Value.Integer IntegerKind.Usize 8
                                                   ]
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
+                                              |) in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
                                       let β := i in
@@ -2402,111 +2430,117 @@ Module bytes.
                                                   |) in
                                                 M.read (|
                                                   let~ _ : Ty.tuple [] :=
-                                                    M.write (|
-                                                      M.SubPointer.get_array_field (|
-                                                        limbs,
-                                                        M.read (| i |)
-                                                      |),
-                                                      M.call_closure (|
-                                                        Ty.path "u64",
-                                                        M.get_associated_function (|
+                                                    M.let_ (|
+                                                      ltac:(M.monadic
+                                                        (M.call_closure (|
                                                           Ty.path "u64",
-                                                          "from_le_bytes",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.read (|
-                                                            M.deref (|
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path "*const")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "array")
-                                                                      [
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          8
-                                                                      ]
-                                                                      [ Ty.path "u8" ]
-                                                                  ],
-                                                                M.get_associated_function (|
+                                                          M.get_associated_function (|
+                                                            Ty.path "u64",
+                                                            "from_le_bytes",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.read (|
+                                                              M.deref (|
+                                                                M.call_closure (|
                                                                   Ty.apply
                                                                     (Ty.path "*const")
                                                                     []
-                                                                    [ Ty.path "u8" ],
-                                                                  "cast",
-                                                                  [],
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "array")
-                                                                      [
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          8
-                                                                      ]
-                                                                      [ Ty.path "u8" ]
-                                                                  ]
-                                                                |),
-                                                                [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "*const")
-                                                                      []
-                                                                      [ Ty.path "u8" ],
-                                                                    M.get_associated_function (|
-                                                                      Ty.apply
-                                                                        (Ty.path "*const")
-                                                                        []
-                                                                        [ Ty.path "u8" ],
-                                                                      "add",
-                                                                      [],
-                                                                      []
-                                                                    |),
                                                                     [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
-                                                                          (Ty.path "*const")
-                                                                          []
-                                                                          [ Ty.path "u8" ],
-                                                                        M.get_associated_function (|
-                                                                          Ty.apply
-                                                                            (Ty.path "slice")
-                                                                            []
-                                                                            [ Ty.path "u8" ],
-                                                                          "as_ptr",
-                                                                          [],
-                                                                          []
-                                                                        |),
+                                                                      Ty.apply
+                                                                        (Ty.path "array")
                                                                         [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.Ref,
-                                                                            M.deref (|
-                                                                              M.read (| bytes |)
-                                                                            |)
-                                                                          |)
-                                                                        ]
-                                                                      |);
-                                                                      M.call_closure (|
-                                                                        Ty.path "usize",
-                                                                        BinOp.Wrap.mul,
-                                                                        [
-                                                                          M.read (| i |);
                                                                           Value.Integer
                                                                             IntegerKind.Usize
                                                                             8
                                                                         ]
-                                                                      |)
+                                                                        [ Ty.path "u8" ]
+                                                                    ],
+                                                                  M.get_associated_function (|
+                                                                    Ty.apply
+                                                                      (Ty.path "*const")
+                                                                      []
+                                                                      [ Ty.path "u8" ],
+                                                                    "cast",
+                                                                    [],
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "array")
+                                                                        [
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            8
+                                                                        ]
+                                                                        [ Ty.path "u8" ]
                                                                     ]
-                                                                  |)
-                                                                ]
+                                                                  |),
+                                                                  [
+                                                                    M.call_closure (|
+                                                                      Ty.apply
+                                                                        (Ty.path "*const")
+                                                                        []
+                                                                        [ Ty.path "u8" ],
+                                                                      M.get_associated_function (|
+                                                                        Ty.apply
+                                                                          (Ty.path "*const")
+                                                                          []
+                                                                          [ Ty.path "u8" ],
+                                                                        "add",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path "*const")
+                                                                            []
+                                                                            [ Ty.path "u8" ],
+                                                                          M.get_associated_function (|
+                                                                            Ty.apply
+                                                                              (Ty.path "slice")
+                                                                              []
+                                                                              [ Ty.path "u8" ],
+                                                                            "as_ptr",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.deref (|
+                                                                                M.read (| bytes |)
+                                                                              |)
+                                                                            |)
+                                                                          ]
+                                                                        |);
+                                                                        M.call_closure (|
+                                                                          Ty.path "usize",
+                                                                          BinOp.Wrap.mul,
+                                                                          [
+                                                                            M.read (| i |);
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              8
+                                                                          ]
+                                                                        |)
+                                                                      ]
+                                                                    |)
+                                                                  ]
+                                                                |)
                                                               |)
                                                             |)
-                                                          |)
-                                                        ]
-                                                      |)
+                                                          ]
+                                                        |))),
+                                                      fun rhs' =>
+                                                        ltac:(M.monadic
+                                                          (M.write (|
+                                                            M.SubPointer.get_array_field (|
+                                                              limbs,
+                                                              M.read (| i |)
+                                                            |),
+                                                            rhs'
+                                                          |)))
                                                     |) in
                                                   let~ _ : Ty.tuple [] :=
                                                     let β := i in
@@ -2611,53 +2645,59 @@ Module bytes.
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      let β :=
-                                        M.SubPointer.get_array_field (|
-                                          limbs,
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.div,
-                                            [ M.read (| i |); Value.Integer IntegerKind.Usize 8 ]
-                                          |)
-                                        |) in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u64",
-                                          BinOp.Wrap.add,
-                                          [
-                                            M.read (| β |);
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              BinOp.Wrap.shl,
-                                              [
-                                                M.cast
-                                                  (Ty.path "u64")
-                                                  (M.read (|
-                                                    M.SubPointer.get_array_field (|
-                                                      M.deref (| M.read (| bytes |) |),
-                                                      M.read (| i |)
-                                                    |)
-                                                  |));
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "u64",
+                                            BinOp.Wrap.shl,
+                                            [
+                                              M.cast
+                                                (Ty.path "u64")
+                                                (M.read (|
+                                                  M.SubPointer.get_array_field (|
+                                                    M.deref (| M.read (| bytes |) |),
+                                                    M.read (| i |)
+                                                  |)
+                                                |));
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.mul,
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.rem,
+                                                    [
+                                                      M.read (| i |);
+                                                      Value.Integer IntegerKind.Usize 8
+                                                    ]
+                                                  |);
+                                                  Value.Integer IntegerKind.Usize 8
+                                                ]
+                                              |)
+                                            ]
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β :=
+                                              M.SubPointer.get_array_field (|
+                                                limbs,
                                                 M.call_closure (|
                                                   Ty.path "usize",
-                                                  BinOp.Wrap.mul,
+                                                  BinOp.Wrap.div,
                                                   [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.rem,
-                                                      [
-                                                        M.read (| i |);
-                                                        Value.Integer IntegerKind.Usize 8
-                                                      ]
-                                                    |);
+                                                    M.read (| i |);
                                                     Value.Integer IntegerKind.Usize 8
                                                   ]
                                                 |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
+                                              |) in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
                                       let β := i in

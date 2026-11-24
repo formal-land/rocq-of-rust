@@ -1,14 +1,17 @@
 #![feature(rustc_private)]
 
 use clap::*;
-use rocq_of_rust_lib::options::Args;
+use rocq_of_rust_lib::{callbacks::CARGO_SELECTION, options::Args};
 use std::{
     env,
+    hash::{DefaultHasher, Hash, Hasher},
     process::{exit, Command},
 };
 
 fn main() {
     let args = Args::parse_from(std::env::args().skip(1));
+
+    args.rocq_of_rust.warn_deprecated();
 
     let rocq_of_rust_rustc_path = std::env::current_exe()
         .expect("current executable path invalid")
@@ -21,9 +24,15 @@ fn main() {
         "check"
     };
     let mut cmd = Command::new(cargo_path);
+    // Cargo can reuse a workspace member's dependency check when it later
+    // becomes a primary package. Make that change visible in rustc dep-info.
+    let directory = env::current_dir().expect("current working directory");
+    let mut selection = DefaultHasher::new();
+    (directory, &args.rust_flags).hash(&mut selection);
+    cmd.env(CARGO_SELECTION, selection.finish().to_string());
     cmd.arg(cargo_cmd)
         .args(args.rust_flags)
-        .env("RUSTC_WRAPPER", rocq_of_rust_rustc_path)
+        .env("RUSTC_WORKSPACE_WRAPPER", rocq_of_rust_rustc_path)
         .env("CARGO_ROCQ_OF_RUST", "1");
 
     cmd.env(

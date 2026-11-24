@@ -1348,8 +1348,12 @@ Module iter.
             : M :=
           let Self : Ty.t := Self I in
           ltac:(M.monadic
-            (get_constant (|
-              "core::iter::adapters::zip::TrustedRandomAccessNoCoerce::MAY_HAVE_SIDE_EFFECT",
+            (get_trait_constant (|
+              "core::iter::adapters::zip::TrustedRandomAccessNoCoerce",
+              I,
+              [],
+              [],
+              "MAY_HAVE_SIDE_EFFECT",
               Ty.path "bool"
             |))).
         
@@ -1751,13 +1755,19 @@ Module iter.
                                     |)
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::iter::adapters::fuse::Fuse",
-                                      "iter"
-                                    |),
-                                    Value.StructTuple "core::option::Option::None" [] [ I ] []
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (Value.StructTuple "core::option::Option::None" [] [ I ] [])),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::iter::adapters::fuse::Fuse",
+                                            "iter"
+                                          |),
+                                          rhs'
+                                        |)))
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                               |)));
@@ -2340,13 +2350,19 @@ Module iter.
                                     |)
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::iter::adapters::fuse::Fuse",
-                                      "iter"
-                                    |),
-                                    Value.StructTuple "core::option::Option::None" [] [ I ] []
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (Value.StructTuple "core::option::Option::None" [] [ I ] [])),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::iter::adapters::fuse::Fuse",
+                                            "iter"
+                                          |),
+                                          rhs'
+                                        |)))
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                               |)));
@@ -4468,9 +4484,12 @@ Module iter.
                               is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.deref (| M.read (| opt |) |),
-                                  Value.StructTuple "core::option::Option::None" [] [ T ] []
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (Value.StructTuple "core::option::Option::None" [] [ T ] [])),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (| M.deref (| M.read (| opt |) |), rhs' |)))
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
                             |)));

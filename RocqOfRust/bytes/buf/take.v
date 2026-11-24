@@ -294,13 +294,18 @@ Module buf.
                 self
               |) in
             let lim := M.alloc (| Ty.path "usize", lim |) in
-            M.write (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "bytes::buf::take::Take",
-                "limit"
-              |),
-              M.read (| lim |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| lim |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "bytes::buf::take::Take",
+                      "limit"
+                    |),
+                    rhs'
+                  |)))
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -562,19 +567,24 @@ Module buf.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                let β :=
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "bytes::buf::take::Take",
-                    "limit"
-                  |) in
-                M.write (|
-                  β,
-                  M.call_closure (|
-                    Ty.path "usize",
-                    BinOp.Wrap.sub,
-                    [ M.read (| β |); M.read (| cnt |) ]
-                  |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| cnt |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (let β :=
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "bytes::buf::take::Take",
+                          "limit"
+                        |) in
+                      M.write (|
+                        β,
+                        M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.sub,
+                          [ M.read (| β |); rhs' ]
+                        |)
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -686,19 +696,24 @@ Module buf.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                let β :=
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "bytes::buf::take::Take",
-                    "limit"
-                  |) in
-                M.write (|
-                  β,
-                  M.call_closure (|
-                    Ty.path "usize",
-                    BinOp.Wrap.sub,
-                    [ M.read (| β |); M.read (| len |) ]
-                  |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| len |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (let β :=
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "bytes::buf::take::Take",
+                          "limit"
+                        |) in
+                      M.write (|
+                        β,
+                        M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.sub,
+                          [ M.read (| β |); rhs' ]
+                        |)
+                      |)))
                 |) in
               r
             |)))

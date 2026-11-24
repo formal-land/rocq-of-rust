@@ -2467,22 +2467,25 @@ Module time.
                                     |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      let β := nanos in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u32",
-                                          BinOp.Wrap.sub,
-                                          [
-                                            M.read (| β |);
-                                            M.read (|
-                                              get_constant (|
-                                                "core::time::NANOS_PER_SEC",
-                                                Ty.path "u32"
-                                              |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.read (|
+                                            get_constant (|
+                                              "core::time::NANOS_PER_SEC",
+                                              Ty.path "u32"
                                             |)
-                                          ]
-                                        |)
+                                          |))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := nanos in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u32",
+                                                BinOp.Wrap.sub,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     M.alloc (|
                                       Ty.tuple [],
@@ -3646,49 +3649,52 @@ Module time.
                                   let extra_nanos := M.copy (| Ty.path "u32", γ0_1 |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
-                                      let β := nanos in
-                                      M.write (|
-                                        β,
-                                        M.call_closure (|
-                                          Ty.path "u32",
-                                          BinOp.Wrap.add,
-                                          [
-                                            M.read (| β |);
-                                            M.cast
-                                              (Ty.path "u32")
-                                              (M.call_closure (|
-                                                Ty.path "u64",
-                                                BinOp.Wrap.div,
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.path "u64",
-                                                    BinOp.Wrap.add,
-                                                    [
-                                                      M.call_closure (|
-                                                        Ty.path "u64",
-                                                        BinOp.Wrap.mul,
-                                                        [
-                                                          M.read (| extra_secs |);
-                                                          M.cast
-                                                            (Ty.path "u64")
-                                                            (M.read (|
-                                                              get_constant (|
-                                                                "core::time::NANOS_PER_SEC",
-                                                                Ty.path "u32"
-                                                              |)
-                                                            |))
-                                                        ]
-                                                      |);
-                                                      M.cast
-                                                        (Ty.path "u64")
-                                                        (M.read (| extra_nanos |))
-                                                    ]
-                                                  |);
-                                                  M.cast (Ty.path "u64") (M.read (| rhs |))
-                                                ]
-                                              |))
-                                          ]
-                                        |)
+                                      M.let_ (|
+                                        ltac:(M.monadic
+                                          (M.cast
+                                            (Ty.path "u32")
+                                            (M.call_closure (|
+                                              Ty.path "u64",
+                                              BinOp.Wrap.div,
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "u64",
+                                                  BinOp.Wrap.add,
+                                                  [
+                                                    M.call_closure (|
+                                                      Ty.path "u64",
+                                                      BinOp.Wrap.mul,
+                                                      [
+                                                        M.read (| extra_secs |);
+                                                        M.cast
+                                                          (Ty.path "u64")
+                                                          (M.read (|
+                                                            get_constant (|
+                                                              "core::time::NANOS_PER_SEC",
+                                                              Ty.path "u32"
+                                                            |)
+                                                          |))
+                                                      ]
+                                                    |);
+                                                    M.cast
+                                                      (Ty.path "u64")
+                                                      (M.read (| extra_nanos |))
+                                                  ]
+                                                |);
+                                                M.cast (Ty.path "u64") (M.read (| rhs |))
+                                              ]
+                                            |)))),
+                                        fun rhs' =>
+                                          ltac:(M.monadic
+                                            (let β := nanos in
+                                            M.write (|
+                                              β,
+                                              M.call_closure (|
+                                                Ty.path "u32",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| β |); rhs' ]
+                                              |)
+                                            |)))
                                       |) in
                                     let~ _ : Ty.tuple [] :=
                                       M.match_operator (|
@@ -4786,7 +4792,14 @@ Module time.
                               M.call_closure (|
                                 Ty.path "bool",
                                 BinOp.lt,
-                                [ M.read (| secs |); M.read (| UnsupportedLiteral |) ]
+                                [
+                                  M.read (| secs |);
+                                  M.read (|
+                                    M.impossible (|
+                                      "[ROR003] floating-point literal in time::Duration::try_from_secs_f32"
+                                    |)
+                                  |)
+                                ]
                               |)
                             |) in
                           let _ :=
@@ -5656,7 +5669,14 @@ Module time.
                               M.call_closure (|
                                 Ty.path "bool",
                                 BinOp.lt,
-                                [ M.read (| secs |); M.read (| UnsupportedLiteral |) ]
+                                [
+                                  M.read (| secs |);
+                                  M.read (|
+                                    M.impossible (|
+                                      "[ROR003] floating-point literal in time::Duration::try_from_secs_f64"
+                                    |)
+                                  |)
+                                ]
                               |)
                             |) in
                           let _ :=
@@ -6561,21 +6581,22 @@ Module time.
           let rhs := M.alloc (| Ty.path "core::time::Duration", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.path "core::time::Duration",
-                  M.get_trait_method (|
-                    "core::ops::arith::Add",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.path "core::time::Duration",
-                    [],
-                    [ Ty.path "core::time::Duration" ],
-                    "add",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::arith::Add",
+                      Ty.path "core::time::Duration",
+                      [],
+                      [ Ty.path "core::time::Duration" ],
+                      "add",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -6662,21 +6683,22 @@ Module time.
           let rhs := M.alloc (| Ty.path "core::time::Duration", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.path "core::time::Duration",
-                  M.get_trait_method (|
-                    "core::ops::arith::Sub",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.path "core::time::Duration",
-                    [],
-                    [ Ty.path "core::time::Duration" ],
-                    "sub",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::arith::Sub",
+                      Ty.path "core::time::Duration",
+                      [],
+                      [ Ty.path "core::time::Duration" ],
+                      "sub",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -6805,21 +6827,22 @@ Module time.
           let rhs := M.alloc (| Ty.path "u32", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.path "core::time::Duration",
-                  M.get_trait_method (|
-                    "core::ops::arith::Mul",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.path "core::time::Duration",
-                    [],
-                    [ Ty.path "u32" ],
-                    "mul",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::arith::Mul",
+                      Ty.path "core::time::Duration",
+                      [],
+                      [ Ty.path "u32" ],
+                      "mul",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -6906,21 +6929,22 @@ Module time.
           let rhs := M.alloc (| Ty.path "u32", rhs |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| self |) |),
-                M.call_closure (|
-                  Ty.path "core::time::Duration",
-                  M.get_trait_method (|
-                    "core::ops::arith::Div",
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.path "core::time::Duration",
-                    [],
-                    [ Ty.path "u32" ],
-                    "div",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
-                |)
+                    M.get_trait_method (|
+                      "core::ops::arith::Div",
+                      Ty.path "core::time::Duration",
+                      [],
+                      [ Ty.path "u32" ],
+                      "div",
+                      [],
+                      []
+                    |),
+                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

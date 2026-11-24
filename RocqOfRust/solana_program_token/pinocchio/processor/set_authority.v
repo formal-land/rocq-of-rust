@@ -877,8 +877,13 @@ Module processor.
                                                     ]
                                                   |);
                                                   M.read (|
-                                                    get_constant (|
-                                                      "pinocchio_token_interface::state::Transmutable::LEN",
+                                                    get_trait_constant (|
+                                                      "pinocchio_token_interface::state::Transmutable",
+                                                      Ty.path
+                                                        "pinocchio_token_interface::state::account::Account",
+                                                      [],
+                                                      [],
+                                                      "LEN",
                                                       Ty.path "usize"
                                                     |)
                                                   |)
@@ -1595,19 +1600,27 @@ Module processor.
                                                                     |) in
                                                                   M.read (|
                                                                     let~ _ : Ty.tuple [] :=
-                                                                      M.write (|
-                                                                        M.SubPointer.get_struct_record_field (|
-                                                                          M.deref (|
-                                                                            M.read (| account |)
-                                                                          |),
-                                                                          "pinocchio_token_interface::state::account::Account",
-                                                                          "owner"
-                                                                        |),
-                                                                        M.read (|
-                                                                          M.deref (|
-                                                                            M.read (| authority |)
-                                                                          |)
-                                                                        |)
+                                                                      M.let_ (|
+                                                                        ltac:(M.monadic
+                                                                          (M.read (|
+                                                                            M.deref (|
+                                                                              M.read (| authority |)
+                                                                            |)
+                                                                          |))),
+                                                                        fun rhs' =>
+                                                                          ltac:(M.monadic
+                                                                            (M.write (|
+                                                                              M.SubPointer.get_struct_record_field (|
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    account
+                                                                                  |)
+                                                                                |),
+                                                                                "pinocchio_token_interface::state::account::Account",
+                                                                                "owner"
+                                                                              |),
+                                                                              rhs'
+                                                                            |)))
                                                                       |) in
                                                                     M.alloc (|
                                                                       Ty.tuple [],
@@ -2232,8 +2245,13 @@ Module processor.
                                                             ]
                                                           |);
                                                           M.read (|
-                                                            get_constant (|
-                                                              "pinocchio_token_interface::state::Transmutable::LEN",
+                                                            get_trait_constant (|
+                                                              "pinocchio_token_interface::state::Transmutable",
+                                                              Ty.path
+                                                                "pinocchio_token_interface::state::mint::Mint",
+                                                              [],
+                                                              [],
+                                                              "LEN",
                                                               Ty.path "usize"
                                                             |)
                                                           |)

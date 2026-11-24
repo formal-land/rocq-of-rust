@@ -2189,8 +2189,12 @@ Module iter.
             : M :=
           let Self : Ty.t := Self I P in
           ltac:(M.monadic
-            (get_constant (|
-              "core::iter::traits::marker::InPlaceIterable::EXPAND_BY",
+            (get_trait_constant (|
+              "core::iter::traits::marker::InPlaceIterable",
+              I,
+              [],
+              [],
+              "EXPAND_BY",
               Ty.apply
                 (Ty.path "core::option::Option")
                 []
@@ -2210,8 +2214,12 @@ Module iter.
             : M :=
           let Self : Ty.t := Self I P in
           ltac:(M.monadic
-            (get_constant (|
-              "core::iter::traits::marker::InPlaceIterable::MERGE_BY",
+            (get_trait_constant (|
+              "core::iter::traits::marker::InPlaceIterable",
+              I,
+              [],
+              [],
+              "MERGE_BY",
               Ty.apply
                 (Ty.path "core::option::Option")
                 []

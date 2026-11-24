@@ -656,35 +656,17 @@ Module instructions.
                               |) in
                             M.alloc (|
                               Ty.tuple [],
-                              M.write (|
-                                M.deref (| M.read (| top |) |),
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    [],
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "core::option::Option")
-                                      []
+                                      (Ty.path "ruint::Uint")
                                       [
-                                        Ty.apply
-                                          (Ty.path "ruint::Uint")
-                                          [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
-                                          []
-                                      ],
-                                    "unwrap",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.call_closure (|
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      [],
+                                    M.get_associated_function (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
@@ -697,85 +679,93 @@ Module instructions.
                                             ]
                                             []
                                         ],
-                                      M.get_associated_function (|
+                                      "unwrap",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "ruint::Uint")
+                                          (Ty.path "core::option::Option")
+                                          []
                                           [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
-                                          [],
-                                        "try_from_be_slice",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                              M.get_trait_method (|
-                                                "core::convert::AsRef",
-                                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                                [],
-                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                                "as_ref",
-                                                [],
-                                                []
-                                              |),
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              []
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            [],
+                                          "try_from_be_slice",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "core::convert::AsRef",
+                                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                                  [],
+                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                  ],
+                                                  "as_ref",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "slice")
+                                                              []
+                                                              [ Ty.path "u8" ]
+                                                          ],
+                                                        M.get_trait_method (|
+                                                          "core::ops::deref::Deref",
+                                                          Ty.associated_in_trait
+                                                            "revm_interpreter::interpreter_types::MemoryTr"
+                                                            []
+                                                            []
+                                                            (Ty.associated_in_trait
+                                                              "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                              []
+                                                              []
+                                                              WIRE
+                                                              "Memory")
+                                                            "{{anon_assoc}}",
+                                                          [],
+                                                          [],
+                                                          "deref",
+                                                          [],
+                                                          []
+                                                        |),
                                                         [
-                                                          Ty.apply
-                                                            (Ty.path "slice")
-                                                            []
-                                                            [ Ty.path "u8" ]
-                                                        ],
-                                                      M.get_trait_method (|
-                                                        "core::ops::deref::Deref",
-                                                        Ty.associated_in_trait
-                                                          "revm_interpreter::interpreter_types::MemoryTr"
-                                                          []
-                                                          []
-                                                          (Ty.associated_in_trait
-                                                            "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                            []
-                                                            []
-                                                            WIRE
-                                                            "Memory")
-                                                          "{{anon_assoc}}",
-                                                        [],
-                                                        [],
-                                                        "deref",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.alloc (|
-                                                            Ty.associated_in_trait
-                                                              "revm_interpreter::interpreter_types::MemoryTr"
-                                                              []
-                                                              []
-                                                              (Ty.associated_in_trait
-                                                                "revm_interpreter::interpreter_types::InterpreterTypes"
-                                                                []
-                                                                []
-                                                                WIRE
-                                                                "Memory")
-                                                              "{{anon_assoc}}",
-                                                            M.call_closure (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.alloc (|
                                                               Ty.associated_in_trait
                                                                 "revm_interpreter::interpreter_types::MemoryTr"
                                                                 []
@@ -787,55 +777,70 @@ Module instructions.
                                                                   WIRE
                                                                   "Memory")
                                                                 "{{anon_assoc}}",
-                                                              M.get_trait_method (|
-                                                                "revm_interpreter::interpreter_types::MemoryTr",
+                                                              M.call_closure (|
                                                                 Ty.associated_in_trait
-                                                                  "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                                  "revm_interpreter::interpreter_types::MemoryTr"
                                                                   []
                                                                   []
-                                                                  WIRE
-                                                                  "Memory",
-                                                                [],
-                                                                [],
-                                                                "slice_len",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.SubPointer.get_struct_record_field (|
-                                                                    M.deref (|
-                                                                      M.read (|
-                                                                        M.SubPointer.get_struct_record_field (|
-                                                                          context,
-                                                                          "revm_interpreter::instruction_context::InstructionContext",
-                                                                          "interpreter"
+                                                                  (Ty.associated_in_trait
+                                                                    "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                                    []
+                                                                    []
+                                                                    WIRE
+                                                                    "Memory")
+                                                                  "{{anon_assoc}}",
+                                                                M.get_trait_method (|
+                                                                  "revm_interpreter::interpreter_types::MemoryTr",
+                                                                  Ty.associated_in_trait
+                                                                    "revm_interpreter::interpreter_types::InterpreterTypes"
+                                                                    []
+                                                                    []
+                                                                    WIRE
+                                                                    "Memory",
+                                                                  [],
+                                                                  [],
+                                                                  "slice_len",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.SubPointer.get_struct_record_field (|
+                                                                      M.deref (|
+                                                                        M.read (|
+                                                                          M.SubPointer.get_struct_record_field (|
+                                                                            context,
+                                                                            "revm_interpreter::instruction_context::InstructionContext",
+                                                                            "interpreter"
+                                                                          |)
                                                                         |)
-                                                                      |)
-                                                                    |),
-                                                                    "revm_interpreter::interpreter::Interpreter",
-                                                                    "memory"
-                                                                  |)
-                                                                |);
-                                                                M.read (| offset |);
-                                                                Value.Integer IntegerKind.Usize 32
-                                                              ]
+                                                                      |),
+                                                                      "revm_interpreter::interpreter::Interpreter",
+                                                                      "memory"
+                                                                    |)
+                                                                  |);
+                                                                  M.read (| offset |);
+                                                                  Value.Integer IntegerKind.Usize 32
+                                                                ]
+                                                              |)
                                                             |)
                                                           |)
-                                                        |)
-                                                      ]
+                                                        ]
+                                                      |)
                                                     |)
                                                   |)
-                                                |)
-                                              ]
+                                                ]
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
+                                        ]
+                                      |)
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| top |) |), rhs' |)))
                               |)
                             |)
                           |)))

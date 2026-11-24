@@ -1,0 +1,26 @@
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/std_misc/foreign_function_interface.rs:21:27
+   |
+21 |     let z = Complex { re: -1., im: 0. };
+   |                           ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/std_misc/foreign_function_interface.rs:21:36
+   |
+21 |     let z = Complex { re: -1., im: 0. };
+   |                                    ^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in <Complex as std::fmt::Debug>::fmt
+  --> examples/rust_book/std_misc/foreign_function_interface.rs:42:22
+   |
+42 |         if self.im < 0. {
+   |                      ^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: 3 warnings emitted
+

@@ -239,17 +239,20 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                                               |) in
                                                             M.read (|
                                                               let~ _ : Ty.tuple [] :=
-                                                                let β := acc in
-                                                                M.write (|
-                                                                  β,
-                                                                  M.call_closure (|
-                                                                    Ty.path "u32",
-                                                                    BinOp.Wrap.add,
-                                                                    [
-                                                                      M.read (| β |);
-                                                                      M.read (| n_squared |)
-                                                                    ]
-                                                                  |)
+                                                                M.let_ (|
+                                                                  ltac:(M.monadic
+                                                                    (M.read (| n_squared |))),
+                                                                  fun rhs' =>
+                                                                    ltac:(M.monadic
+                                                                      (let β := acc in
+                                                                      M.write (|
+                                                                        β,
+                                                                        M.call_closure (|
+                                                                          Ty.path "u32",
+                                                                          BinOp.Wrap.add,
+                                                                          [ M.read (| β |); rhs' ]
+                                                                        |)
+                                                                      |)))
                                                                 |) in
                                                               M.alloc (|
                                                                 Ty.tuple [],

@@ -19,16 +19,8 @@ Definition sum (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             ltac:(M.monadic
               (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
               let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-              let x :=
-                M.copy (|
-                  Ty.path "Type for variables in patterns in function parameters is not handled",
-                  γ0_0
-                |) in
-              let y :=
-                M.copy (|
-                  Ty.path "Type for variables in patterns in function parameters is not handled",
-                  γ0_1
-                |) in
+              let x := M.copy (| Ty.path "i32", γ0_0 |) in
+              let y := M.copy (| Ty.path "i32", γ0_1 |) in
               M.call_closure (|
                 Ty.path "i32",
                 BinOp.Wrap.add,
@@ -73,11 +65,7 @@ Definition steps_between (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
           fun γ =>
             ltac:(M.monadic
               (let γ := M.deref (| M.read (| γ |) |) in
-              let start :=
-                M.copy (|
-                  Ty.path "Type for variables in patterns in function parameters is not handled",
-                  γ
-                |) in
+              let start := M.copy (| Ty.path "char", γ |) in
               M.match_operator (|
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
                 β1,
@@ -85,12 +73,7 @@ Definition steps_between (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
                   fun γ =>
                     ltac:(M.monadic
                       (let γ := M.deref (| M.read (| γ |) |) in
-                      let end_ :=
-                        M.copy (|
-                          Ty.path
-                            "Type for variables in patterns in function parameters is not handled",
-                          γ
-                        |) in
+                      let end_ := M.copy (| Ty.path "char", γ |) in
                       M.read (|
                         let~ start : Ty.path "u32" := M.cast (Ty.path "u32") (M.read (| start |)) in
                         let~ end_ : Ty.path "u32" := M.cast (Ty.path "u32") (M.read (| end_ |)) in

@@ -3387,21 +3387,23 @@ Module serializer.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.deref (| M.read (| binary |) |),
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                      M.get_associated_function (|
-                        Ty.path "move_binary_format::file_format_common::BinaryData",
-                        "into_inner",
-                        [],
-                        []
-                      |),
-                      [ M.read (| binary_data |) ]
-                    |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                        M.get_associated_function (|
+                          Ty.path "move_binary_format::file_format_common::BinaryData",
+                          "into_inner",
+                          [],
+                          []
+                        |),
+                        [ M.read (| binary_data |) ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic (M.write (| M.deref (| M.read (| binary |) |), rhs' |)))
                   |) in
                 M.alloc (|
                   Ty.apply
@@ -32627,32 +32629,11 @@ Module serializer.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "module_handles"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -32666,116 +32647,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "module_handles"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -33119,32 +33127,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "module_handles"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -33158,114 +33145,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::CommonSerializer",
-                                                  "module_handles"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::CommonSerializer",
+                                                    "module_handles"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "module_handles"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -33405,32 +33419,11 @@ Module serializer.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "struct_handles"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -33444,116 +33437,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "struct_handles"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -33897,32 +33917,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "struct_handles"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -33936,114 +33935,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::CommonSerializer",
-                                                  "struct_handles"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::CommonSerializer",
+                                                    "struct_handles"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "struct_handles"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -34189,32 +34215,11 @@ Module serializer.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "function_handles"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -34228,116 +34233,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "function_handles"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -34683,32 +34715,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "function_handles"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -34722,114 +34733,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::CommonSerializer",
-                                                  "function_handles"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::CommonSerializer",
+                                                    "function_handles"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "function_handles"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -34977,32 +35015,11 @@ Module serializer.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "function_instantiations"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -35016,116 +35033,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "function_instantiations"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -35471,32 +35515,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "function_instantiations"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -35510,114 +35533,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::CommonSerializer",
-                                                  "function_instantiations"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::CommonSerializer",
+                                                    "function_instantiations"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "function_instantiations"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -35761,32 +35811,11 @@ Module serializer.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "identifiers"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -35800,116 +35829,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "identifiers"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -36297,32 +36353,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "identifiers"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -36336,114 +36371,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::CommonSerializer",
-                                                  "identifiers"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::CommonSerializer",
+                                                    "identifiers"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "identifiers"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -36589,32 +36651,11 @@ Module serializer.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "address_identifiers"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -36628,116 +36669,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "address_identifiers"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -37081,32 +37149,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "address_identifiers"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -37120,114 +37167,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::CommonSerializer",
-                                                  "address_identifiers"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::CommonSerializer",
+                                                    "address_identifiers"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "address_identifiers"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -37367,32 +37441,11 @@ Module serializer.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "constant_pool"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -37406,116 +37459,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "constant_pool"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -37855,32 +37935,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "constant_pool"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -37894,114 +37953,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::CommonSerializer",
-                                                  "constant_pool"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::CommonSerializer",
+                                                    "constant_pool"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "constant_pool"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -38132,32 +38218,11 @@ Module serializer.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "metadata"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -38171,116 +38236,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "metadata"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -38613,32 +38705,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "metadata"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -38652,114 +38723,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::CommonSerializer",
-                                                  "metadata"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::CommonSerializer",
+                                                    "metadata"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "metadata"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -38899,32 +38997,11 @@ Module serializer.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "signatures"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -38938,116 +39015,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "signatures"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -39388,32 +39492,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::CommonSerializer",
-                                    "signatures"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -39427,114 +39510,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::CommonSerializer",
-                                                  "signatures"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::CommonSerializer",
+                                                    "signatures"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "signatures"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -41920,26 +42030,34 @@ Module serializer.
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "common"
-                                  |),
-                                  "move_binary_format::serializer::CommonSerializer",
-                                  "table_count"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u8",
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "u8",
-                                    "wrapping_add",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
+                                    M.get_associated_function (|
+                                      Ty.path "u8",
+                                      "wrapping_add",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "move_binary_format::serializer::ModuleSerializer",
+                                            "common"
+                                          |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "table_count"
+                                        |)
+                                      |);
+                                      Value.Integer IntegerKind.U8 1
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
                                       M.SubPointer.get_struct_record_field (|
                                         M.SubPointer.get_struct_record_field (|
                                           M.deref (| M.read (| self |) |),
@@ -41948,39 +42066,16 @@ Module serializer.
                                         |),
                                         "move_binary_format::serializer::CommonSerializer",
                                         "table_count"
-                                      |)
-                                    |);
-                                    Value.Integer IntegerKind.U8 1
-                                  ]
-                                |)
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "struct_defs"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -41994,116 +42089,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::ModuleSerializer",
+                                          "struct_defs"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -42449,32 +42571,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "struct_defs"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -42488,114 +42589,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::ModuleSerializer",
-                                                  "struct_defs"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::ModuleSerializer",
+                                                    "struct_defs"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::ModuleSerializer",
+                                          "struct_defs"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -42728,26 +42856,34 @@ Module serializer.
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "common"
-                                  |),
-                                  "move_binary_format::serializer::CommonSerializer",
-                                  "table_count"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u8",
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "u8",
-                                    "wrapping_add",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
+                                    M.get_associated_function (|
+                                      Ty.path "u8",
+                                      "wrapping_add",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "move_binary_format::serializer::ModuleSerializer",
+                                            "common"
+                                          |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "table_count"
+                                        |)
+                                      |);
+                                      Value.Integer IntegerKind.U8 1
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
                                       M.SubPointer.get_struct_record_field (|
                                         M.SubPointer.get_struct_record_field (|
                                           M.deref (| M.read (| self |) |),
@@ -42756,39 +42892,16 @@ Module serializer.
                                         |),
                                         "move_binary_format::serializer::CommonSerializer",
                                         "table_count"
-                                      |)
-                                    |);
-                                    Value.Integer IntegerKind.U8 1
-                                  ]
-                                |)
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "struct_def_instantiations"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -42802,116 +42915,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::ModuleSerializer",
+                                          "struct_def_instantiations"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -43257,32 +43397,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "struct_def_instantiations"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -43296,114 +43415,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::ModuleSerializer",
-                                                  "struct_def_instantiations"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::ModuleSerializer",
+                                                    "struct_def_instantiations"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::ModuleSerializer",
+                                          "struct_def_instantiations"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -43550,32 +43696,11 @@ Module serializer.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "field_handles"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -43589,116 +43714,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::ModuleSerializer",
+                                          "field_handles"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -44040,32 +44192,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "field_handles"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -44079,114 +44210,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::ModuleSerializer",
-                                                  "field_handles"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::ModuleSerializer",
+                                                    "field_handles"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::ModuleSerializer",
+                                          "field_handles"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -44338,32 +44496,11 @@ Module serializer.
                                 |)
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "field_instantiations"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -44377,116 +44514,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::ModuleSerializer",
+                                          "field_instantiations"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -44832,32 +44996,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "field_instantiations"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -44871,114 +45014,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::ModuleSerializer",
-                                                  "field_instantiations"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::ModuleSerializer",
+                                                    "field_instantiations"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::ModuleSerializer",
+                                          "field_instantiations"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -45110,26 +45280,34 @@ Module serializer.
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "common"
-                                  |),
-                                  "move_binary_format::serializer::CommonSerializer",
-                                  "table_count"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u8",
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "u8",
-                                    "wrapping_add",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
+                                    M.get_associated_function (|
+                                      Ty.path "u8",
+                                      "wrapping_add",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "move_binary_format::serializer::ModuleSerializer",
+                                            "common"
+                                          |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "table_count"
+                                        |)
+                                      |);
+                                      Value.Integer IntegerKind.U8 1
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
                                       M.SubPointer.get_struct_record_field (|
                                         M.SubPointer.get_struct_record_field (|
                                           M.deref (| M.read (| self |) |),
@@ -45138,39 +45316,16 @@ Module serializer.
                                         |),
                                         "move_binary_format::serializer::CommonSerializer",
                                         "table_count"
-                                      |)
-                                    |);
-                                    Value.Integer IntegerKind.U8 1
-                                  ]
-                                |)
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "function_defs"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -45184,116 +45339,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::ModuleSerializer",
+                                          "function_defs"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -45647,32 +45829,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "function_defs"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -45686,114 +45847,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::ModuleSerializer",
-                                                  "function_defs"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::ModuleSerializer",
+                                                    "function_defs"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::ModuleSerializer",
+                                          "function_defs"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -46447,24 +46635,27 @@ Module serializer.
                                         |) in
                                       M.read (|
                                         let~ _ : Ty.tuple [] :=
-                                          let β := flags in
-                                          M.write (|
-                                            β,
-                                            M.call_closure (|
-                                              Ty.path "u8",
-                                              BinOp.Wrap.bit_or,
-                                              [
-                                                M.read (| β |);
-                                                M.read (|
-                                                  get_associated_constant (|
-                                                    Ty.path
-                                                      "move_binary_format::file_format::FunctionDefinition",
-                                                    "ENTRY",
-                                                    Ty.path "u8"
-                                                  |)
+                                          M.let_ (|
+                                            ltac:(M.monadic
+                                              (M.read (|
+                                                get_associated_constant (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format::FunctionDefinition",
+                                                  "ENTRY",
+                                                  Ty.path "u8"
                                                 |)
-                                              ]
-                                            |)
+                                              |))),
+                                            fun rhs' =>
+                                              ltac:(M.monadic
+                                                (let β := flags in
+                                                M.write (|
+                                                  β,
+                                                  M.call_closure (|
+                                                    Ty.path "u8",
+                                                    BinOp.Wrap.bit_or,
+                                                    [ M.read (| β |); rhs' ]
+                                                  |)
+                                                |)))
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                       |)));
@@ -46503,23 +46694,26 @@ Module serializer.
                             |) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          let β := flags in
-                          M.write (|
-                            β,
-                            M.call_closure (|
-                              Ty.path "u8",
-                              BinOp.Wrap.bit_or,
-                              [
-                                M.read (| β |);
-                                M.read (|
-                                  get_associated_constant (|
-                                    Ty.path "move_binary_format::file_format::FunctionDefinition",
-                                    "NATIVE",
-                                    Ty.path "u8"
-                                  |)
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.read (|
+                                get_associated_constant (|
+                                  Ty.path "move_binary_format::file_format::FunctionDefinition",
+                                  "NATIVE",
+                                  Ty.path "u8"
                                 |)
-                              ]
-                            |)
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (let β := flags in
+                                M.write (|
+                                  β,
+                                  M.call_closure (|
+                                    Ty.path "u8",
+                                    BinOp.Wrap.bit_or,
+                                    [ M.read (| β |); rhs' ]
+                                  |)
+                                |)))
                           |)));
                       fun γ => ltac:(M.monadic (Value.Tuple []))
                     ]
@@ -47134,26 +47328,34 @@ Module serializer.
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "common"
-                                  |),
-                                  "move_binary_format::serializer::CommonSerializer",
-                                  "table_count"
-                                |),
-                                M.call_closure (|
-                                  Ty.path "u8",
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.path "u8",
-                                    "wrapping_add",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
+                                    M.get_associated_function (|
+                                      Ty.path "u8",
+                                      "wrapping_add",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "move_binary_format::serializer::ModuleSerializer",
+                                            "common"
+                                          |),
+                                          "move_binary_format::serializer::CommonSerializer",
+                                          "table_count"
+                                        |)
+                                      |);
+                                      Value.Integer IntegerKind.U8 1
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
                                       M.SubPointer.get_struct_record_field (|
                                         M.SubPointer.get_struct_record_field (|
                                           M.deref (| M.read (| self |) |),
@@ -47162,39 +47364,16 @@ Module serializer.
                                         |),
                                         "move_binary_format::serializer::CommonSerializer",
                                         "table_count"
-                                      |)
-                                    |);
-                                    Value.Integer IntegerKind.U8 1
-                                  ]
-                                |)
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "friend_decls"
-                                  |),
-                                  0
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -47208,116 +47387,143 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::check_index_in_binary",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_associated_function (|
-                                                Ty.path
-                                                  "move_binary_format::file_format_common::BinaryData",
-                                                "len",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| binary |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::check_index_in_binary",
+                                              [],
+                                              []
+                                            |),
+                                            [
                                               M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format_common::BinaryData",
+                                                  "len",
+                                                  [],
                                                   []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| binary |) |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::ModuleSerializer",
+                                          "friend_decls"
+                                        |),
+                                        0
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
@@ -47659,32 +47865,11 @@ Module serializer.
                                   |))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_tuple_field (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_binary_format::serializer::ModuleSerializer",
-                                    "friend_decls"
-                                  |),
-                                  1
-                                |),
-                                M.match_operator (|
-                                  Ty.path "u32",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.path "anyhow::Error"
-                                          ];
-                                        Ty.path "u32"
-                                      ],
-                                    M.call_closure (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "u32",
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
@@ -47698,114 +47883,141 @@ Module serializer.
                                             ];
                                           Ty.path "u32"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::result::Result")
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
                                           []
-                                          [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::result::Result")
-                                            []
-                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
-                                          M.get_function (|
-                                            "move_binary_format::serializer::checked_calculate_table_size",
-                                            [],
-                                            []
-                                          |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| binary |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_tuple_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_binary_format::serializer::ModuleSerializer",
-                                                  "friend_decls"
-                                                |),
-                                                0
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
                                             Ty.apply
                                               (Ty.path "core::result::Result")
                                               []
                                               [
                                                 Ty.path "core::convert::Infallible";
                                                 Ty.path "anyhow::Error"
-                                              ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                              ];
+                                            Ty.path "u32"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ Ty.path "u32"; Ty.path "anyhow::Error" ],
+                                            M.get_function (|
+                                              "move_binary_format::serializer::checked_calculate_table_size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| binary |) |)
+                                              |);
+                                              M.read (|
+                                                M.SubPointer.get_tuple_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_binary_format::serializer::ModuleSerializer",
+                                                    "friend_decls"
+                                                  |),
+                                                  0
+                                                |)
+                                              |)
+                                            ]
+                                          |)
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "anyhow::Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [ Ty.tuple []; Ty.path "anyhow::Error" ],
-                                                  [],
-                                                  [
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
-                                                      [
-                                                        Ty.path "core::convert::Infallible";
-                                                        Ty.path "anyhow::Error"
-                                                      ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.read (| residual |) ]
+                                                      [ Ty.tuple []; Ty.path "anyhow::Error" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.path "anyhow::Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [ M.read (| residual |) ]
+                                                |)
                                               |)
                                             |)
-                                          |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val := M.copy (| Ty.path "u32", γ0_0 |) in
-                                        M.read (| val |)))
-                                  ]
-                                |)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val := M.copy (| Ty.path "u32", γ0_0 |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_tuple_field (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::serializer::ModuleSerializer",
+                                          "friend_decls"
+                                        |),
+                                        1
+                                      |),
+                                      rhs'
+                                    |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));

@@ -3900,23 +3900,33 @@ Module limits.
                                                                           match γ with
                                                                           | [] =>
                                                                             ltac:(M.monadic
-                                                                              (let β := size in
-                                                                              M.write (|
-                                                                                β,
-                                                                                M.call_closure (|
-                                                                                  Ty.path "usize",
-                                                                                  BinOp.Wrap.add,
-                                                                                  [
-                                                                                    M.read (| β |);
-                                                                                    M.read (|
-                                                                                      get_constant (|
-                                                                                        "move_bytecode_verifier::limits::verify_type_node::STRUCT_SIZE_WEIGHT",
-                                                                                        Ty.path
-                                                                                          "usize"
-                                                                                      |)
+                                                                              (M.let_ (|
+                                                                                ltac:(M.monadic
+                                                                                  (M.read (|
+                                                                                    get_constant (|
+                                                                                      "move_bytecode_verifier::limits::verify_type_node::STRUCT_SIZE_WEIGHT",
+                                                                                      Ty.path
+                                                                                        "usize"
                                                                                     |)
-                                                                                  ]
-                                                                                |)
+                                                                                  |))),
+                                                                                fun rhs' =>
+                                                                                  ltac:(M.monadic
+                                                                                    (let β :=
+                                                                                      size in
+                                                                                    M.write (|
+                                                                                      β,
+                                                                                      M.call_closure (|
+                                                                                        Ty.path
+                                                                                          "usize",
+                                                                                        BinOp.Wrap.add,
+                                                                                        [
+                                                                                          M.read (|
+                                                                                            β
+                                                                                          |);
+                                                                                          rhs'
+                                                                                        ]
+                                                                                      |)
+                                                                                    |)))
                                                                               |)))
                                                                           | _ =>
                                                                             M.impossible
@@ -3934,22 +3944,26 @@ Module limits.
                                                                         γ,
                                                                         "move_binary_format::file_format::SignatureToken::TypeParameter"
                                                                       |) in
-                                                                    let β := size in
-                                                                    M.write (|
-                                                                      β,
-                                                                      M.call_closure (|
-                                                                        Ty.path "usize",
-                                                                        BinOp.Wrap.add,
-                                                                        [
-                                                                          M.read (| β |);
-                                                                          M.read (|
-                                                                            get_constant (|
-                                                                              "move_bytecode_verifier::limits::verify_type_node::PARAM_SIZE_WEIGHT",
-                                                                              Ty.path "usize"
-                                                                            |)
+                                                                    M.let_ (|
+                                                                      ltac:(M.monadic
+                                                                        (M.read (|
+                                                                          get_constant (|
+                                                                            "move_bytecode_verifier::limits::verify_type_node::PARAM_SIZE_WEIGHT",
+                                                                            Ty.path "usize"
                                                                           |)
-                                                                        ]
-                                                                      |)
+                                                                        |))),
+                                                                      fun rhs' =>
+                                                                        ltac:(M.monadic
+                                                                          (let β := size in
+                                                                          M.write (|
+                                                                            β,
+                                                                            M.call_closure (|
+                                                                              Ty.path "usize",
+                                                                              BinOp.Wrap.add,
+                                                                              [ M.read (| β |); rhs'
+                                                                              ]
+                                                                            |)
+                                                                          |)))
                                                                     |)));
                                                                 fun γ =>
                                                                   ltac:(M.monadic

@@ -1007,7 +1007,13 @@ Module boxed.
                                                 "Residual",
                                               γ0_0
                                             |) in
-                                          M.never_to_any (| M.read (| M.break (||) |) |)));
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.impossible (|
+                                                "[ROR001] value-carrying break in boxed::Box::<T>::try_map"
+                                              |)
+                                            |)
+                                          |)));
                                       fun γ =>
                                         ltac:(M.monadic
                                           (let γ0_0 :=
@@ -1182,7 +1188,13 @@ Module boxed.
                                         "Residual",
                                       γ0_0
                                     |) in
-                                  M.never_to_any (| M.read (| M.break (||) |) |)));
+                                  M.never_to_any (|
+                                    M.read (|
+                                      M.impossible (|
+                                        "[ROR001] value-carrying break in boxed::Box::<T>::try_map"
+                                      |)
+                                    |)
+                                  |)));
                               fun γ =>
                                 ltac:(M.monadic
                                   (let γ0_0 :=
@@ -2051,8 +2063,12 @@ Module boxed.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            get_constant (|
-                              "core::mem::SizedTypeProperties::IS_ZST",
+                            get_trait_constant (|
+                              "core::mem::SizedTypeProperties",
+                              T,
+                              [],
+                              [],
+                              "IS_ZST",
                               Ty.path "bool"
                             |) in
                           let _ :=
@@ -2568,8 +2584,12 @@ Module boxed.
                       fun γ =>
                         ltac:(M.monadic
                           (let γ :=
-                            get_constant (|
-                              "core::mem::SizedTypeProperties::IS_ZST",
+                            get_trait_constant (|
+                              "core::mem::SizedTypeProperties",
+                              T,
+                              [],
+                              [],
+                              "IS_ZST",
                               Ty.path "bool"
                             |) in
                           let _ :=
@@ -4623,8 +4643,12 @@ Module boxed.
                               Ty.path "bool",
                               LogicalOp.or (|
                                 M.read (|
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    T,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |)
                                 |),
@@ -5115,8 +5139,12 @@ Module boxed.
                               Ty.path "bool",
                               LogicalOp.or (|
                                 M.read (|
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    T,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |)
                                 |),
@@ -5885,8 +5913,12 @@ Module boxed.
                               Ty.path "bool",
                               LogicalOp.or (|
                                 M.read (|
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    T,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |)
                                 |),
@@ -6366,8 +6398,12 @@ Module boxed.
                               Ty.path "bool",
                               LogicalOp.or (|
                                 M.read (|
-                                  get_constant (|
-                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                  get_trait_constant (|
+                                    "core::mem::SizedTypeProperties",
+                                    T,
+                                    [],
+                                    [],
+                                    "IS_ZST",
                                     Ty.path "bool"
                                   |)
                                 |),
@@ -8031,27 +8067,29 @@ Module boxed.
                 ltac:(M.monadic
                   (M.read (|
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.deref (| M.read (| self |) |),
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "alloc::boxed::Box")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ T ]; A ],
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (M.call_closure (|
                             Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
                               [ Ty.apply (Ty.path "slice") [] [ T ]; A ],
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
-                        |)
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ T ]; A ],
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| source |) |) |) ]
+                          |))),
+                        fun rhs' =>
+                          ltac:(M.monadic (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                   |)))

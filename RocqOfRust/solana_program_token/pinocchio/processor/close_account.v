@@ -996,48 +996,51 @@ Module processor.
                         let~ _ : Ty.tuple [] :=
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              let β :=
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ],
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "u64",
                                     M.get_associated_function (|
                                       Ty.path "pinocchio::account_info::AccountInfo",
-                                      "borrow_mut_lamports_unchecked",
+                                      "lamports",
                                       [],
                                       []
                                     |),
                                     [
                                       M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.deref (| M.read (| destination_account_info |) |)
+                                        M.deref (| M.read (| source_account_info |) |)
                                       |)
                                     ]
-                                  |)
-                                |) in
-                              M.write (|
-                                β,
-                                M.call_closure (|
-                                  Ty.path "u64",
-                                  BinOp.Wrap.add,
-                                  [
-                                    M.read (| β |);
-                                    M.call_closure (|
-                                      Ty.path "u64",
-                                      M.get_associated_function (|
-                                        Ty.path "pinocchio::account_info::AccountInfo",
-                                        "lamports",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| source_account_info |) |)
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (let β :=
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply (Ty.path "&mut") [] [ Ty.path "u64" ],
+                                          M.get_associated_function (|
+                                            Ty.path "pinocchio::account_info::AccountInfo",
+                                            "borrow_mut_lamports_unchecked",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| destination_account_info |) |)
+                                            |)
+                                          ]
                                         |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
+                                      |) in
+                                    M.write (|
+                                      β,
+                                      M.call_closure (|
+                                        Ty.path "u64",
+                                        BinOp.Wrap.add,
+                                        [ M.read (| β |); rhs' ]
+                                      |)
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               M.call_closure (|

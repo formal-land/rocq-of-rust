@@ -320,7 +320,7 @@ Module Char.
 
   Global Instance IsLink : Link t := {
     Φ := Ty.path "char";
-    φ '(Make c) := Value.UnicodeChar c;
+    φ c := Value.UnicodeChar (let '(Make z) := c in z);
   }.
 
   Definition of_ty : OfTy.t (Ty.path "char").
@@ -1652,6 +1652,25 @@ Ltac run_symbolic_one_step :=
   end.
 
 Smpl Create run_symbolic.
+
+(* Division is an ordinary integer result or a panic, depending on its operands. *)
+Ltac run_division :=
+  lazymatch goal with
+  | |- {{ LowM.CallClosure _ ?op _ _ 🔽 _, _ }} =>
+    lazymatch op with
+    | lib.lib.BinOp.Wrap.div => idtac
+    | lib.lib.BinOp.Wrap.rem => idtac
+    end
+  end;
+  unshelve eapply Run.CallClosure;
+  [ now repeat smpl of_ty
+  | with_strategy transparent [φ] cbn;
+    lazymatch goal with
+    | |- {{ (if ?invalid then _ else _) 🔽 _, _ }} =>
+      destruct invalid; [apply Run.Impossible | run_symbolic_pure]
+    end
+  | cbn; intro ].
+Smpl Add run_division : run_symbolic.
 
 (** We should use this tactic instead of the ones above, as this one calls all the others. *)
 Ltac run_symbolic :=

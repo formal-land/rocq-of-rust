@@ -2534,24 +2534,30 @@ Module signature.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_array_field (| sig, Value.Integer IntegerKind.Usize 64 |),
-                  M.call_closure (|
-                    Ty.path "u8",
-                    BinOp.Wrap.add,
-                    [
-                      Value.Integer IntegerKind.U8 27;
-                      M.cast
-                        (Ty.path "u8")
-                        (M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloy_primitives::signature::primitive_sig::PrimitiveSignature",
-                            "y_parity"
-                          |)
-                        |))
-                    ]
-                  |)
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "u8",
+                      BinOp.Wrap.add,
+                      [
+                        Value.Integer IntegerKind.U8 27;
+                        M.cast
+                          (Ty.path "u8")
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloy_primitives::signature::primitive_sig::PrimitiveSignature",
+                              "y_parity"
+                            |)
+                          |))
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_array_field (| sig, Value.Integer IntegerKind.Usize 64 |),
+                        rhs'
+                      |)))
                 |) in
               sig
             |)))

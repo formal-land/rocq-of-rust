@@ -34,10 +34,12 @@ fn setup_plugin() {
         serde_json::from_str(&std::env::var("ROCQ_OF_RUST_ARGS").unwrap()).unwrap()
     } else {
         let all_args = Args::parse_from(&args);
+        all_args.rocq_of_rust.warn_deprecated();
         args = all_args.rust_flags;
         all_args.rocq_of_rust
     };
 
+    let version_query = is_wrapper && args[1..] == ["-vV"];
     let sysroot = sysroot_path();
     args.push(format!("--sysroot={sysroot}"));
 
@@ -48,8 +50,15 @@ fn setup_plugin() {
     // or this is a primary package.
     let user_asked_for = !is_wrapper || primary_package;
 
-    if normal_rustc || !user_asked_for {
+    if normal_rustc || version_query {
         rustc_driver::run_compiler(&args, &mut DefaultCallbacks {});
+        if version_query {
+            // Cargo fingerprints the compiler version. Older driver artifacts
+            // have no package-selection dependency in their dep-info.
+            println!("rocq-of-rust: {}", env!("CARGO_PKG_VERSION"));
+        }
+    } else if !user_asked_for {
+        rustc_driver::run_compiler(&args, &mut CargoDependency);
     } else {
         let opts = Options::from_args(rocq_of_rust);
         let mut callbacks = ToRocq::new(opts);
@@ -59,7 +68,7 @@ fn setup_plugin() {
 }
 
 fn sysroot_path() -> String {
-    let toolchain: toml::Value = toml::from_str(include_str!("../../../rust-toolchain")).unwrap();
+    let toolchain: toml::Value = toml::from_str(include_str!("../../rust-toolchain")).unwrap();
     let channel = toolchain["toolchain"]["channel"].as_str().unwrap();
 
     let output = Command::new("rustup")

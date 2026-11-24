@@ -1505,22 +1505,32 @@ Module journal.
                     |))
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context::journal::warm_addresses::WarmAddresses",
-                    "precompile_all_short_addresses"
-                  |),
-                  M.read (| all_short_addresses |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| all_short_addresses |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context::journal::warm_addresses::WarmAddresses",
+                          "precompile_all_short_addresses"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context::journal::warm_addresses::WarmAddresses",
-                    "precompile_set"
-                  |),
-                  M.read (| addresses |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| addresses |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context::journal::warm_addresses::WarmAddresses",
+                          "precompile_set"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1554,17 +1564,23 @@ Module journal.
               M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context::journal::warm_addresses::WarmAddresses",
-                    "coinbase"
-                  |),
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "alloy_primitives::bits::address::Address" ]
-                    [ M.read (| address |) ]
+                M.let_ (|
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      []
+                      [ Ty.path "alloy_primitives::bits::address::Address" ]
+                      [ M.read (| address |) ])),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context::journal::warm_addresses::WarmAddresses",
+                          "coinbase"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1617,13 +1633,18 @@ Module journal.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context::journal::warm_addresses::WarmAddresses",
-                    "access_list"
-                  |),
-                  M.read (| access_list |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| access_list |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context::journal::warm_addresses::WarmAddresses",
+                          "access_list"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1655,17 +1676,23 @@ Module journal.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context::journal::warm_addresses::WarmAddresses",
-                    "coinbase"
-                  |),
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.path "alloy_primitives::bits::address::Address" ]
-                    []
+                M.let_ (|
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "core::option::Option::None"
+                      []
+                      [ Ty.path "alloy_primitives::bits::address::Address" ]
+                      [])),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context::journal::warm_addresses::WarmAddresses",
+                          "coinbase"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -1702,17 +1729,23 @@ Module journal.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context::journal::warm_addresses::WarmAddresses",
-                    "coinbase"
-                  |),
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.path "alloy_primitives::bits::address::Address" ]
-                    []
+                M.let_ (|
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "core::option::Option::None"
+                      []
+                      [ Ty.path "alloy_primitives::bits::address::Address" ]
+                      [])),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context::journal::warm_addresses::WarmAddresses",
+                          "coinbase"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|

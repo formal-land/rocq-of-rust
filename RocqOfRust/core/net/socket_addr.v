@@ -2765,30 +2765,32 @@ Module net.
                         γ0_0
                       |) in
                     let new_ip := M.copy (| Ty.path "core::net::ip_addr::IpAddr", γ0_1 |) in
-                    M.write (|
-                      M.deref (| M.read (| self_ |) |),
-                      M.call_closure (|
-                        Ty.path "core::net::socket_addr::SocketAddr",
-                        M.get_associated_function (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
                           Ty.path "core::net::socket_addr::SocketAddr",
-                          "new",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (| new_ip |);
-                          M.call_closure (|
-                            Ty.path "u16",
-                            M.get_associated_function (|
-                              Ty.path "core::net::socket_addr::SocketAddr",
-                              "port",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self_ |) |) |) ]
-                          |)
-                        ]
-                      |)
+                          M.get_associated_function (|
+                            Ty.path "core::net::socket_addr::SocketAddr",
+                            "new",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (| new_ip |);
+                            M.call_closure (|
+                              Ty.path "u16",
+                              M.get_associated_function (|
+                                Ty.path "core::net::socket_addr::SocketAddr",
+                                "port",
+                                [],
+                                []
+                              |),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self_ |) |) |) ]
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic (M.write (| M.deref (| M.read (| self_ |) |), rhs' |)))
                     |)))
               ]
             |)))
@@ -3134,13 +3136,18 @@ Module net.
             let new_ip := M.alloc (| Ty.path "core::net::ip_addr::Ipv4Addr", new_ip |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::net::socket_addr::SocketAddrV4",
-                    "ip"
-                  |),
-                  M.read (| new_ip |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| new_ip |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::net::socket_addr::SocketAddrV4",
+                          "ip"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3198,13 +3205,18 @@ Module net.
             let new_port := M.alloc (| Ty.path "u16", new_port |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::net::socket_addr::SocketAddrV4",
-                    "port"
-                  |),
-                  M.read (| new_port |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| new_port |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::net::socket_addr::SocketAddrV4",
+                          "port"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3304,13 +3316,18 @@ Module net.
             let new_ip := M.alloc (| Ty.path "core::net::ip_addr::Ipv6Addr", new_ip |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::net::socket_addr::SocketAddrV6",
-                    "ip"
-                  |),
-                  M.read (| new_ip |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| new_ip |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::net::socket_addr::SocketAddrV6",
+                          "ip"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3368,13 +3385,18 @@ Module net.
             let new_port := M.alloc (| Ty.path "u16", new_port |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::net::socket_addr::SocketAddrV6",
-                    "port"
-                  |),
-                  M.read (| new_port |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| new_port |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::net::socket_addr::SocketAddrV6",
+                          "port"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3434,13 +3456,18 @@ Module net.
             let new_flowinfo := M.alloc (| Ty.path "u32", new_flowinfo |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::net::socket_addr::SocketAddrV6",
-                    "flowinfo"
-                  |),
-                  M.read (| new_flowinfo |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| new_flowinfo |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::net::socket_addr::SocketAddrV6",
+                          "flowinfo"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -3500,13 +3527,18 @@ Module net.
             let new_scope_id := M.alloc (| Ty.path "u32", new_scope_id |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::net::socket_addr::SocketAddrV6",
-                    "scope_id"
-                  |),
-                  M.read (| new_scope_id |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| new_scope_id |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::net::socket_addr::SocketAddrV6",
+                          "scope_id"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))

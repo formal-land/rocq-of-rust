@@ -324,9 +324,14 @@ Module algorithms.
                                                             M.copy (| Ty.path "u64", γ0_1 |) in
                                                           M.read (|
                                                             let~ _ : Ty.tuple [] :=
-                                                              M.write (|
-                                                                M.deref (| M.read (| u |) |),
-                                                                M.read (| q |)
+                                                              M.let_ (|
+                                                                ltac:(M.monadic (M.read (| q |))),
+                                                                fun rhs' =>
+                                                                  ltac:(M.monadic
+                                                                    (M.write (|
+                                                                      M.deref (| M.read (| u |) |),
+                                                                      rhs'
+                                                                    |)))
                                                               |) in
                                                             let~ _ : Ty.tuple [] :=
                                                               M.write (| r, M.read (| r0 |) |) in
@@ -1098,34 +1103,42 @@ Module algorithms.
                                                                 M.copy (| Ty.path "u64", γ0_1 |) in
                                                               M.read (|
                                                                 let~ _ : Ty.tuple [] :=
-                                                                  M.write (|
-                                                                    M.deref (|
-                                                                      M.call_closure (|
-                                                                        Ty.apply
-                                                                          (Ty.path "&mut")
-                                                                          []
-                                                                          [ Ty.path "u64" ],
-                                                                        M.get_associated_function (|
-                                                                          Ty.apply
-                                                                            (Ty.path "slice")
-                                                                            []
-                                                                            [ Ty.path "u64" ],
-                                                                          "get_unchecked_mut",
-                                                                          [],
-                                                                          [ Ty.path "usize" ]
-                                                                        |),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.MutRef,
-                                                                            M.deref (|
-                                                                              M.read (| limbs |)
+                                                                  M.let_ (|
+                                                                    ltac:(M.monadic
+                                                                      (M.read (| q |))),
+                                                                    fun rhs' =>
+                                                                      ltac:(M.monadic
+                                                                        (M.write (|
+                                                                          M.deref (|
+                                                                            M.call_closure (|
+                                                                              Ty.apply
+                                                                                (Ty.path "&mut")
+                                                                                []
+                                                                                [ Ty.path "u64" ],
+                                                                              M.get_associated_function (|
+                                                                                Ty.apply
+                                                                                  (Ty.path "slice")
+                                                                                  []
+                                                                                  [ Ty.path "u64" ],
+                                                                                "get_unchecked_mut",
+                                                                                [],
+                                                                                [ Ty.path "usize" ]
+                                                                              |),
+                                                                              [
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.MutRef,
+                                                                                  M.deref (|
+                                                                                    M.read (|
+                                                                                      limbs
+                                                                                    |)
+                                                                                  |)
+                                                                                |);
+                                                                                M.read (| i |)
+                                                                              ]
                                                                             |)
-                                                                          |);
-                                                                          M.read (| i |)
-                                                                        ]
-                                                                      |)
-                                                                    |),
-                                                                    M.read (| q |)
+                                                                          |),
+                                                                          rhs'
+                                                                        |)))
                                                                   |) in
                                                                 let~ _ : Ty.tuple [] :=
                                                                   M.write (|
@@ -1215,7 +1228,12 @@ Module algorithms.
                             let remainder := M.copy (| Ty.path "u64", γ0_1 |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (| M.deref (| M.read (| first |) |), M.read (| q |) |) in
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| q |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (| M.deref (| M.read (| first |) |), rhs' |)))
+                                |) in
                               M.alloc (|
                                 Ty.path "u64",
                                 M.call_closure (|
@@ -1531,9 +1549,14 @@ Module algorithms.
                                                       let r := M.copy (| Ty.path "u128", γ0_1 |) in
                                                       M.read (|
                                                         let~ _ : Ty.tuple [] :=
-                                                          M.write (|
-                                                            M.deref (| M.read (| u |) |),
-                                                            M.read (| q |)
+                                                          M.let_ (|
+                                                            ltac:(M.monadic (M.read (| q |))),
+                                                            fun rhs' =>
+                                                              ltac:(M.monadic
+                                                                (M.write (|
+                                                                  M.deref (| M.read (| u |) |),
+                                                                  rhs'
+                                                                |)))
                                                           |) in
                                                         let~ _ : Ty.tuple [] :=
                                                           M.write (| remainder, M.read (| r |) |) in
@@ -2321,34 +2344,42 @@ Module algorithms.
                                                                 M.copy (| Ty.path "u128", γ0_1 |) in
                                                               M.read (|
                                                                 let~ _ : Ty.tuple [] :=
-                                                                  M.write (|
-                                                                    M.deref (|
-                                                                      M.call_closure (|
-                                                                        Ty.apply
-                                                                          (Ty.path "&mut")
-                                                                          []
-                                                                          [ Ty.path "u64" ],
-                                                                        M.get_associated_function (|
-                                                                          Ty.apply
-                                                                            (Ty.path "slice")
-                                                                            []
-                                                                            [ Ty.path "u64" ],
-                                                                          "get_unchecked_mut",
-                                                                          [],
-                                                                          [ Ty.path "usize" ]
-                                                                        |),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.MutRef,
-                                                                            M.deref (|
-                                                                              M.read (| limbs |)
+                                                                  M.let_ (|
+                                                                    ltac:(M.monadic
+                                                                      (M.read (| q |))),
+                                                                    fun rhs' =>
+                                                                      ltac:(M.monadic
+                                                                        (M.write (|
+                                                                          M.deref (|
+                                                                            M.call_closure (|
+                                                                              Ty.apply
+                                                                                (Ty.path "&mut")
+                                                                                []
+                                                                                [ Ty.path "u64" ],
+                                                                              M.get_associated_function (|
+                                                                                Ty.apply
+                                                                                  (Ty.path "slice")
+                                                                                  []
+                                                                                  [ Ty.path "u64" ],
+                                                                                "get_unchecked_mut",
+                                                                                [],
+                                                                                [ Ty.path "usize" ]
+                                                                              |),
+                                                                              [
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.MutRef,
+                                                                                  M.deref (|
+                                                                                    M.read (|
+                                                                                      limbs
+                                                                                    |)
+                                                                                  |)
+                                                                                |);
+                                                                                M.read (| i |)
+                                                                              ]
                                                                             |)
-                                                                          |);
-                                                                          M.read (| i |)
-                                                                        ]
-                                                                      |)
-                                                                    |),
-                                                                    M.read (| q |)
+                                                                          |),
+                                                                          rhs'
+                                                                        |)))
                                                                   |) in
                                                                 let~ _ : Ty.tuple [] :=
                                                                   M.write (|
@@ -2426,7 +2457,12 @@ Module algorithms.
                             let remainder := M.copy (| Ty.path "u128", γ0_1 |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (| M.deref (| M.read (| first |) |), M.read (| q |) |) in
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| q |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (| M.deref (| M.read (| first |) |), rhs' |)))
+                                |) in
                               M.alloc (|
                                 Ty.path "u128",
                                 M.call_closure (|

@@ -94,32 +94,40 @@ Module num.
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_array_field (| result, M.read (| n |) |),
-                                Value.Tuple
-                                  [
-                                    M.cast (Ty.path "u8") (M.read (| isqrt_n |));
-                                    M.cast
-                                      (Ty.path "u8")
-                                      (M.call_closure (|
-                                        Ty.path "usize",
-                                        BinOp.Wrap.sub,
-                                        [
-                                          M.read (| n |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (Value.Tuple
+                                    [
+                                      M.cast (Ty.path "u8") (M.read (| isqrt_n |));
+                                      M.cast
+                                        (Ty.path "u8")
+                                        (M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.sub,
+                                          [
+                                            M.read (| n |);
+                                            M.call_closure (|
                                               Ty.path "usize",
-                                              "pow",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| isqrt_n |); Value.Integer IntegerKind.U32 2
-                                            ]
-                                          |)
-                                        ]
-                                      |))
-                                  ]
+                                              M.get_associated_function (|
+                                                Ty.path "usize",
+                                                "pow",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.read (| isqrt_n |);
+                                                Value.Integer IntegerKind.U32 2
+                                              ]
+                                            |)
+                                          ]
+                                        |))
+                                    ])),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_array_field (| result, M.read (| n |) |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               let β := n in
@@ -5626,14 +5634,19 @@ Module num.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      let β := n in
-                      M.write (|
-                        β,
-                        M.call_closure (|
-                          Ty.path "u16",
-                          BinOp.Wrap.shl,
-                          [ M.read (| β |); M.read (| normalization_shift |) ]
-                        |)
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| normalization_shift |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (let β := n in
+                            M.write (|
+                              β,
+                              M.call_closure (|
+                                Ty.path "u16",
+                                BinOp.Wrap.shl,
+                                [ M.read (| β |); rhs' ]
+                              |)
+                            |)))
                       |) in
                     let~ s : Ty.path "u16" :=
                       M.call_closure (|
@@ -5788,14 +5801,19 @@ Module num.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      let β := n in
-                      M.write (|
-                        β,
-                        M.call_closure (|
-                          Ty.path "u32",
-                          BinOp.Wrap.shl,
-                          [ M.read (| β |); M.read (| normalization_shift |) ]
-                        |)
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| normalization_shift |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (let β := n in
+                            M.write (|
+                              β,
+                              M.call_closure (|
+                                Ty.path "u32",
+                                BinOp.Wrap.shl,
+                                [ M.read (| β |); rhs' ]
+                              |)
+                            |)))
                       |) in
                     let~ s : Ty.path "u32" :=
                       M.call_closure (|
@@ -5950,14 +5968,19 @@ Module num.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      let β := n in
-                      M.write (|
-                        β,
-                        M.call_closure (|
-                          Ty.path "u64",
-                          BinOp.Wrap.shl,
-                          [ M.read (| β |); M.read (| normalization_shift |) ]
-                        |)
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| normalization_shift |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (let β := n in
+                            M.write (|
+                              β,
+                              M.call_closure (|
+                                Ty.path "u64",
+                                BinOp.Wrap.shl,
+                                [ M.read (| β |); rhs' ]
+                              |)
+                            |)))
                       |) in
                     let~ s : Ty.path "u64" :=
                       M.call_closure (|
@@ -6112,14 +6135,19 @@ Module num.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      let β := n in
-                      M.write (|
-                        β,
-                        M.call_closure (|
-                          Ty.path "u128",
-                          BinOp.Wrap.shl,
-                          [ M.read (| β |); M.read (| normalization_shift |) ]
-                        |)
+                      M.let_ (|
+                        ltac:(M.monadic (M.read (| normalization_shift |))),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (let β := n in
+                            M.write (|
+                              β,
+                              M.call_closure (|
+                                Ty.path "u128",
+                                BinOp.Wrap.shl,
+                                [ M.read (| β |); rhs' ]
+                              |)
+                            |)))
                       |) in
                     let~ s : Ty.path "u128" :=
                       M.call_closure (|

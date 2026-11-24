@@ -8,15 +8,7 @@ Module account_address.
       const_params := [];
       ty_params := [];
       fields :=
-        [
-          Ty.apply
-            (Ty.path "array")
-            [
-              M.unevaluated_const
-                (mk_str (| "move_core_types_account_address_AccountAddress_0_discriminant" |))
-            ]
-            [ Ty.path "u8" ]
-        ];
+        [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ] ];
     } *)
   
   Module Impl_core_cmp_Ord_for_move_core_types_account_address_AccountAddress.
@@ -417,13 +409,7 @@ Module account_address.
         ltac:(M.monadic
           (let address :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [
-                  M.unevaluated_const
-                    (mk_str (| "move_core_types_account_address_new_discriminant" |))
-                ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ],
               address
             |) in
           Value.StructTuple
@@ -1709,12 +1695,7 @@ Module account_address.
                   [
                     Ty.apply
                       (Ty.path "array")
-                      [
-                        M.unevaluated_const
-                          (mk_str (|
-                            "move_core_types_account_address_AccountAddress_0_discriminant"
-                          |))
-                      ]
+                      [ Value.Integer IntegerKind.Usize 32 ]
                       [ Ty.path "u8" ]
                   ]
                   (Ty.path "move_core_types::account_address::AccountAddress")
@@ -1956,12 +1937,7 @@ Module account_address.
                   [
                     Ty.apply
                       (Ty.path "array")
-                      [
-                        M.unevaluated_const
-                          (mk_str (|
-                            "move_core_types_account_address_AccountAddress_0_discriminant"
-                          |))
-                      ]
+                      [ Value.Integer IntegerKind.Usize 32 ]
                       [ Ty.path "u8" ]
                   ]
                   (Ty.path "move_core_types::account_address::AccountAddress")
@@ -2198,10 +2174,7 @@ Module account_address.
     
     (*     type Target = [u8; Self::LENGTH]; *)
     Definition _Target : Ty.t :=
-      Ty.apply
-        (Ty.path "array")
-        [ M.unevaluated_const (mk_str (| "move_core_types_account_address_Target_discriminant" |)) ]
-        [ Ty.path "u8" ].
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ].
     
     (*
         fn deref(&self) -> &Self::Target {
@@ -3700,7 +3673,7 @@ Module account_address.
         (* Instance *) [ ("fmt", InstanceField.Method fmt) ].
   End Impl_core_fmt_UpperHex_for_move_core_types_account_address_AccountAddress.
   
-  Module Impl_core_convert_From_array_expr_u8_for_move_core_types_account_address_AccountAddress.
+  Module Impl_core_convert_From_array_Usize_32_u8_for_move_core_types_account_address_AccountAddress.
     Definition Self : Ty.t := Ty.path "move_core_types::account_address::AccountAddress".
     
     (*
@@ -3714,13 +3687,7 @@ Module account_address.
         ltac:(M.monadic
           (let bytes :=
             M.alloc (|
-              Ty.apply
-                (Ty.path "array")
-                [
-                  M.unevaluated_const
-                    (mk_str (| "move_core_types_account_address_from_discriminant" |))
-                ]
-                [ Ty.path "u8" ],
+              Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ],
               bytes
             |) in
           M.call_closure (|
@@ -3741,15 +3708,10 @@ Module account_address.
         "core::convert::From"
         (* Trait polymorphic consts *) []
         (* Trait polymorphic types *)
-        [
-          Ty.apply
-            (Ty.path "array")
-            [ M.unevaluated_const (mk_str (| "move_core_types_account_address_discriminant" |)) ]
-            [ Ty.path "u8" ]
-        ]
+        [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ] ]
         Self
         (* Instance *) [ ("from", InstanceField.Method from) ].
-  End Impl_core_convert_From_array_expr_u8_for_move_core_types_account_address_AccountAddress.
+  End Impl_core_convert_From_array_Usize_32_u8_for_move_core_types_account_address_AccountAddress.
   
   Module Impl_core_convert_TryFrom_ref__slice_u8_for_move_core_types_account_address_AccountAddress.
     Definition Self : Ty.t := Ty.path "move_core_types::account_address::AccountAddress".
@@ -4000,12 +3962,9 @@ Module account_address.
         (* Instance *) [ ("from", InstanceField.Method from) ].
   End Impl_core_convert_From_ref__move_core_types_account_address_AccountAddress_for_alloc_vec_Vec_u8_alloc_alloc_Global.
   
-  Module Impl_core_convert_From_move_core_types_account_address_AccountAddress_for_array_expr_u8.
+  Module Impl_core_convert_From_move_core_types_account_address_AccountAddress_for_array_Usize_32_u8.
     Definition Self : Ty.t :=
-      Ty.apply
-        (Ty.path "array")
-        [ M.unevaluated_const (mk_str (| "move_core_types_account_address_discriminant" |)) ]
-        [ Ty.path "u8" ].
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ].
     
     (*
         fn from(addr: AccountAddress) -> Self {
@@ -4035,14 +3994,11 @@ Module account_address.
         (* Trait polymorphic types *) [ Ty.path "move_core_types::account_address::AccountAddress" ]
         Self
         (* Instance *) [ ("from", InstanceField.Method from) ].
-  End Impl_core_convert_From_move_core_types_account_address_AccountAddress_for_array_expr_u8.
+  End Impl_core_convert_From_move_core_types_account_address_AccountAddress_for_array_Usize_32_u8.
   
-  Module Impl_core_convert_From_ref__move_core_types_account_address_AccountAddress_for_array_expr_u8.
+  Module Impl_core_convert_From_ref__move_core_types_account_address_AccountAddress_for_array_Usize_32_u8.
     Definition Self : Ty.t :=
-      Ty.apply
-        (Ty.path "array")
-        [ M.unevaluated_const (mk_str (| "move_core_types_account_address_discriminant" |)) ]
-        [ Ty.path "u8" ].
+      Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 32 ] [ Ty.path "u8" ].
     
     (*
         fn from(addr: &AccountAddress) -> Self {
@@ -4079,7 +4035,7 @@ Module account_address.
         [ Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::account_address::AccountAddress" ] ]
         Self
         (* Instance *) [ ("from", InstanceField.Method from) ].
-  End Impl_core_convert_From_ref__move_core_types_account_address_AccountAddress_for_array_expr_u8.
+  End Impl_core_convert_From_ref__move_core_types_account_address_AccountAddress_for_array_Usize_32_u8.
   
   Module Impl_core_convert_From_ref__move_core_types_account_address_AccountAddress_for_alloc_string_String.
     Definition Self : Ty.t := Ty.path "alloc::string::String".

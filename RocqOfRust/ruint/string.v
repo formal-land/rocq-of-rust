@@ -1271,7 +1271,31 @@ Module string.
                                                       [
                                                         fun γ =>
                                                           ltac:(M.monadic
-                                                            (M.call_closure (|
+                                                            (let _ :=
+                                                              is_constant_or_break_match (|
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.ge,
+                                                                  [
+                                                                    M.read (| γ |);
+                                                                    Value.UnicodeChar 48
+                                                                  ]
+                                                                |),
+                                                                Value.Bool true
+                                                              |) in
+                                                            let _ :=
+                                                              is_constant_or_break_match (|
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.le,
+                                                                  [
+                                                                    M.read (| γ |);
+                                                                    Value.UnicodeChar 57
+                                                                  ]
+                                                                |),
+                                                                Value.Bool true
+                                                              |) in
+                                                            M.call_closure (|
                                                               Ty.path "u64",
                                                               BinOp.Wrap.sub,
                                                               [
@@ -1305,7 +1329,31 @@ Module string.
                                                             |)));
                                                         fun γ =>
                                                           ltac:(M.monadic
-                                                            (M.call_closure (|
+                                                            (let _ :=
+                                                              is_constant_or_break_match (|
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.ge,
+                                                                  [
+                                                                    M.read (| γ |);
+                                                                    Value.UnicodeChar 97
+                                                                  ]
+                                                                |),
+                                                                Value.Bool true
+                                                              |) in
+                                                            let _ :=
+                                                              is_constant_or_break_match (|
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.le,
+                                                                  [
+                                                                    M.read (| γ |);
+                                                                    Value.UnicodeChar 122
+                                                                  ]
+                                                                |),
+                                                                Value.Bool true
+                                                              |) in
+                                                            M.call_closure (|
                                                               Ty.path "u64",
                                                               BinOp.Wrap.add,
                                                               [
@@ -1346,7 +1394,31 @@ Module string.
                                                             |)));
                                                         fun γ =>
                                                           ltac:(M.monadic
-                                                            (M.call_closure (|
+                                                            (let _ :=
+                                                              is_constant_or_break_match (|
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.ge,
+                                                                  [
+                                                                    M.read (| γ |);
+                                                                    Value.UnicodeChar 65
+                                                                  ]
+                                                                |),
+                                                                Value.Bool true
+                                                              |) in
+                                                            let _ :=
+                                                              is_constant_or_break_match (|
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.le,
+                                                                  [
+                                                                    M.read (| γ |);
+                                                                    Value.UnicodeChar 90
+                                                                  ]
+                                                                |),
+                                                                Value.Bool true
+                                                              |) in
+                                                            M.call_closure (|
                                                               Ty.path "u64",
                                                               BinOp.Wrap.add,
                                                               [
@@ -1444,7 +1516,31 @@ Module string.
                                                       [
                                                         fun γ =>
                                                           ltac:(M.monadic
-                                                            (M.call_closure (|
+                                                            (let _ :=
+                                                              is_constant_or_break_match (|
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.ge,
+                                                                  [
+                                                                    M.read (| γ |);
+                                                                    Value.UnicodeChar 65
+                                                                  ]
+                                                                |),
+                                                                Value.Bool true
+                                                              |) in
+                                                            let _ :=
+                                                              is_constant_or_break_match (|
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.le,
+                                                                  [
+                                                                    M.read (| γ |);
+                                                                    Value.UnicodeChar 90
+                                                                  ]
+                                                                |),
+                                                                Value.Bool true
+                                                              |) in
+                                                            M.call_closure (|
                                                               Ty.path "u64",
                                                               BinOp.Wrap.sub,
                                                               [
@@ -1478,7 +1574,31 @@ Module string.
                                                             |)));
                                                         fun γ =>
                                                           ltac:(M.monadic
-                                                            (M.call_closure (|
+                                                            (let _ :=
+                                                              is_constant_or_break_match (|
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.ge,
+                                                                  [
+                                                                    M.read (| γ |);
+                                                                    Value.UnicodeChar 97
+                                                                  ]
+                                                                |),
+                                                                Value.Bool true
+                                                              |) in
+                                                            let _ :=
+                                                              is_constant_or_break_match (|
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.le,
+                                                                  [
+                                                                    M.read (| γ |);
+                                                                    Value.UnicodeChar 102
+                                                                  ]
+                                                                |),
+                                                                Value.Bool true
+                                                              |) in
+                                                            M.call_closure (|
                                                               Ty.path "u64",
                                                               BinOp.Wrap.add,
                                                               [
@@ -1519,7 +1639,31 @@ Module string.
                                                             |)));
                                                         fun γ =>
                                                           ltac:(M.monadic
-                                                            (M.call_closure (|
+                                                            (let _ :=
+                                                              is_constant_or_break_match (|
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.ge,
+                                                                  [
+                                                                    M.read (| γ |);
+                                                                    Value.UnicodeChar 48
+                                                                  ]
+                                                                |),
+                                                                Value.Bool true
+                                                              |) in
+                                                            let _ :=
+                                                              is_constant_or_break_match (|
+                                                                M.call_closure (|
+                                                                  Ty.path "bool",
+                                                                  BinOp.le,
+                                                                  [
+                                                                    M.read (| γ |);
+                                                                    Value.UnicodeChar 57
+                                                                  ]
+                                                                |),
+                                                                Value.Bool true
+                                                              |) in
+                                                            M.call_closure (|
                                                               Ty.path "u64",
                                                               BinOp.Wrap.add,
                                                               [

@@ -70,7 +70,16 @@ Module mem.
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
-        (M.read (| get_constant (| "core::mem::SizedTypeProperties::SIZE", Ty.path "usize" |) |)))
+        (M.read (|
+          get_trait_constant (|
+            "core::mem::SizedTypeProperties",
+            T,
+            [],
+            [],
+            "SIZE",
+            Ty.path "usize"
+          |)
+        |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -138,7 +147,16 @@ Module mem.
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
-        (M.read (| get_constant (| "core::mem::SizedTypeProperties::ALIGN", Ty.path "usize" |) |)))
+        (M.read (|
+          get_trait_constant (|
+            "core::mem::SizedTypeProperties",
+            T,
+            [],
+            [],
+            "ALIGN",
+            Ty.path "usize"
+          |)
+        |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -182,7 +200,16 @@ Module mem.
     match ε, τ, α with
     | [], [ T ], [] =>
       ltac:(M.monadic
-        (M.read (| get_constant (| "core::mem::SizedTypeProperties::ALIGN", Ty.path "usize" |) |)))
+        (M.read (|
+          get_trait_constant (|
+            "core::mem::SizedTypeProperties",
+            T,
+            [],
+            [],
+            "ALIGN",
+            Ty.path "usize"
+          |)
+        |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   

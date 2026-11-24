@@ -944,40 +944,46 @@ Module collections.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (|
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::vec_deque::extract_if::ExtractIf",
-                            "vec"
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        BinOp.Wrap.sub,
+                        [
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::vec_deque::extract_if::ExtractIf",
+                              "old_len"
+                            |)
+                          |);
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::vec_deque::extract_if::ExtractIf",
+                              "del"
+                            |)
                           |)
-                        |)
-                      |),
-                      "alloc::collections::vec_deque::VecDeque",
-                      "len"
-                    |),
-                    M.call_closure (|
-                      Ty.path "usize",
-                      BinOp.Wrap.sub,
-                      [
-                        M.read (|
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
                           M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::vec_deque::extract_if::ExtractIf",
-                            "old_len"
-                          |)
-                        |);
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::vec_deque::extract_if::ExtractIf",
-                            "del"
-                          |)
-                        |)
-                      ]
-                    |)
+                            M.deref (|
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::collections::vec_deque::extract_if::ExtractIf",
+                                  "vec"
+                                |)
+                              |)
+                            |),
+                            "alloc::collections::vec_deque::VecDeque",
+                            "len"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
               |)))

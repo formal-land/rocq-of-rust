@@ -469,31 +469,34 @@ Module Impl_ruint_Uint_BITS_LIMBS.
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_array_field (|
-                        limbs,
-                        M.call_closure (|
-                          Ty.path "usize",
-                          BinOp.Wrap.sub,
-                          [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
-                        |)
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            get_associated_constant (|
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                              "MASK",
-                              Ty.path "u64"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          get_associated_constant (|
+                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                            "MASK",
+                            Ty.path "u64"
                           |)
-                        ]
-                      |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
+                            M.SubPointer.get_array_field (|
+                              limbs,
+                              M.call_closure (|
+                                Ty.path "usize",
+                                BinOp.Wrap.sub,
+                                [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
+                              |)
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_and,
+                              [ M.read (| β |); rhs' ]
+                            |)
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |)));
@@ -1346,72 +1349,75 @@ Module Impl_ruint_Uint_BITS_LIMBS.
                                       |) in
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
-                                        let β := overflow in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.Wrap.bit_or,
-                                            [
-                                              M.read (| β |);
-                                              M.call_closure (|
-                                                Ty.path "bool",
-                                                BinOp.gt,
-                                                [
-                                                  M.read (|
-                                                    M.SubPointer.get_array_field (|
-                                                      limbs,
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        BinOp.Wrap.sub,
-                                                        [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
-                                                      |)
-                                                    |)
-                                                  |);
-                                                  M.read (|
-                                                    get_associated_constant (|
-                                                      Ty.apply
-                                                        (Ty.path "ruint::Uint")
-                                                        [ BITS; LIMBS ]
-                                                        [],
-                                                      "MASK",
-                                                      Ty.path "u64"
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.call_closure (|
+                                              Ty.path "bool",
+                                              BinOp.gt,
+                                              [
+                                                M.read (|
+                                                  M.SubPointer.get_array_field (|
+                                                    limbs,
+                                                    M.call_closure (|
+                                                      Ty.path "usize",
+                                                      BinOp.Wrap.sub,
+                                                      [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
                                                     |)
                                                   |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
+                                                |);
+                                                M.read (|
+                                                  get_associated_constant (|
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [],
+                                                    "MASK",
+                                                    Ty.path "u64"
+                                                  |)
+                                                |)
+                                              ]
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β := overflow in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "bool",
+                                                  BinOp.Wrap.bit_or,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β :=
-                                          M.SubPointer.get_array_field (|
-                                            limbs,
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.sub,
-                                              [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
-                                            |)
-                                          |) in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "u64",
-                                            BinOp.Wrap.bit_and,
-                                            [
-                                              M.read (| β |);
-                                              M.read (|
-                                                get_associated_constant (|
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [ BITS; LIMBS ]
-                                                    [],
-                                                  "MASK",
-                                                  Ty.path "u64"
-                                                |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.read (|
+                                              get_associated_constant (|
+                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                                "MASK",
+                                                Ty.path "u64"
                                               |)
-                                            ]
-                                          |)
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β :=
+                                                M.SubPointer.get_array_field (|
+                                                  limbs,
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.sub,
+                                                    [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
+                                                  |)
+                                                |) in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "u64",
+                                                  BinOp.Wrap.bit_and,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                     |)));

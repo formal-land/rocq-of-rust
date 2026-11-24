@@ -801,48 +801,54 @@ Module instructions.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              let β :=
-                M.SubPointer.get_array_field (|
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 4 ]
-                            [ Ty.path "u64" ]
-                        ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [],
-                        "as_limbs_mut",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| val |) |) |) ]
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.read (|
+                    get_constant (|
+                      "revm_interpreter::instructions::i256::FLIPH_BITMASK_U64",
+                      Ty.path "u64"
                     |)
-                  |),
-                  Value.Integer IntegerKind.Usize 3
-                |) in
-              M.write (|
-                β,
-                M.call_closure (|
-                  Ty.path "u64",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (| β |);
-                    M.read (|
-                      get_constant (|
-                        "revm_interpreter::instructions::i256::FLIPH_BITMASK_U64",
-                        Ty.path "u64"
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (let β :=
+                      M.SubPointer.get_array_field (|
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 4 ]
+                                  [ Ty.path "u64" ]
+                              ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [],
+                              "as_limbs_mut",
+                              [],
+                              []
+                            |),
+                            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| val |) |) |) ]
+                          |)
+                        |),
+                        Value.Integer IntegerKind.Usize 3
+                      |) in
+                    M.write (|
+                      β,
+                      M.call_closure (|
+                        Ty.path "u64",
+                        BinOp.Wrap.bit_and,
+                        [ M.read (| β |); rhs' ]
                       |)
-                    |)
-                  ]
-                |)
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -879,16 +885,17 @@ Module instructions.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| op |) |),
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "ruint::Uint")
-                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                    [],
-                  M.get_function (| "revm_interpreter::instructions::i256::two_compl", [], [] |),
-                  [ M.read (| M.deref (| M.read (| op |) |) |) ]
-                |)
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      [],
+                    M.get_function (| "revm_interpreter::instructions::i256::two_compl", [], [] |),
+                    [ M.read (| M.deref (| M.read (| op |) |) |) ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| op |) |), rhs' |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

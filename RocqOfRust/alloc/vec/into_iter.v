@@ -512,101 +512,119 @@ Module vec.
                   Value.Integer IntegerKind.Usize 0
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloc::vec::into_iter::IntoIter",
-                    "buf"
-                  |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "alloc::raw_vec::RawVec")
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "alloc::raw_vec::RawVec")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        "non_null",
+                        [],
                         []
-                        [ T; Ty.path "alloc::alloc::Global" ],
-                      "non_null",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "alloc::raw_vec::RawVec")
-                            []
-                            [ T; Ty.path "alloc::alloc::Global" ],
-                          M.call_closure (|
+                      |),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "alloc::raw_vec::RawVec")
                               []
                               [ T; Ty.path "alloc::alloc::Global" ],
-                            M.get_associated_function (|
+                            M.call_closure (|
                               Ty.apply
                                 (Ty.path "alloc::raw_vec::RawVec")
                                 []
                                 [ T; Ty.path "alloc::alloc::Global" ],
-                              "new",
-                              [],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::raw_vec::RawVec")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ],
+                                "new",
+                                [],
+                                []
+                              |),
                               []
-                            |),
-                            []
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloc::vec::into_iter::IntoIter",
-                    "ptr"
-                  |),
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::vec::into_iter::IntoIter",
-                      "buf"
-                    |)
-                  |)
-                |) in
-              let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloc::vec::into_iter::IntoIter",
-                    "end"
-                  |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "*const") [] [ T ],
-                    M.pointer_coercion
-                      M.PointerCoercion.MutToConstPointer
-                      (Ty.apply (Ty.path "*mut") [] [ T ])
-                      (Ty.apply (Ty.path "*const") [] [ T ]),
-                    [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*mut") [] [ T ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                          "as_ptr",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::vec::into_iter::IntoIter",
-                              "buf"
                             |)
                           |)
-                        ]
+                        |)
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::vec::into_iter::IntoIter",
+                          "buf"
+                        |),
+                        rhs'
+                      |)))
+                |) in
+              let~ _ : Ty.tuple [] :=
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::vec::into_iter::IntoIter",
+                        "buf"
                       |)
-                    ]
-                  |)
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::vec::into_iter::IntoIter",
+                          "ptr"
+                        |),
+                        rhs'
+                      |)))
+                |) in
+              let~ _ : Ty.tuple [] :=
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "*const") [] [ T ],
+                      M.pointer_coercion
+                        M.PointerCoercion.MutToConstPointer
+                        (Ty.apply (Ty.path "*mut") [] [ T ])
+                        (Ty.apply (Ty.path "*const") [] [ T ]),
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ T ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "as_ptr",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::vec::into_iter::IntoIter",
+                                "buf"
+                              |)
+                            |)
+                          ]
+                        |)
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::vec::into_iter::IntoIter",
+                          "end"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
@@ -660,39 +678,45 @@ Module vec.
               |) in
             M.read (|
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloc::vec::into_iter::IntoIter",
-                    "end"
-                  |),
-                  M.call_closure (|
-                    Ty.apply (Ty.path "*const") [] [ T ],
-                    M.pointer_coercion
-                      M.PointerCoercion.MutToConstPointer
-                      (Ty.apply (Ty.path "*mut") [] [ T ])
-                      (Ty.apply (Ty.path "*const") [] [ T ]),
-                    [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*mut") [] [ T ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                          "as_ptr",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::vec::into_iter::IntoIter",
-                              "ptr"
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "*const") [] [ T ],
+                      M.pointer_coercion
+                        M.PointerCoercion.MutToConstPointer
+                        (Ty.apply (Ty.path "*mut") [] [ T ])
+                        (Ty.apply (Ty.path "*const") [] [ T ]),
+                      [
+                        M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ T ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "as_ptr",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::vec::into_iter::IntoIter",
+                                "ptr"
+                              |)
                             |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |)
+                          ]
+                        |)
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::vec::into_iter::IntoIter",
+                          "end"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -821,8 +845,12 @@ Module vec.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          get_constant (|
-                            "core::mem::SizedTypeProperties::IS_ZST",
+                          get_trait_constant (|
+                            "core::mem::SizedTypeProperties",
+                            T,
+                            [],
+                            [],
+                            "IS_ZST",
                             Ty.path "bool"
                           |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -1270,8 +1298,12 @@ Module vec.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -1344,31 +1376,37 @@ Module vec.
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::vec::into_iter::IntoIter",
-                                    "end"
-                                  |),
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "*const") [] [ T ],
-                                    M.get_associated_function (|
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
                                       Ty.apply (Ty.path "*const") [] [ T ],
-                                      "wrapping_byte_sub",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.read (|
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "*const") [] [ T ],
+                                        "wrapping_byte_sub",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "alloc::vec::into_iter::IntoIter",
+                                            "end"
+                                          |)
+                                        |);
+                                        Value.Integer IntegerKind.Usize 1
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
                                         M.SubPointer.get_struct_record_field (|
                                           M.deref (| M.read (| self |) |),
                                           "alloc::vec::into_iter::IntoIter",
                                           "end"
-                                        |)
-                                      |);
-                                      Value.Integer IntegerKind.Usize 1
-                                    ]
-                                  |)
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| self |) |),
@@ -1472,22 +1510,28 @@ Module vec.
                                   |)
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloc::vec::into_iter::IntoIter",
-                                    "ptr"
-                                  |),
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                    M.get_associated_function (|
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
                                       Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| old |); Value.Integer IntegerKind.Usize 1 ]
-                                  |)
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                        "add",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.read (| old |); Value.Integer IntegerKind.Usize 1 ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::vec::into_iter::IntoIter",
+                                          "ptr"
+                                        |),
+                                        rhs'
+                                      |)))
                                 |) in
                               old
                             |)))
@@ -1549,8 +1593,12 @@ Module vec.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          get_constant (|
-                            "core::mem::SizedTypeProperties::IS_ZST",
+                          get_trait_constant (|
+                            "core::mem::SizedTypeProperties",
+                            T,
+                            [],
+                            [],
+                            "IS_ZST",
                             Ty.path "bool"
                           |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -1762,38 +1810,48 @@ Module vec.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          get_constant (|
-                            "core::mem::SizedTypeProperties::IS_ZST",
+                          get_trait_constant (|
+                            "core::mem::SizedTypeProperties",
+                            T,
+                            [],
+                            [],
+                            "IS_ZST",
                             Ty.path "bool"
                           |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::vec::into_iter::IntoIter",
-                                "end"
-                              |),
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ T ],
-                                M.get_associated_function (|
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ T ],
-                                  "wrapping_byte_sub",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ T ],
+                                    "wrapping_byte_sub",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::vec::into_iter::IntoIter",
+                                        "end"
+                                      |)
+                                    |);
+                                    M.read (| step_size |)
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| self |) |),
                                       "alloc::vec::into_iter::IntoIter",
                                       "end"
-                                    |)
-                                  |);
-                                  M.read (| step_size |)
-                                ]
-                              |)
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -1801,31 +1859,37 @@ Module vec.
                       ltac:(M.monadic
                         (M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::vec::into_iter::IntoIter",
-                                "ptr"
-                              |),
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                M.get_associated_function (|
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::vec::into_iter::IntoIter",
+                                        "ptr"
+                                      |)
+                                    |);
+                                    M.read (| step_size |)
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| self |) |),
                                       "alloc::vec::into_iter::IntoIter",
                                       "ptr"
-                                    |)
-                                  |);
-                                  M.read (| step_size |)
-                                ]
-                              |)
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)))
@@ -2095,8 +2159,12 @@ Module vec.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -2192,31 +2260,37 @@ Module vec.
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::vec::into_iter::IntoIter",
-                                      "end"
-                                    |),
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*const") [] [ T ],
-                                      M.get_associated_function (|
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (M.call_closure (|
                                         Ty.apply (Ty.path "*const") [] [ T ],
-                                        "wrapping_byte_sub",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (|
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*const") [] [ T ],
+                                          "wrapping_byte_sub",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "alloc::vec::into_iter::IntoIter",
+                                              "end"
+                                            |)
+                                          |);
+                                          N
+                                        ]
+                                      |))),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
                                           M.SubPointer.get_struct_record_field (|
                                             M.deref (| M.read (| self |) |),
                                             "alloc::vec::into_iter::IntoIter",
                                             "end"
-                                          |)
-                                        |);
-                                        N
-                                      ]
-                                    |)
+                                          |),
+                                          rhs'
+                                        |)))
                                   |) in
                                 M.return_ (|
                                   Value.StructTuple
@@ -2575,31 +2649,37 @@ Module vec.
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::vec::into_iter::IntoIter",
-                        "ptr"
-                      |),
-                      M.call_closure (|
-                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                        M.get_associated_function (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
                           Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                          "add",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (|
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                            "add",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::vec::into_iter::IntoIter",
+                                "ptr"
+                              |)
+                            |);
+                            N
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "alloc::vec::into_iter::IntoIter",
                               "ptr"
-                            |)
-                          |);
-                          N
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (|
                     Ty.apply
@@ -2707,8 +2787,12 @@ Module vec.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          get_constant (|
-                            "core::mem::SizedTypeProperties::IS_ZST",
+                          get_trait_constant (|
+                            "core::mem::SizedTypeProperties",
+                            T,
+                            [],
+                            [],
+                            "IS_ZST",
                             Ty.path "bool"
                           |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -2802,31 +2886,37 @@ Module vec.
                                               ]
                                             |) in
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                self,
-                                                "alloc::vec::into_iter::IntoIter",
-                                                "end"
-                                              |),
-                                              M.call_closure (|
-                                                Ty.apply (Ty.path "*const") [] [ T ],
-                                                M.get_associated_function (|
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.call_closure (|
                                                   Ty.apply (Ty.path "*const") [] [ T ],
-                                                  "wrapping_byte_sub",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.read (|
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "*const") [] [ T ],
+                                                    "wrapping_byte_sub",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.read (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        self,
+                                                        "alloc::vec::into_iter::IntoIter",
+                                                        "end"
+                                                      |)
+                                                    |);
+                                                    Value.Integer IntegerKind.Usize 1
+                                                  ]
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
                                                     M.SubPointer.get_struct_record_field (|
                                                       self,
                                                       "alloc::vec::into_iter::IntoIter",
                                                       "end"
-                                                    |)
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 1
-                                                ]
-                                              |)
+                                                    |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           let~ _ : Ty.tuple [] :=
                                             M.write (|
@@ -2965,37 +3055,43 @@ Module vec.
                                               ]
                                             |) in
                                           let~ _ : Ty.tuple [] :=
-                                            M.write (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                self,
-                                                "alloc::vec::into_iter::IntoIter",
-                                                "ptr"
-                                              |),
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::ptr::non_null::NonNull")
-                                                  []
-                                                  [ T ],
-                                                M.get_associated_function (|
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::ptr::non_null::NonNull")
                                                     []
                                                     [ T ],
-                                                  "add",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.read (|
+                                                  M.get_associated_function (|
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [ T ],
+                                                    "add",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.read (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        self,
+                                                        "alloc::vec::into_iter::IntoIter",
+                                                        "ptr"
+                                                      |)
+                                                    |);
+                                                    Value.Integer IntegerKind.Usize 1
+                                                  ]
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (M.write (|
                                                     M.SubPointer.get_struct_record_field (|
                                                       self,
                                                       "alloc::vec::into_iter::IntoIter",
                                                       "ptr"
-                                                    |)
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 1
-                                                ]
-                                              |)
+                                                    |),
+                                                    rhs'
+                                                  |)))
                                             |) in
                                           let~ _ : Ty.tuple [] :=
                                             M.write (|
@@ -3096,8 +3192,12 @@ Module vec.
                         fun γ =>
                           ltac:(M.monadic
                             (let γ :=
-                              get_constant (|
-                                "core::mem::SizedTypeProperties::IS_ZST",
+                              get_trait_constant (|
+                                "core::mem::SizedTypeProperties",
+                                T,
+                                [],
+                                [],
+                                "IS_ZST",
                                 Ty.path "bool"
                               |) in
                             let _ :=
@@ -3192,31 +3292,37 @@ Module vec.
                                                   ]
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "alloc::vec::into_iter::IntoIter",
-                                                    "end"
-                                                  |),
-                                                  M.call_closure (|
-                                                    Ty.apply (Ty.path "*const") [] [ T ],
-                                                    M.get_associated_function (|
+                                                M.let_ (|
+                                                  ltac:(M.monadic
+                                                    (M.call_closure (|
                                                       Ty.apply (Ty.path "*const") [] [ T ],
-                                                      "wrapping_byte_sub",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.read (|
+                                                      M.get_associated_function (|
+                                                        Ty.apply (Ty.path "*const") [] [ T ],
+                                                        "wrapping_byte_sub",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "alloc::vec::into_iter::IntoIter",
+                                                            "end"
+                                                          |)
+                                                        |);
+                                                        Value.Integer IntegerKind.Usize 1
+                                                      ]
+                                                    |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
                                                         M.SubPointer.get_struct_record_field (|
                                                           M.deref (| M.read (| self |) |),
                                                           "alloc::vec::into_iter::IntoIter",
                                                           "end"
-                                                        |)
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 1
-                                                    ]
-                                                  |)
+                                                        |),
+                                                        rhs'
+                                                      |)))
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
                                                 M.write (|
@@ -3459,37 +3565,43 @@ Module vec.
                                                   ]
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
-                                                M.write (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "alloc::vec::into_iter::IntoIter",
-                                                    "ptr"
-                                                  |),
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "core::ptr::non_null::NonNull")
-                                                      []
-                                                      [ T ],
-                                                    M.get_associated_function (|
+                                                M.let_ (|
+                                                  ltac:(M.monadic
+                                                    (M.call_closure (|
                                                       Ty.apply
                                                         (Ty.path "core::ptr::non_null::NonNull")
                                                         []
                                                         [ T ],
-                                                      "add",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.read (|
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [ T ],
+                                                        "add",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "alloc::vec::into_iter::IntoIter",
+                                                            "ptr"
+                                                          |)
+                                                        |);
+                                                        Value.Integer IntegerKind.Usize 1
+                                                      ]
+                                                    |))),
+                                                  fun rhs' =>
+                                                    ltac:(M.monadic
+                                                      (M.write (|
                                                         M.SubPointer.get_struct_record_field (|
                                                           M.deref (| M.read (| self |) |),
                                                           "alloc::vec::into_iter::IntoIter",
                                                           "ptr"
-                                                        |)
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 1
-                                                    ]
-                                                  |)
+                                                        |),
+                                                        rhs'
+                                                      |)))
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
                                                 M.write (|
@@ -3793,8 +3905,12 @@ Module vec.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          get_constant (|
-                            "core::mem::SizedTypeProperties::IS_ZST",
+                          get_trait_constant (|
+                            "core::mem::SizedTypeProperties",
+                            T,
+                            [],
+                            [],
+                            "IS_ZST",
                             Ty.path "bool"
                           |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -3862,31 +3978,37 @@ Module vec.
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::vec::into_iter::IntoIter",
-                                "end"
-                              |),
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ T ],
-                                M.get_associated_function (|
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ T ],
-                                  "wrapping_byte_sub",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ T ],
+                                    "wrapping_byte_sub",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::vec::into_iter::IntoIter",
+                                        "end"
+                                      |)
+                                    |);
+                                    Value.Integer IntegerKind.Usize 1
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| self |) |),
                                       "alloc::vec::into_iter::IntoIter",
                                       "end"
-                                    |)
-                                  |);
-                                  Value.Integer IntegerKind.Usize 1
-                                ]
-                              |)
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply (Ty.path "core::option::Option") [] [ T ],
@@ -4017,31 +4139,37 @@ Module vec.
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::vec::into_iter::IntoIter",
-                                "end"
-                              |),
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ T ],
-                                M.get_associated_function (|
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ T ],
-                                  "sub",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ T ],
+                                    "sub",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::vec::into_iter::IntoIter",
+                                        "end"
+                                      |)
+                                    |);
+                                    Value.Integer IntegerKind.Usize 1
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| self |) |),
                                       "alloc::vec::into_iter::IntoIter",
                                       "end"
-                                    |)
-                                  |);
-                                  Value.Integer IntegerKind.Usize 1
-                                ]
-                              |)
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (|
                             Ty.apply (Ty.path "core::option::Option") [] [ T ],
@@ -4142,38 +4270,48 @@ Module vec.
                     fun γ =>
                       ltac:(M.monadic
                         (let γ :=
-                          get_constant (|
-                            "core::mem::SizedTypeProperties::IS_ZST",
+                          get_trait_constant (|
+                            "core::mem::SizedTypeProperties",
+                            T,
+                            [],
+                            [],
+                            "IS_ZST",
                             Ty.path "bool"
                           |) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::vec::into_iter::IntoIter",
-                                "end"
-                              |),
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ T ],
-                                M.get_associated_function (|
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ T ],
-                                  "wrapping_byte_sub",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ T ],
+                                    "wrapping_byte_sub",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::vec::into_iter::IntoIter",
+                                        "end"
+                                      |)
+                                    |);
+                                    M.read (| step_size |)
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| self |) |),
                                       "alloc::vec::into_iter::IntoIter",
                                       "end"
-                                    |)
-                                  |);
-                                  M.read (| step_size |)
-                                ]
-                              |)
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -4181,31 +4319,37 @@ Module vec.
                       ltac:(M.monadic
                         (M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::vec::into_iter::IntoIter",
-                                "end"
-                              |),
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ T ],
-                                M.get_associated_function (|
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ T ],
-                                  "sub",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ T ],
+                                    "sub",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::vec::into_iter::IntoIter",
+                                        "end"
+                                      |)
+                                    |);
+                                    M.read (| step_size |)
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
                                     M.SubPointer.get_struct_record_field (|
                                       M.deref (| M.read (| self |) |),
                                       "alloc::vec::into_iter::IntoIter",
                                       "end"
-                                    |)
-                                  |);
-                                  M.read (| step_size |)
-                                ]
-                              |)
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)))
@@ -4373,7 +4517,14 @@ Module vec.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ :=
-                      get_constant (| "core::mem::SizedTypeProperties::IS_ZST", Ty.path "bool" |) in
+                      get_trait_constant (|
+                        "core::mem::SizedTypeProperties",
+                        T,
+                        [],
+                        [],
+                        "IS_ZST",
+                        Ty.path "bool"
+                      |) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                     M.call_closure (|
                       Ty.path "bool",

@@ -261,7 +261,11 @@ Module verifier.
                                           |)
                                         ]
                                       |));
-                                    M.read (| UnsupportedLiteral |)
+                                    M.read (|
+                                      M.impossible (|
+                                        "[ROR003] floating-point literal in verifier::verify_module_with_config_for_test"
+                                      |)
+                                    |)
                                   ]
                                 |)
                               |)

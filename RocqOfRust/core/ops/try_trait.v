@@ -208,12 +208,7 @@ Module ops.
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                    let args :=
-                      M.copy (|
-                        Ty.path
-                          "Type for variables in patterns in function parameters is not handled",
-                        γ0_0
-                      |) in
+                    let args := M.copy (| A, γ0_0 |) in
                     Value.StructTuple
                       "core::ops::try_trait::NeverShortCircuit"
                       []

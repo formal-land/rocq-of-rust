@@ -1534,13 +1534,18 @@ Module cfg.
           let chain_id := M.alloc (| Ty.path "u64", chain_id |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  self,
-                  "revm_context::cfg::CfgEnv",
-                  "chain_id"
-                |),
-                M.read (| chain_id |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| chain_id |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        self,
+                        "revm_context::cfg::CfgEnv",
+                        "chain_id"
+                      |),
+                      rhs'
+                    |)))
               |) in
             self
           |)))
@@ -1831,17 +1836,23 @@ Module cfg.
           let max_blobs_per_tx := M.alloc (| Ty.path "u64", max_blobs_per_tx |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context::cfg::CfgEnv",
-                  "max_blobs_per_tx"
-                |),
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "u64" ]
-                  [ M.read (| max_blobs_per_tx |) ]
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ Ty.path "u64" ]
+                    [ M.read (| max_blobs_per_tx |) ])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context::cfg::CfgEnv",
+                        "max_blobs_per_tx"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1880,13 +1891,19 @@ Module cfg.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context::cfg::CfgEnv",
-                  "max_blobs_per_tx"
-                |),
-                Value.StructTuple "core::option::Option::None" [] [ Ty.path "u64" ] []
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple "core::option::Option::None" [] [ Ty.path "u64" ] [])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context::cfg::CfgEnv",
+                        "max_blobs_per_tx"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

@@ -25,7 +25,12 @@ Module Impl_associated_functions_and_methods_Point.
           "associated_functions_and_methods::Point"
           []
           []
-          [ ("y", M.read (| UnsupportedLiteral |)); ("x", M.read (| UnsupportedLiteral |)) ]))
+          [
+            ("y",
+              M.read (| M.impossible (| "[ROR003] floating-point literal in Point::origin" |) |));
+            ("x",
+              M.read (| M.impossible (| "[ROR003] floating-point literal in Point::origin" |) |))
+          ]))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -274,7 +279,11 @@ Module Impl_associated_functions_and_methods_Rectangle.
                           Ty.path "f64",
                           BinOp.Wrap.mul,
                           [
-                            M.read (| UnsupportedLiteral |);
+                            M.read (|
+                              M.impossible (|
+                                "[ROR003] floating-point literal in Rectangle::perimeter"
+                              |)
+                            |);
                             M.call_closure (|
                               Ty.path "f64",
                               BinOp.Wrap.add,
@@ -340,64 +349,84 @@ Module Impl_associated_functions_and_methods_Rectangle.
         let y := M.alloc (| Ty.path "f64", y |) in
         M.read (|
           let~ _ : Ty.tuple [] :=
-            let β :=
-              M.SubPointer.get_struct_record_field (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "associated_functions_and_methods::Rectangle",
-                  "p1"
-                |),
-                "associated_functions_and_methods::Point",
-                "x"
-              |) in
-            M.write (|
-              β,
-              M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); M.read (| x |) ] |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| x |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (let β :=
+                    M.SubPointer.get_struct_record_field (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "associated_functions_and_methods::Rectangle",
+                        "p1"
+                      |),
+                      "associated_functions_and_methods::Point",
+                      "x"
+                    |) in
+                  M.write (|
+                    β,
+                    M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            let β :=
-              M.SubPointer.get_struct_record_field (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "associated_functions_and_methods::Rectangle",
-                  "p2"
-                |),
-                "associated_functions_and_methods::Point",
-                "x"
-              |) in
-            M.write (|
-              β,
-              M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); M.read (| x |) ] |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| x |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (let β :=
+                    M.SubPointer.get_struct_record_field (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "associated_functions_and_methods::Rectangle",
+                        "p2"
+                      |),
+                      "associated_functions_and_methods::Point",
+                      "x"
+                    |) in
+                  M.write (|
+                    β,
+                    M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            let β :=
-              M.SubPointer.get_struct_record_field (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "associated_functions_and_methods::Rectangle",
-                  "p1"
-                |),
-                "associated_functions_and_methods::Point",
-                "y"
-              |) in
-            M.write (|
-              β,
-              M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); M.read (| y |) ] |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| y |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (let β :=
+                    M.SubPointer.get_struct_record_field (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "associated_functions_and_methods::Rectangle",
+                        "p1"
+                      |),
+                      "associated_functions_and_methods::Point",
+                      "y"
+                    |) in
+                  M.write (|
+                    β,
+                    M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            let β :=
-              M.SubPointer.get_struct_record_field (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "associated_functions_and_methods::Rectangle",
-                  "p2"
-                |),
-                "associated_functions_and_methods::Point",
-                "y"
-              |) in
-            M.write (|
-              β,
-              M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); M.read (| y |) ] |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| y |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (let β :=
+                    M.SubPointer.get_struct_record_field (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "associated_functions_and_methods::Rectangle",
+                        "p2"
+                      |),
+                      "associated_functions_and_methods::Point",
+                      "y"
+                    |) in
+                  M.write (|
+                    β,
+                    M.call_closure (| Ty.path "f64", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                  |)))
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))
@@ -704,7 +733,10 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     [],
                     []
                   |),
-                  [ M.read (| UnsupportedLiteral |); M.read (| UnsupportedLiteral |) ]
+                  [
+                    M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
+                    M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |)
+                  ]
                 |))
             ] in
         let~ _ : Ty.tuple [] :=
@@ -950,7 +982,10 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     [],
                     []
                   |),
-                  [ M.read (| UnsupportedLiteral |); M.read (| UnsupportedLiteral |) ]
+                  [
+                    M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
+                    M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |)
+                  ]
                 |))
             ] in
         let~ _ : Ty.tuple [] :=
@@ -964,8 +999,8 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             |),
             [
               M.borrow (| Pointer.Kind.MutRef, square |);
-              M.read (| UnsupportedLiteral |);
-              M.read (| UnsupportedLiteral |)
+              M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |);
+              M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |)
             ]
           |) in
         let~ pair_ : Ty.path "associated_functions_and_methods::Pair" :=

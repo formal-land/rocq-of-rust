@@ -7133,17 +7133,22 @@ Module journaled_state.
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| account |) |),
-                                  "revm_state::Account",
-                                  "info"
-                                |),
-                                "revm_state::account_info::AccountInfo",
-                                "balance"
-                              |),
-                              M.read (| old_balance |)
+                            M.let_ (|
+                              ltac:(M.monadic (M.read (| old_balance |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| account |) |),
+                                        "revm_state::Account",
+                                        "info"
+                                      |),
+                                      "revm_state::account_info::AccountInfo",
+                                      "balance"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -7382,74 +7387,85 @@ Module journaled_state.
                         let previous_nonce := M.copy (| Ty.path "u64", γ0_1 |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&mut")
-                                        []
-                                        [ Ty.path "revm_state::Account" ],
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [
+                            M.let_ (|
+                              ltac:(M.monadic (M.read (| previous_nonce |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (|
+                                          M.call_closure (|
                                             Ty.apply
                                               (Ty.path "&mut")
                                               []
-                                              [ Ty.path "revm_state::Account" ]
-                                          ],
-                                        "unwrap",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::option::Option")
-                                            []
-                                            [
+                                              [ Ty.path "revm_state::Account" ],
+                                            M.get_associated_function (|
                                               Ty.apply
-                                                (Ty.path "&mut")
+                                                (Ty.path "core::option::Option")
                                                 []
-                                                [ Ty.path "revm_state::Account" ]
-                                            ],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "std::collections::hash::map::HashMap")
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.path "revm_state::Account" ]
+                                                ],
+                                              "unwrap",
+                                              [],
                                               []
-                                              [
-                                                Ty.path "alloy_primitives::bits::address::Address";
-                                                Ty.path "revm_state::Account";
-                                                Ty.path "std::hash::random::RandomState"
-                                              ],
-                                            "get_mut",
-                                            [],
-                                            [ Ty.path "alloy_primitives::bits::address::Address" ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| state |) |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, address |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  "revm_state::Account",
-                                  "info"
-                                |),
-                                "revm_state::account_info::AccountInfo",
-                                "nonce"
-                              |),
-                              M.read (| previous_nonce |)
+                                            |),
+                                            [
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [ Ty.path "revm_state::Account" ]
+                                                  ],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "std::collections::hash::map::HashMap")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "alloy_primitives::bits::address::Address";
+                                                      Ty.path "revm_state::Account";
+                                                      Ty.path "std::hash::random::RandomState"
+                                                    ],
+                                                  "get_mut",
+                                                  [],
+                                                  [
+                                                    Ty.path
+                                                      "alloy_primitives::bits::address::Address"
+                                                  ]
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| state |) |)
+                                                  |);
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, address |)
+                                                    |)
+                                                  |)
+                                                ]
+                                              |)
+                                            ]
+                                          |)
+                                        |),
+                                        "revm_state::Account",
+                                        "info"
+                                      |),
+                                      "revm_state::account_info::AccountInfo",
+                                      "nonce"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -7535,21 +7551,24 @@ Module journaled_state.
                               |)
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.deref (| M.read (| nonce |) |),
-                              M.call_closure (|
-                                Ty.path "u64",
-                                M.get_associated_function (|
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.call_closure (|
                                   Ty.path "u64",
-                                  "saturating_sub",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| M.deref (| M.read (| nonce |) |) |);
-                                  Value.Integer IntegerKind.U64 1
-                                ]
-                              |)
+                                  M.get_associated_function (|
+                                    Ty.path "u64",
+                                    "saturating_sub",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.read (| M.deref (| M.read (| nonce |) |) |);
+                                    Value.Integer IntegerKind.U64 1
+                                  ]
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (| M.deref (| M.read (| nonce |) |), rhs' |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -7939,152 +7958,161 @@ Module journaled_state.
                           |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [ Ty.path "revm_state::EvmStorageSlot" ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::option::Option")
-                                        []
-                                        [
+                            M.let_ (|
+                              ltac:(M.monadic (M.read (| had_value |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (|
+                                        M.call_closure (|
                                           Ty.apply
                                             (Ty.path "&mut")
                                             []
-                                            [ Ty.path "revm_state::EvmStorageSlot" ]
-                                        ],
-                                      "unwrap",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [
+                                            [ Ty.path "revm_state::EvmStorageSlot" ],
+                                          M.get_associated_function (|
                                             Ty.apply
-                                              (Ty.path "&mut")
+                                              (Ty.path "core::option::Option")
                                               []
-                                              [ Ty.path "revm_state::EvmStorageSlot" ]
-                                          ],
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "std::collections::hash::map::HashMap")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "ruint::Uint")
-                                                [
-                                                  Value.Integer IntegerKind.Usize 256;
-                                                  Value.Integer IntegerKind.Usize 4
-                                                ]
-                                                [];
-                                              Ty.path "revm_state::EvmStorageSlot";
-                                              Ty.path "std::hash::random::RandomState"
-                                            ],
-                                          "get_mut",
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "ruint::Uint")
                                               [
-                                                Value.Integer IntegerKind.Usize 256;
-                                                Value.Integer IntegerKind.Usize 4
-                                              ]
-                                              []
-                                          ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (|
-                                                M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.path "revm_state::EvmStorageSlot" ]
+                                              ],
+                                            "unwrap",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
                                                   Ty.apply
                                                     (Ty.path "&mut")
                                                     []
-                                                    [ Ty.path "revm_state::Account" ],
-                                                  M.get_associated_function (|
+                                                    [ Ty.path "revm_state::EvmStorageSlot" ]
+                                                ],
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "std::collections::hash::map::HashMap")
+                                                  []
+                                                  [
                                                     Ty.apply
-                                                      (Ty.path "core::option::Option")
-                                                      []
+                                                      (Ty.path "ruint::Uint")
                                                       [
+                                                        Value.Integer IntegerKind.Usize 256;
+                                                        Value.Integer IntegerKind.Usize 4
+                                                      ]
+                                                      [];
+                                                    Ty.path "revm_state::EvmStorageSlot";
+                                                    Ty.path "std::hash::random::RandomState"
+                                                  ],
+                                                "get_mut",
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    []
+                                                ]
+                                              |),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (|
+                                                      M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path "&mut")
                                                           []
-                                                          [ Ty.path "revm_state::Account" ]
-                                                      ],
-                                                    "unwrap",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "core::option::Option")
-                                                        []
-                                                        [
+                                                          [ Ty.path "revm_state::Account" ],
+                                                        M.get_associated_function (|
                                                           Ty.apply
-                                                            (Ty.path "&mut")
+                                                            (Ty.path "core::option::Option")
                                                             []
-                                                            [ Ty.path "revm_state::Account" ]
-                                                        ],
-                                                      M.get_associated_function (|
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "std::collections::hash::map::HashMap")
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [ Ty.path "revm_state::Account" ]
+                                                            ],
+                                                          "unwrap",
+                                                          [],
                                                           []
-                                                          [
-                                                            Ty.path
-                                                              "alloy_primitives::bits::address::Address";
-                                                            Ty.path "revm_state::Account";
-                                                            Ty.path "std::hash::random::RandomState"
-                                                          ],
-                                                        "get_mut",
-                                                        [],
+                                                        |),
                                                         [
-                                                          Ty.path
-                                                            "alloy_primitives::bits::address::Address"
-                                                        ]
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (| M.read (| state |) |)
-                                                        |);
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (| Pointer.Kind.Ref, address |)
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "core::option::Option")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "&mut")
+                                                                  []
+                                                                  [ Ty.path "revm_state::Account" ]
+                                                              ],
+                                                            M.get_associated_function (|
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "std::collections::hash::map::HashMap")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "alloy_primitives::bits::address::Address";
+                                                                  Ty.path "revm_state::Account";
+                                                                  Ty.path
+                                                                    "std::hash::random::RandomState"
+                                                                ],
+                                                              "get_mut",
+                                                              [],
+                                                              [
+                                                                Ty.path
+                                                                  "alloy_primitives::bits::address::Address"
+                                                              ]
+                                                            |),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.deref (| M.read (| state |) |)
+                                                              |);
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    address
+                                                                  |)
+                                                                |)
+                                                              |)
+                                                            ]
                                                           |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  ]
+                                                        ]
+                                                      |)
+                                                    |),
+                                                    "revm_state::Account",
+                                                    "storage"
+                                                  |)
+                                                |);
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, key |) |)
                                                 |)
-                                              |),
-                                              "revm_state::Account",
-                                              "storage"
+                                              ]
                                             |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, key |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |),
-                                "revm_state::EvmStorageSlot",
-                                "present_value"
-                              |),
-                              M.read (| had_value |)
+                                          ]
+                                        |)
+                                      |),
+                                      "revm_state::EvmStorageSlot",
+                                      "present_value"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -8447,42 +8475,54 @@ Module journaled_state.
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| acc |) |),
-                                  "revm_state::Account",
-                                  "info"
-                                |),
-                                "revm_state::account_info::AccountInfo",
-                                "code_hash"
-                              |),
-                              M.read (|
-                                get_constant (|
-                                  "revm_primitives::constants::KECCAK_EMPTY",
-                                  Ty.apply
-                                    (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                    [ Value.Integer IntegerKind.Usize 32 ]
-                                    []
-                                |)
-                              |)
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.read (|
+                                  get_constant (|
+                                    "revm_primitives::constants::KECCAK_EMPTY",
+                                    Ty.apply
+                                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      []
+                                  |)
+                                |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| acc |) |),
+                                        "revm_state::Account",
+                                        "info"
+                                      |),
+                                      "revm_state::account_info::AccountInfo",
+                                      "code_hash"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| acc |) |),
-                                  "revm_state::Account",
-                                  "info"
-                                |),
-                                "revm_state::account_info::AccountInfo",
-                                "code"
-                              |),
-                              Value.StructTuple
-                                "core::option::Option::None"
-                                []
-                                [ Ty.path "revm_bytecode::bytecode::Bytecode" ]
-                                []
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (Value.StructTuple
+                                  "core::option::Option::None"
+                                  []
+                                  [ Ty.path "revm_bytecode::bytecode::Bytecode" ]
+                                  [])),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| acc |) |),
+                                        "revm_state::Account",
+                                        "info"
+                                      |),
+                                      "revm_state::account_info::AccountInfo",
+                                      "code"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)))

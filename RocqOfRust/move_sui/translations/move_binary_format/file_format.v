@@ -31303,7 +31303,11 @@ Module file_format.
                         [ Ty.path "move_binary_format::file_format::StructHandleIndex" ],
                       M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                     |) in
-                  M.write (| M.deref (| M.read (| wrapped |) |), M.read (| sh_idx |) |)));
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| sh_idx |))),
+                    fun rhs' =>
+                      ltac:(M.monadic (M.write (| M.deref (| M.read (| wrapped |) |), rhs' |)))
+                  |)));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -31340,74 +31344,85 @@ Module file_format.
                         ],
                       M.borrow (| Pointer.Kind.MutRef, γ1_0 |)
                     |) in
-                  M.write (|
-                    M.SubPointer.get_tuple_field (|
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [
-                              Ty.tuple
-                                [
-                                  Ty.path "move_binary_format::file_format::StructHandleIndex";
-                                  Ty.apply
-                                    (Ty.path "alloc::vec::Vec")
-                                    []
-                                    [
-                                      Ty.path "move_binary_format::file_format::SignatureToken";
-                                      Ty.path "alloc::alloc::Global"
-                                    ]
-                                ]
-                            ],
-                          M.get_trait_method (|
-                            "core::convert::AsMut",
-                            Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.tuple
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| sh_idx |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_tuple_field (|
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
                                   [
-                                    Ty.path "move_binary_format::file_format::StructHandleIndex";
-                                    Ty.apply
-                                      (Ty.path "alloc::vec::Vec")
-                                      []
+                                    Ty.tuple
                                       [
-                                        Ty.path "move_binary_format::file_format::SignatureToken";
-                                        Ty.path "alloc::alloc::Global"
+                                        Ty.path
+                                          "move_binary_format::file_format::StructHandleIndex";
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [
+                                            Ty.path
+                                              "move_binary_format::file_format::SignatureToken";
+                                            Ty.path "alloc::alloc::Global"
+                                          ]
                                       ]
-                                  ];
-                                Ty.path "alloc::alloc::Global"
-                              ],
-                            [],
-                            [
-                              Ty.tuple
-                                [
-                                  Ty.path "move_binary_format::file_format::StructHandleIndex";
+                                  ],
+                                M.get_trait_method (|
+                                  "core::convert::AsMut",
                                   Ty.apply
-                                    (Ty.path "alloc::vec::Vec")
+                                    (Ty.path "alloc::boxed::Box")
                                     []
                                     [
-                                      Ty.path "move_binary_format::file_format::SignatureToken";
+                                      Ty.tuple
+                                        [
+                                          Ty.path
+                                            "move_binary_format::file_format::StructHandleIndex";
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::Vec")
+                                            []
+                                            [
+                                              Ty.path
+                                                "move_binary_format::file_format::SignatureToken";
+                                              Ty.path "alloc::alloc::Global"
+                                            ]
+                                        ];
                                       Ty.path "alloc::alloc::Global"
-                                    ]
+                                    ],
+                                  [],
+                                  [
+                                    Ty.tuple
+                                      [
+                                        Ty.path
+                                          "move_binary_format::file_format::StructHandleIndex";
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [
+                                            Ty.path
+                                              "move_binary_format::file_format::SignatureToken";
+                                            Ty.path "alloc::alloc::Global"
+                                          ]
+                                      ]
+                                  ],
+                                  "as_mut",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| struct_inst |) |)
+                                  |)
                                 ]
-                            ],
-                            "as_mut",
-                            [],
-                            []
+                              |)
+                            |),
+                            0
                           |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.read (| struct_inst |) |)
-                            |)
-                          ]
-                        |)
-                      |),
-                      0
-                    |),
-                    M.read (| sh_idx |)
+                          rhs'
+                        |)))
                   |)));
               fun γ =>
                 ltac:(M.monadic

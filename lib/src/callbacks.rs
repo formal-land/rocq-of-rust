@@ -3,8 +3,27 @@ use crate::top_level::*;
 use rustc_driver::{Callbacks, Compilation};
 use rustc_interface::interface::Compiler;
 use rustc_middle::ty::TyCtxt;
-use std::fs::File;
-use std::io::Write;
+use rustc_span::Symbol;
+use std::collections::BTreeMap;
+use std::path::Path;
+
+pub const CARGO_SELECTION: &str = "ROCQ_OF_RUST_SELECTION";
+
+fn track_env(compiler: &Compiler, key: &str) {
+    compiler.sess.psess.env_depinfo.borrow_mut().insert((
+        Symbol::intern(key),
+        std::env::var(key).ok().map(|value| Symbol::intern(&value)),
+    ));
+}
+
+pub struct CargoDependency;
+
+impl Callbacks for CargoDependency {
+    fn after_expansion<'tcx>(&mut self, compiler: &Compiler, _: TyCtxt<'tcx>) -> Compilation {
+        track_env(compiler, CARGO_SELECTION);
+        Compilation::Continue
+    }
+}
 
 pub struct ToRocq {
     opts: Options,
@@ -16,23 +35,27 @@ impl ToRocq {
     }
 }
 
-fn get_index_rocq_file_content(file_names: Vec<String>) -> String {
-    let mut index_content = String::new();
-
-    for file_name in file_names {
-        index_content.push_str(&format!(
-            "Require Export {}.\n",
-            file_name.replace(".rs", "").replace('/', "."),
-        ));
+fn write_output(compiler: &Compiler, path: &Path, contents: &str) {
+    if let Err(err) = crate::core::write_if_changed(path, contents) {
+        compiler
+            .sess
+            .dcx()
+            .fatal(format!("cannot write {}: {err}", path.display()));
     }
-
-    index_content
+    // Cargo must re-run the wrapper if a generated artifact disappears.
+    compiler
+        .sess
+        .psess
+        .file_depinfo
+        .borrow_mut()
+        .insert(Symbol::intern(&path.to_string_lossy()));
 }
 
 impl Callbacks for ToRocq {
     fn after_expansion<'tcx>(&mut self, compiler: &Compiler, tcx: TyCtxt<'tcx>) -> Compilation {
         let crate::options::Options {
             axiomatize,
+            fold_scalar_constants,
             with_json,
             ..
         } = self.opts;
@@ -43,36 +66,43 @@ impl Callbacks for ToRocq {
         println!("Compiling crate {current_crate_name_string:}");
 
         let crate_name = current_crate_name_string.clone();
-        let translation = translate_top_level(&tcx, TopLevelOptions { axiomatize });
+        let translation = translate_top_level(
+            &tcx,
+            TopLevelOptions {
+                axiomatize,
+                fold_scalar_constants,
+            },
+        );
 
-        let mut file = File::create(format!("{crate_name}.v")).unwrap();
-        let index_content = get_index_rocq_file_content(translation.keys().cloned().collect());
-
-        file.write_all(index_content.as_bytes()).unwrap();
-
-        for (file_name, (rocq_translation, json_translation)) in translation {
-            let rocq_file_name = file_name.replace(".rs", ".v");
-            println!("Writing to {rocq_file_name:}");
-
-            let file = File::create(rocq_file_name.clone());
-
-            // For some of the files we cannot create the output as the path is not accessible,
-            // especially for files corresponding to part of the standard library that appear
-            // sometimes in the translation.
-            if file.is_err() {
-                println!("Failed to create {rocq_file_name:}");
+        let mut index = String::new();
+        for (file_name, (rocq, json)) in BTreeMap::from_iter(translation) {
+            let source = Path::new(&file_name);
+            // Expansion spans in the virtual sysroot are not crate-owned modules.
+            if source.starts_with("/rustc") && !source.exists() {
                 continue;
             }
-
-            file.unwrap()
-                .write_all(rocq_translation.as_bytes())
-                .unwrap();
-
+            write_output(compiler, &source.with_extension("v"), &rocq);
             if with_json {
-                let json_file_name = file_name.replace(".rs", ".json");
-                let mut file = File::create(json_file_name).unwrap();
-                file.write_all(json_translation.as_bytes()).unwrap();
+                write_output(compiler, &source.with_extension("json"), &json);
             }
+            let module = source
+                .with_extension("")
+                .to_string_lossy()
+                .replace('/', ".");
+            index.push_str(&format!("Require Export {module}.\n"));
+        }
+        write_output(compiler, Path::new(&format!("{crate_name}.v")), &index);
+
+        if self.opts.in_cargo {
+            track_env(compiler, "ROCQ_OF_RUST_ARGS");
+            track_env(compiler, CARGO_SELECTION);
+            let driver = std::env::current_exe().expect("current driver path");
+            compiler
+                .sess
+                .psess
+                .file_depinfo
+                .borrow_mut()
+                .insert(Symbol::intern(&driver.to_string_lossy()));
         }
 
         compiler.sess.dcx().abort_if_errors();

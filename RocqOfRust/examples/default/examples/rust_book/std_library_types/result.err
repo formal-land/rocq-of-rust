@@ -1,0 +1,42 @@
+warning: [ROR003] floating-point literal in checked::div
+  --> examples/rust_book/std_library_types/result.rs:13:17
+   |
+13 |         if y == 0.0 {
+   |                 ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in checked::sqrt
+  --> examples/rust_book/std_library_types/result.rs:24:16
+   |
+24 |         if x < 0.0 {
+   |                ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in checked::ln
+  --> examples/rust_book/std_library_types/result.rs:32:17
+   |
+32 |         if x <= 0.0 {
+   |                 ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/std_library_types/result.rs:57:23
+   |
+57 |     println!("{}", op(1.0, 10.0));
+   |                       ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/std_library_types/result.rs:57:28
+   |
+57 |     println!("{}", op(1.0, 10.0));
+   |                            ^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: 5 warnings emitted
+

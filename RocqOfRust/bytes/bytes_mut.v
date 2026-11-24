@@ -1275,35 +1275,46 @@ Module bytes_mut.
                 [ M.borrow (| Pointer.Kind.MutRef, other |); M.read (| at_ |) ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "bytes::bytes_mut::BytesMut",
-                  "cap"
-                |),
-                M.read (| at_ |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| at_ |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "bytes::bytes_mut::BytesMut",
+                        "cap"
+                      |),
+                      rhs'
+                    |)))
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "bytes::bytes_mut::BytesMut",
-                  "len"
-                |),
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_function (| "core::cmp::min", [], [ Ty.path "usize" ] |),
-                  [
-                    M.read (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_function (| "core::cmp::min", [], [ Ty.path "usize" ] |),
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "bytes::bytes_mut::BytesMut",
+                          "len"
+                        |)
+                      |);
+                      M.read (| at_ |)
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
                       M.SubPointer.get_struct_record_field (|
                         M.deref (| M.read (| self |) |),
                         "bytes::bytes_mut::BytesMut",
                         "len"
-                      |)
-                    |);
-                    M.read (| at_ |)
-                  ]
-                |)
+                      |),
+                      rhs'
+                    |)))
               |) in
             other
           |)))
@@ -1609,22 +1620,32 @@ Module bytes_mut.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  other,
-                  "bytes::bytes_mut::BytesMut",
-                  "cap"
-                |),
-                M.read (| at_ |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| at_ |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        other,
+                        "bytes::bytes_mut::BytesMut",
+                        "cap"
+                      |),
+                      rhs'
+                    |)))
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  other,
-                  "bytes::bytes_mut::BytesMut",
-                  "len"
-                |),
-                M.read (| at_ |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| at_ |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        other,
+                        "bytes::bytes_mut::BytesMut",
+                        "len"
+                      |),
+                      rhs'
+                    |)))
               |) in
             other
           |)))
@@ -2080,13 +2101,18 @@ Module bytes_mut.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "bytes::bytes_mut::BytesMut",
-                  "len"
-                |),
-                M.read (| len |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| len |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "bytes::bytes_mut::BytesMut",
+                        "len"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -2663,24 +2689,30 @@ Module bytes_mut.
                                                 ]
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "bytes::bytes_mut::BytesMut",
-                                                  "ptr"
-                                                |),
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "core::ptr::non_null::NonNull")
-                                                    []
-                                                    [ Ty.path "u8" ],
-                                                  M.get_function (|
-                                                    "bytes::bytes_mut::vptr",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [ M.read (| base_ptr |) ]
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [ Ty.path "u8" ],
+                                                    M.get_function (|
+                                                      "bytes::bytes_mut::vptr",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [ M.read (| base_ptr |) ]
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "bytes::bytes_mut::BytesMut",
+                                                        "ptr"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             let~ _ : Ty.tuple [] :=
                                               M.call_closure (|
@@ -2700,19 +2732,24 @@ Module bytes_mut.
                                                 ]
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              let β :=
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "bytes::bytes_mut::BytesMut",
-                                                  "cap"
-                                                |) in
-                                              M.write (|
-                                                β,
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  BinOp.Wrap.add,
-                                                  [ M.read (| β |); M.read (| off |) ]
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic (M.read (| off |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (let β :=
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "bytes::bytes_mut::BytesMut",
+                                                        "cap"
+                                                      |) in
+                                                    M.write (|
+                                                      β,
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.add,
+                                                        [ M.read (| β |); rhs' ]
+                                                      |)
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)));
@@ -2903,75 +2940,58 @@ Module bytes_mut.
                                                 ]
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "bytes::bytes_mut::BytesMut",
-                                                  "ptr"
-                                                |),
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "core::ptr::non_null::NonNull")
-                                                    []
-                                                    [ Ty.path "u8" ],
-                                                  M.get_function (|
-                                                    "bytes::bytes_mut::vptr",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                      M.get_associated_function (|
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "core::ptr::non_null::NonNull")
+                                                      []
+                                                      [ Ty.path "u8" ],
+                                                    M.get_function (|
+                                                      "bytes::bytes_mut::vptr",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path "*mut")
                                                           []
                                                           [ Ty.path "u8" ],
-                                                        "add",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.call_closure (|
+                                                        M.get_associated_function (|
                                                           Ty.apply
                                                             (Ty.path "*mut")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          M.get_associated_function (|
+                                                          "add",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.call_closure (|
                                                             Ty.apply
-                                                              (Ty.path "alloc::vec::Vec")
+                                                              (Ty.path "*mut")
                                                               []
-                                                              [
-                                                                Ty.path "u8";
-                                                                Ty.path "alloc::alloc::Global"
-                                                              ],
-                                                            "as_mut_ptr",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.MutRef,
-                                                              M.deref (|
-                                                                M.call_closure (|
-                                                                  Ty.apply
-                                                                    (Ty.path "&mut")
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "alloc::vec::Vec")
-                                                                        []
-                                                                        [
-                                                                          Ty.path "u8";
-                                                                          Ty.path
-                                                                            "alloc::alloc::Global"
-                                                                        ]
-                                                                    ],
-                                                                  M.get_trait_method (|
-                                                                    "core::ops::deref::DerefMut",
+                                                              [ Ty.path "u8" ],
+                                                            M.get_associated_function (|
+                                                              Ty.apply
+                                                                (Ty.path "alloc::vec::Vec")
+                                                                []
+                                                                [
+                                                                  Ty.path "u8";
+                                                                  Ty.path "alloc::alloc::Global"
+                                                                ],
+                                                              "as_mut_ptr",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.deref (|
+                                                                  M.call_closure (|
                                                                     Ty.apply
-                                                                      (Ty.path
-                                                                        "core::mem::manually_drop::ManuallyDrop")
+                                                                      (Ty.path "&mut")
                                                                       []
                                                                       [
                                                                         Ty.apply
@@ -2984,76 +3004,84 @@ Module bytes_mut.
                                                                               "alloc::alloc::Global"
                                                                           ]
                                                                       ],
-                                                                    [],
-                                                                    [],
-                                                                    "deref_mut",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.MutRef,
-                                                                      v
-                                                                    |)
-                                                                  ]
+                                                                    M.get_trait_method (|
+                                                                      "core::ops::deref::DerefMut",
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::mem::manually_drop::ManuallyDrop")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "alloc::vec::Vec")
+                                                                            []
+                                                                            [
+                                                                              Ty.path "u8";
+                                                                              Ty.path
+                                                                                "alloc::alloc::Global"
+                                                                            ]
+                                                                        ],
+                                                                      [],
+                                                                      [],
+                                                                      "deref_mut",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        v
+                                                                      |)
+                                                                    ]
+                                                                  |)
                                                                 |)
                                                               |)
-                                                            |)
-                                                          ]
-                                                        |);
-                                                        M.read (| off |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
+                                                            ]
+                                                          |);
+                                                          M.read (| off |)
+                                                        ]
+                                                      |)
+                                                    ]
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "bytes::bytes_mut::BytesMut",
+                                                        "ptr"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "bytes::bytes_mut::BytesMut",
-                                                  "cap"
-                                                |),
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  BinOp.Wrap.sub,
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      M.get_associated_function (|
-                                                        Ty.apply
-                                                          (Ty.path "alloc::vec::Vec")
+                                              M.let_ (|
+                                                ltac:(M.monadic
+                                                  (M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.sub,
+                                                    [
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path "alloc::vec::Vec")
+                                                            []
+                                                            [
+                                                              Ty.path "u8";
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ],
+                                                          "capacity",
+                                                          [],
                                                           []
-                                                          [
-                                                            Ty.path "u8";
-                                                            Ty.path "alloc::alloc::Global"
-                                                          ],
-                                                        "capacity",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "&")
-                                                                []
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "alloc::vec::Vec")
-                                                                    []
-                                                                    [
-                                                                      Ty.path "u8";
-                                                                      Ty.path "alloc::alloc::Global"
-                                                                    ]
-                                                                ],
-                                                              M.get_trait_method (|
-                                                                "core::ops::deref::Deref",
+                                                        |),
+                                                        [
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.call_closure (|
                                                                 Ty.apply
-                                                                  (Ty.path
-                                                                    "core::mem::manually_drop::ManuallyDrop")
+                                                                  (Ty.path "&")
                                                                   []
                                                                   [
                                                                     Ty.apply
@@ -3065,21 +3093,48 @@ Module bytes_mut.
                                                                           "alloc::alloc::Global"
                                                                       ]
                                                                   ],
-                                                                [],
-                                                                [],
-                                                                "deref",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [ M.borrow (| Pointer.Kind.Ref, v |) ]
+                                                                M.get_trait_method (|
+                                                                  "core::ops::deref::Deref",
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "core::mem::manually_drop::ManuallyDrop")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "alloc::vec::Vec")
+                                                                        []
+                                                                        [
+                                                                          Ty.path "u8";
+                                                                          Ty.path
+                                                                            "alloc::alloc::Global"
+                                                                        ]
+                                                                    ],
+                                                                  [],
+                                                                  [],
+                                                                  "deref",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [ M.borrow (| Pointer.Kind.Ref, v |)
+                                                                ]
+                                                              |)
                                                             |)
                                                           |)
-                                                        |)
-                                                      ]
-                                                    |);
-                                                    M.read (| off |)
-                                                  ]
-                                                |)
+                                                        ]
+                                                      |);
+                                                      M.read (| off |)
+                                                    ]
+                                                  |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "bytes::bytes_mut::BytesMut",
+                                                        "cap"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             let~ _ : Ty.tuple [] :=
                                               M.match_operator (|
@@ -3727,13 +3782,18 @@ Module bytes_mut.
                                             |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              M.write (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "bytes::bytes_mut::BytesMut",
-                                                  "cap"
-                                                |),
-                                                M.read (| new_cap |)
+                                              M.let_ (|
+                                                ltac:(M.monadic (M.read (| new_cap |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (M.write (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "bytes::bytes_mut::BytesMut",
+                                                        "cap"
+                                                      |),
+                                                      rhs'
+                                                    |)))
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                           |)));
@@ -3836,53 +3896,66 @@ Module bytes_mut.
                                                         ]
                                                       |) in
                                                     let~ _ : Ty.tuple [] :=
-                                                      M.write (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "bytes::bytes_mut::BytesMut",
-                                                          "ptr"
-                                                        |),
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "core::ptr::non_null::NonNull")
-                                                            []
-                                                            [ Ty.path "u8" ],
-                                                          M.get_function (|
-                                                            "bytes::bytes_mut::vptr",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [ M.read (| ptr |) ]
-                                                        |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic
+                                                          (M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::ptr::non_null::NonNull")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            M.get_function (|
+                                                              "bytes::bytes_mut::vptr",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [ M.read (| ptr |) ]
+                                                          |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (M.write (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "bytes::bytes_mut::BytesMut",
+                                                                "ptr"
+                                                              |),
+                                                              rhs'
+                                                            |)))
                                                       |) in
                                                     let~ _ : Ty.tuple [] :=
-                                                      M.write (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "bytes::bytes_mut::BytesMut",
-                                                          "cap"
-                                                        |),
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          M.get_associated_function (|
-                                                            Ty.apply
-                                                              (Ty.path "alloc::vec::Vec")
+                                                      M.let_ (|
+                                                        ltac:(M.monadic
+                                                          (M.call_closure (|
+                                                            Ty.path "usize",
+                                                            M.get_associated_function (|
+                                                              Ty.apply
+                                                                (Ty.path "alloc::vec::Vec")
+                                                                []
+                                                                [
+                                                                  Ty.path "u8";
+                                                                  Ty.path "alloc::alloc::Global"
+                                                                ],
+                                                              "capacity",
+                                                              [],
                                                               []
-                                                              [
-                                                                Ty.path "u8";
-                                                                Ty.path "alloc::alloc::Global"
-                                                              ],
-                                                            "capacity",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (| M.read (| v |) |)
-                                                            |)
-                                                          ]
-                                                        |)
+                                                            |),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (| M.read (| v |) |)
+                                                              |)
+                                                            ]
+                                                          |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (M.write (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "bytes::bytes_mut::BytesMut",
+                                                                "cap"
+                                                              |),
+                                                              rhs'
+                                                            |)))
                                                       |) in
                                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                   |)));
@@ -4281,104 +4354,117 @@ Module bytes_mut.
                                                         ]
                                                       |) in
                                                     let~ _ : Ty.tuple [] :=
-                                                      M.write (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "bytes::bytes_mut::BytesMut",
-                                                          "ptr"
-                                                        |),
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "core::ptr::non_null::NonNull")
-                                                            []
-                                                            [ Ty.path "u8" ],
-                                                          M.get_function (|
-                                                            "bytes::bytes_mut::vptr",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "*mut")
-                                                                []
-                                                                [ Ty.path "u8" ],
-                                                              M.get_associated_function (|
+                                                      M.let_ (|
+                                                        ltac:(M.monadic
+                                                          (M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::ptr::non_null::NonNull")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            M.get_function (|
+                                                              "bytes::bytes_mut::vptr",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.call_closure (|
                                                                 Ty.apply
                                                                   (Ty.path "*mut")
                                                                   []
                                                                   [ Ty.path "u8" ],
-                                                                "add",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.call_closure (|
+                                                                M.get_associated_function (|
                                                                   Ty.apply
                                                                     (Ty.path "*mut")
                                                                     []
                                                                     [ Ty.path "u8" ],
-                                                                  M.get_associated_function (|
+                                                                  "add",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.call_closure (|
                                                                     Ty.apply
-                                                                      (Ty.path "alloc::vec::Vec")
+                                                                      (Ty.path "*mut")
                                                                       []
-                                                                      [
-                                                                        Ty.path "u8";
-                                                                        Ty.path
-                                                                          "alloc::alloc::Global"
-                                                                      ],
-                                                                    "as_mut_ptr",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.MutRef,
-                                                                      M.deref (| M.read (| v |) |)
-                                                                    |)
-                                                                  ]
-                                                                |);
-                                                                M.read (| off |)
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |)
+                                                                      [ Ty.path "u8" ],
+                                                                    M.get_associated_function (|
+                                                                      Ty.apply
+                                                                        (Ty.path "alloc::vec::Vec")
+                                                                        []
+                                                                        [
+                                                                          Ty.path "u8";
+                                                                          Ty.path
+                                                                            "alloc::alloc::Global"
+                                                                        ],
+                                                                      "as_mut_ptr",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        M.deref (| M.read (| v |) |)
+                                                                      |)
+                                                                    ]
+                                                                  |);
+                                                                  M.read (| off |)
+                                                                ]
+                                                              |)
+                                                            ]
+                                                          |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (M.write (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "bytes::bytes_mut::BytesMut",
+                                                                "ptr"
+                                                              |),
+                                                              rhs'
+                                                            |)))
                                                       |) in
                                                     let~ _ : Ty.tuple [] :=
-                                                      M.write (|
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "bytes::bytes_mut::BytesMut",
-                                                          "cap"
-                                                        |),
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.sub,
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "usize",
-                                                              M.get_associated_function (|
-                                                                Ty.apply
-                                                                  (Ty.path "alloc::vec::Vec")
+                                                      M.let_ (|
+                                                        ltac:(M.monadic
+                                                          (M.call_closure (|
+                                                            Ty.path "usize",
+                                                            BinOp.Wrap.sub,
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.path "usize",
+                                                                M.get_associated_function (|
+                                                                  Ty.apply
+                                                                    (Ty.path "alloc::vec::Vec")
+                                                                    []
+                                                                    [
+                                                                      Ty.path "u8";
+                                                                      Ty.path "alloc::alloc::Global"
+                                                                    ],
+                                                                  "capacity",
+                                                                  [],
                                                                   []
-                                                                  [
-                                                                    Ty.path "u8";
-                                                                    Ty.path "alloc::alloc::Global"
-                                                                  ],
-                                                                "capacity",
-                                                                [],
-                                                                []
+                                                                |),
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (| M.read (| v |) |)
+                                                                  |)
+                                                                ]
+                                                              |);
+                                                              M.read (| off |)
+                                                            ]
+                                                          |))),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (M.write (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "bytes::bytes_mut::BytesMut",
+                                                                "cap"
                                                               |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| v |) |)
-                                                                |)
-                                                              ]
-                                                            |);
-                                                            M.read (| off |)
-                                                          ]
-                                                        |)
+                                                              rhs'
+                                                            |)))
                                                       |) in
                                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                   |)))
@@ -4593,62 +4679,53 @@ Module bytes_mut.
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "bytes::bytes_mut::BytesMut",
-                        "data"
-                      |),
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*mut") [] [ Ty.path "bytes::bytes_mut::Shared" ],
-                        M.get_function (|
-                          "bytes::bytes_mut::invalid_ptr",
-                          [],
-                          [ Ty.path "bytes::bytes_mut::Shared" ]
-                        |),
-                        [ M.read (| data |) ]
-                      |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*mut") [] [ Ty.path "bytes::bytes_mut::Shared" ],
+                          M.get_function (|
+                            "bytes::bytes_mut::invalid_ptr",
+                            [],
+                            [ Ty.path "bytes::bytes_mut::Shared" ]
+                          |),
+                          [ M.read (| data |) ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "bytes::bytes_mut::BytesMut",
+                              "data"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "bytes::bytes_mut::BytesMut",
-                        "ptr"
-                      |),
-                      M.call_closure (|
-                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
-                        M.get_function (| "bytes::bytes_mut::vptr", [], [] |),
-                        [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "alloc::vec::Vec")
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+                          M.get_function (| "bytes::bytes_mut::vptr", [], [] |),
+                          [
+                            M.call_closure (|
+                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                                "as_mut_ptr",
+                                [],
                                 []
-                                [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                              "as_mut_ptr",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "alloc::vec::Vec")
-                                          []
-                                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                      ],
-                                    M.get_trait_method (|
-                                      "core::ops::deref::DerefMut",
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.call_closure (|
                                       Ty.apply
-                                        (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                        (Ty.path "&mut")
                                         []
                                         [
                                           Ty.apply
@@ -4656,57 +4733,63 @@ Module bytes_mut.
                                             []
                                             [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
                                         ],
-                                      [],
-                                      [],
-                                      "deref_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.MutRef, v |) ]
+                                      M.get_trait_method (|
+                                        "core::ops::deref::DerefMut",
+                                        Ty.apply
+                                          (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                          ],
+                                        [],
+                                        [],
+                                        "deref_mut",
+                                        [],
+                                        []
+                                      |),
+                                      [ M.borrow (| Pointer.Kind.MutRef, v |) ]
+                                    |)
                                   |)
                                 |)
-                              |)
-                            ]
-                          |)
-                        ]
-                      |)
+                              ]
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "bytes::bytes_mut::BytesMut",
+                              "ptr"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "bytes::bytes_mut::BytesMut",
-                        "cap"
-                      |),
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_associated_function (|
-                          Ty.apply
-                            (Ty.path "alloc::vec::Vec")
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                            "capacity",
+                            [],
                             []
-                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                          "capacity",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "alloc::vec::Vec")
-                                      []
-                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                  ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::Deref",
+                          |),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                    (Ty.path "&")
                                     []
                                     [
                                       Ty.apply
@@ -4714,18 +4797,39 @@ Module bytes_mut.
                                         []
                                         [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
                                     ],
-                                  [],
-                                  [],
-                                  "deref",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, v |) ]
+                                  M.get_trait_method (|
+                                    "core::ops::deref::Deref",
+                                    Ty.apply
+                                      (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                      ],
+                                    [],
+                                    [],
+                                    "deref",
+                                    [],
+                                    []
+                                  |),
+                                  [ M.borrow (| Pointer.Kind.Ref, v |) ]
+                                |)
                               |)
                             |)
-                          |)
-                        ]
-                      |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "bytes::bytes_mut::BytesMut",
+                              "cap"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.match_operator (|
@@ -5366,7 +5470,12 @@ Module bytes_mut.
                           M.never_to_any (|
                             M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (| M.deref (| M.read (| self |) |), M.read (| other |) |) in
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| other |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
+                                |) in
                               M.return_ (| Value.Tuple [] |)
                             |)
                           |)));
@@ -6162,100 +6271,117 @@ Module bytes_mut.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "bytes::bytes_mut::BytesMut",
-                      "ptr"
-                    |),
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
-                      M.get_function (| "bytes::bytes_mut::vptr", [], [] |),
-                      [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                          M.get_associated_function (|
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+                        M.get_function (| "bytes::bytes_mut::vptr", [], [] |),
+                        [
+                          M.call_closure (|
                             Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                            "add",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
+                            M.get_associated_function (|
                               Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "core::ptr::non_null::NonNull")
+                              "add",
+                              [],
+                              []
+                            |),
+                            [
+                              M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.path "u8" ],
+                                  "as_ptr",
+                                  [],
                                   []
-                                  [ Ty.path "u8" ],
-                                "as_ptr",
-                                [],
-                                []
-                              |),
-                              [
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "bytes::bytes_mut::BytesMut",
-                                    "ptr"
+                                |),
+                                [
+                                  M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "bytes::bytes_mut::BytesMut",
+                                      "ptr"
+                                    |)
                                   |)
-                                |)
-                              ]
-                            |);
-                            M.read (| count |)
-                          ]
-                        |)
-                      ]
-                    |)
+                                ]
+                              |);
+                              M.read (| count |)
+                            ]
+                          |)
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "bytes::bytes_mut::BytesMut",
+                            "ptr"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "bytes::bytes_mut::BytesMut",
-                      "len"
-                    |),
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                        "unwrap_or",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
                           Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                          M.get_associated_function (| Ty.path "usize", "checked_sub", [], [] |),
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "bytes::bytes_mut::BytesMut",
-                                "len"
-                              |)
-                            |);
-                            M.read (| count |)
-                          ]
-                        |);
-                        Value.Integer IntegerKind.Usize 0
-                      ]
-                    |)
+                          "unwrap_or",
+                          [],
+                          []
+                        |),
+                        [
+                          M.call_closure (|
+                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                            M.get_associated_function (| Ty.path "usize", "checked_sub", [], [] |),
+                            [
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "bytes::bytes_mut::BytesMut",
+                                  "len"
+                                |)
+                              |);
+                              M.read (| count |)
+                            ]
+                          |);
+                          Value.Integer IntegerKind.Usize 0
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "bytes::bytes_mut::BytesMut",
+                            "len"
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  let β :=
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "bytes::bytes_mut::BytesMut",
-                      "cap"
-                    |) in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "usize",
-                      BinOp.Wrap.sub,
-                      [ M.read (| β |); M.read (| count |) ]
-                    |)
+                  M.let_ (|
+                    ltac:(M.monadic (M.read (| count |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (let β :=
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "bytes::bytes_mut::BytesMut",
+                            "cap"
+                          |) in
+                        M.write (|
+                          β,
+                          M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.sub,
+                            [ M.read (| β |); rhs' ]
+                          |)
+                        |)))
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
               |)))
@@ -6519,52 +6645,58 @@ Module bytes_mut.
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              let β :=
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "bytes::bytes_mut::BytesMut",
-                                  "len"
-                                |) in
-                              M.write (|
-                                β,
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.add,
-                                  [
-                                    M.read (| β |);
-                                    M.read (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      other,
+                                      "bytes::bytes_mut::BytesMut",
+                                      "len"
+                                    |)
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (let β :=
                                       M.SubPointer.get_struct_record_field (|
-                                        other,
+                                        M.deref (| M.read (| self |) |),
                                         "bytes::bytes_mut::BytesMut",
                                         "len"
+                                      |) in
+                                    M.write (|
+                                      β,
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [ M.read (| β |); rhs' ]
                                       |)
-                                    |)
-                                  ]
-                                |)
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
-                              let β :=
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "bytes::bytes_mut::BytesMut",
-                                  "cap"
-                                |) in
-                              M.write (|
-                                β,
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.add,
-                                  [
-                                    M.read (| β |);
-                                    M.read (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      other,
+                                      "bytes::bytes_mut::BytesMut",
+                                      "cap"
+                                    |)
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (let β :=
                                       M.SubPointer.get_struct_record_field (|
-                                        other,
+                                        M.deref (| M.read (| self |) |),
                                         "bytes::bytes_mut::BytesMut",
                                         "cap"
+                                      |) in
+                                    M.write (|
+                                      β,
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [ M.read (| β |); rhs' ]
                                       |)
-                                    |)
-                                  ]
-                                |)
+                                    |)))
                               |) in
                             M.alloc (|
                               Ty.apply
@@ -7207,13 +7339,18 @@ Module bytes_mut.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "bytes::bytes_mut::BytesMut",
-                  "data"
-                |),
-                M.read (| shared |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| shared |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "bytes::bytes_mut::BytesMut",
+                        "data"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -7781,59 +7918,68 @@ Module bytes_mut.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "bytes::bytes_mut::BytesMut",
-                  "data"
-                |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "*mut") [] [ Ty.path "bytes::bytes_mut::Shared" ],
-                  M.get_function (|
-                    "bytes::bytes_mut::invalid_ptr",
-                    [],
-                    [ Ty.path "bytes::bytes_mut::Shared" ]
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      BinOp.Wrap.bit_or,
-                      [
-                        M.call_closure (|
-                          Ty.path "usize",
-                          BinOp.Wrap.shl,
-                          [
-                            M.read (| pos |);
-                            M.read (|
-                              get_constant (| "bytes::bytes_mut::VEC_POS_OFFSET", Ty.path "usize" |)
-                            |)
-                          ]
-                        |);
-                        M.call_closure (|
-                          Ty.path "usize",
-                          BinOp.Wrap.bit_and,
-                          [
-                            M.cast
-                              (Ty.path "usize")
-                              (M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "bytes::bytes_mut::BytesMut",
-                                  "data"
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*mut") [] [ Ty.path "bytes::bytes_mut::Shared" ],
+                    M.get_function (|
+                      "bytes::bytes_mut::invalid_ptr",
+                      [],
+                      [ Ty.path "bytes::bytes_mut::Shared" ]
+                    |),
+                    [
+                      M.call_closure (|
+                        Ty.path "usize",
+                        BinOp.Wrap.bit_or,
+                        [
+                          M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.shl,
+                            [
+                              M.read (| pos |);
+                              M.read (|
+                                get_constant (|
+                                  "bytes::bytes_mut::VEC_POS_OFFSET",
+                                  Ty.path "usize"
                                 |)
-                              |));
-                            M.read (|
-                              get_constant (|
-                                "bytes::bytes_mut::NOT_VEC_POS_MASK",
-                                Ty.path "usize"
                               |)
-                            |)
-                          ]
-                        |)
-                      ]
-                    |)
-                  ]
-                |)
+                            ]
+                          |);
+                          M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "bytes::bytes_mut::BytesMut",
+                                    "data"
+                                  |)
+                                |));
+                              M.read (|
+                                get_constant (|
+                                  "bytes::bytes_mut::NOT_VEC_POS_MASK",
+                                  Ty.path "usize"
+                                |)
+                              |)
+                            ]
+                          |)
+                        ]
+                      |)
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "bytes::bytes_mut::BytesMut",
+                        "data"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -8676,29 +8822,35 @@ Module bytes_mut.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "bytes::bytes_mut::BytesMut",
-                  "len"
-                |),
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.add,
-                  [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.path "bytes::bytes_mut::BytesMut",
-                        "len",
-                        [],
-                        []
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    BinOp.Wrap.add,
+                    [
+                      M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.path "bytes::bytes_mut::BytesMut",
+                          "len",
+                          [],
+                          []
+                        |),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      |);
+                      M.read (| cnt |)
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "bytes::bytes_mut::BytesMut",
+                        "len"
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |);
-                    M.read (| cnt |)
-                  ]
-                |)
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -14246,24 +14398,26 @@ Module bytes_mut.
               [ M.read (| ptr |); M.read (| off |) ]
             |) in
           let~ _ : Ty.tuple [] :=
-            let β := len in
-            M.write (|
-              β,
-              M.call_closure (|
-                Ty.path "usize",
-                BinOp.Wrap.add,
-                [ M.read (| β |); M.read (| off |) ]
-              |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| off |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (let β := len in
+                  M.write (|
+                    β,
+                    M.call_closure (| Ty.path "usize", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            let β := cap in
-            M.write (|
-              β,
-              M.call_closure (|
-                Ty.path "usize",
-                BinOp.Wrap.add,
-                [ M.read (| β |); M.read (| off |) ]
-              |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| off |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (let β := cap in
+                  M.write (|
+                    β,
+                    M.call_closure (| Ty.path "usize", BinOp.Wrap.add, [ M.read (| β |); rhs' ] |)
+                  |)))
             |) in
           M.alloc (|
             Ty.apply

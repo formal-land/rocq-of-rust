@@ -1,0 +1,66 @@
+warning: [ROR003] floating-point literal in origin
+  --> examples/rust_book/std_library_types/box_stack_heap.rs:19:16
+   |
+19 |     Point { x: 0.0, y: 0.0 }
+   |                ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in origin
+  --> examples/rust_book/std_library_types/box_stack_heap.rs:19:24
+   |
+19 |     Point { x: 0.0, y: 0.0 }
+   |                        ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in boxed_origin
+  --> examples/rust_book/std_library_types/box_stack_heap.rs:24:25
+   |
+24 |     Box::new(Point { x: 0.0, y: 0.0 })
+   |                         ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in boxed_origin
+  --> examples/rust_book/std_library_types/box_stack_heap.rs:24:33
+   |
+24 |     Box::new(Point { x: 0.0, y: 0.0 })
+   |                                 ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/std_library_types/box_stack_heap.rs:39:34
+   |
+39 |         bottom_right: Point { x: 3.0, y: -4.0 },
+   |                                  ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/std_library_types/box_stack_heap.rs:39:42
+   |
+39 |         bottom_right: Point { x: 3.0, y: -4.0 },
+   |                                          ^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/std_library_types/box_stack_heap.rs:33:34
+   |
+33 |         bottom_right: Point { x: 3.0, y: -4.0 },
+   |                                  ^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: [ROR003] floating-point literal in main
+  --> examples/rust_book/std_library_types/box_stack_heap.rs:33:42
+   |
+33 |         bottom_right: Point { x: 3.0, y: -4.0 },
+   |                                          ^^^^
+   |
+   = note: Execution of this expression is unsupported
+
+warning: 8 warnings emitted
+

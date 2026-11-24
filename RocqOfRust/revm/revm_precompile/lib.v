@@ -2613,80 +2613,93 @@ Module Impl_revm_precompile_Precompiles.
                                                     M.copy (| Ty.path "usize", γ0_0 |) in
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
-                                                      M.write (|
-                                                        M.deref (|
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "&mut")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "core::option::Option")
-                                                                  []
-                                                                  [
-                                                                    Ty.path
-                                                                      "revm_precompile::Precompile"
-                                                                  ]
-                                                              ],
-                                                            M.get_trait_method (|
-                                                              "core::ops::index::IndexMut",
-                                                              Ty.apply
-                                                                (Ty.path "alloc::vec::Vec")
-                                                                []
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "core::option::Option")
-                                                                    []
-                                                                    [
-                                                                      Ty.path
-                                                                        "revm_precompile::Precompile"
-                                                                    ];
-                                                                  Ty.path "alloc::alloc::Global"
-                                                                ],
-                                                              [],
-                                                              [ Ty.path "usize" ],
-                                                              "index_mut",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "revm_precompile::Precompiles",
-                                                                  "optimized_access"
-                                                                |)
-                                                              |);
-                                                              M.read (| short_address |)
+                                                      M.let_ (|
+                                                        ltac:(M.monadic
+                                                          (Value.StructTuple
+                                                            "core::option::Option::Some"
+                                                            []
+                                                            [ Ty.path "revm_precompile::Precompile"
                                                             ]
-                                                          |)
-                                                        |),
-                                                        Value.StructTuple
-                                                          "core::option::Option::Some"
-                                                          []
-                                                          [ Ty.path "revm_precompile::Precompile" ]
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.path "revm_precompile::Precompile",
-                                                              M.get_trait_method (|
-                                                                "core::clone::Clone",
+                                                            [
+                                                              M.call_closure (|
                                                                 Ty.path
                                                                   "revm_precompile::Precompile",
-                                                                [],
-                                                                [],
-                                                                "clone",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| item |) |)
+                                                                M.get_trait_method (|
+                                                                  "core::clone::Clone",
+                                                                  Ty.path
+                                                                    "revm_precompile::Precompile",
+                                                                  [],
+                                                                  [],
+                                                                  "clone",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (| M.read (| item |) |)
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            ])),
+                                                        fun rhs' =>
+                                                          ltac:(M.monadic
+                                                            (M.write (|
+                                                              M.deref (|
+                                                                M.call_closure (|
+                                                                  Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::option::Option")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "revm_precompile::Precompile"
+                                                                        ]
+                                                                    ],
+                                                                  M.get_trait_method (|
+                                                                    "core::ops::index::IndexMut",
+                                                                    Ty.apply
+                                                                      (Ty.path "alloc::vec::Vec")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::option::Option")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "revm_precompile::Precompile"
+                                                                          ];
+                                                                        Ty.path
+                                                                          "alloc::alloc::Global"
+                                                                      ],
+                                                                    [],
+                                                                    [ Ty.path "usize" ],
+                                                                    "index_mut",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.read (| self |)
+                                                                        |),
+                                                                        "revm_precompile::Precompiles",
+                                                                        "optimized_access"
+                                                                      |)
+                                                                    |);
+                                                                    M.read (| short_address |)
+                                                                  ]
                                                                 |)
-                                                              ]
-                                                            |)
-                                                          ]
+                                                              |),
+                                                              rhs'
+                                                            |)))
                                                       |) in
                                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                                   |)));
@@ -4903,19 +4916,26 @@ Module Impl_core_convert_From_Tuple_revm_precompile_id_PrecompileId_alloy_primit
                 (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                 let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                 let γ0_2 := M.SubPointer.get_tuple_field (| γ, 2 |) in
-                let id :=
-                  M.copy (|
-                    Ty.path "Type for variables in patterns in function parameters is not handled",
-                    γ0_0
-                  |) in
+                let id := M.copy (| Ty.path "revm_precompile::id::PrecompileId", γ0_0 |) in
                 let address :=
-                  M.copy (|
-                    Ty.path "Type for variables in patterns in function parameters is not handled",
-                    γ0_1
-                  |) in
+                  M.copy (| Ty.path "alloy_primitives::bits::address::Address", γ0_1 |) in
                 let fn_ :=
                   M.copy (|
-                    Ty.path "Type for variables in patterns in function parameters is not handled",
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                        Ty.path "u64"
+                      ]
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.path "revm_precompile::interface::PrecompileOutput";
+                          Ty.path "revm_precompile::interface::PrecompileError"
+                        ]),
                     γ0_2
                   |) in
                 Value.mkStructRecord

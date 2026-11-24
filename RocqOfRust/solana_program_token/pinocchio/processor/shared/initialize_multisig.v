@@ -1319,41 +1319,52 @@ Module processor.
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| multisig |) |),
-                                "pinocchio_token_interface::state::multisig::Multisig",
-                                "m"
-                              |),
-                              M.read (| m |)
+                            M.let_ (|
+                              ltac:(M.monadic (M.read (| m |))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| multisig |) |),
+                                      "pinocchio_token_interface::state::multisig::Multisig",
+                                      "m"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           let~ _ : Ty.tuple [] :=
-                            M.write (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| multisig |) |),
-                                "pinocchio_token_interface::state::multisig::Multisig",
-                                "n"
-                              |),
-                              M.cast
-                                (Ty.path "u8")
-                                (M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "slice")
+                            M.let_ (|
+                              ltac:(M.monadic
+                                (M.cast
+                                  (Ty.path "u8")
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "pinocchio::account_info::AccountInfo" ],
+                                      "len",
+                                      [],
                                       []
-                                      [ Ty.path "pinocchio::account_info::AccountInfo" ],
-                                    "len",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| remaining |) |)
-                                    |)
-                                  ]
-                                |))
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| remaining |) |)
+                                      |)
+                                    ]
+                                  |)))),
+                              fun rhs' =>
+                                ltac:(M.monadic
+                                  (M.write (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| multisig |) |),
+                                      "pinocchio_token_interface::state::multisig::Multisig",
+                                      "n"
+                                    |),
+                                    rhs'
+                                  |)))
                             |) in
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -1746,51 +1757,59 @@ Module processor.
                                                             |) in
                                                           M.read (|
                                                             let~ _ : Ty.tuple [] :=
-                                                              M.write (|
-                                                                M.SubPointer.get_array_field (|
-                                                                  M.SubPointer.get_struct_record_field (|
+                                                              M.let_ (|
+                                                                ltac:(M.monadic
+                                                                  (M.read (|
                                                                     M.deref (|
-                                                                      M.read (| multisig |)
-                                                                    |),
-                                                                    "pinocchio_token_interface::state::multisig::Multisig",
-                                                                    "signers"
-                                                                  |),
-                                                                  M.read (| i |)
-                                                                |),
-                                                                M.read (|
-                                                                  M.deref (|
-                                                                    M.call_closure (|
-                                                                      Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
+                                                                      M.call_closure (|
+                                                                        Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "array")
+                                                                              [
+                                                                                Value.Integer
+                                                                                  IntegerKind.Usize
+                                                                                  32
+                                                                              ]
+                                                                              [ Ty.path "u8" ]
+                                                                          ],
+                                                                        M.get_associated_function (|
+                                                                          Ty.path
+                                                                            "pinocchio::account_info::AccountInfo",
+                                                                          "key",
+                                                                          [],
+                                                                          []
+                                                                        |),
                                                                         [
-                                                                          Ty.apply
-                                                                            (Ty.path "array")
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                32
-                                                                            ]
-                                                                            [ Ty.path "u8" ]
-                                                                        ],
-                                                                      M.get_associated_function (|
-                                                                        Ty.path
-                                                                          "pinocchio::account_info::AccountInfo",
-                                                                        "key",
-                                                                        [],
-                                                                        []
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.read (| signer_info |)
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (|
+                                                                                signer_info
+                                                                              |)
+                                                                            |)
                                                                           |)
-                                                                        |)
-                                                                      ]
+                                                                        ]
+                                                                      |)
                                                                     |)
-                                                                  |)
-                                                                |)
+                                                                  |))),
+                                                                fun rhs' =>
+                                                                  ltac:(M.monadic
+                                                                    (M.write (|
+                                                                      M.SubPointer.get_array_field (|
+                                                                        M.SubPointer.get_struct_record_field (|
+                                                                          M.deref (|
+                                                                            M.read (| multisig |)
+                                                                          |),
+                                                                          "pinocchio_token_interface::state::multisig::Multisig",
+                                                                          "signers"
+                                                                        |),
+                                                                        M.read (| i |)
+                                                                      |),
+                                                                      rhs'
+                                                                    |)))
                                                               |) in
                                                             M.alloc (|
                                                               Ty.tuple [],

@@ -6309,114 +6309,97 @@ Module handler.
                 [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| gas |) |) |) ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.deref (| M.read (| gas |) |),
-                M.call_closure (|
-                  Ty.path "revm_interpreter::gas::Gas",
-                  M.get_associated_function (|
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
                     Ty.path "revm_interpreter::gas::Gas",
-                    "new_spent",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.path "u64",
-                      M.get_trait_method (|
-                        "revm_context_interface::transaction::Transaction",
-                        Ty.associated_in_trait
-                          "revm_context_interface::context::ContextTr"
-                          []
-                          []
-                          (Ty.associated_in_trait
-                            "revm_handler::evm::EvmTr"
+                    M.get_associated_function (|
+                      Ty.path "revm_interpreter::gas::Gas",
+                      "new_spent",
+                      [],
+                      []
+                    |),
+                    [
+                      M.call_closure (|
+                        Ty.path "u64",
+                        M.get_trait_method (|
+                          "revm_context_interface::transaction::Transaction",
+                          Ty.associated_in_trait
+                            "revm_context_interface::context::ContextTr"
                             []
                             []
                             (Ty.associated_in_trait
-                              "revm_handler::handler::Handler"
+                              "revm_handler::evm::EvmTr"
                               []
                               []
-                              Self
-                              "Evm")
-                            "Context")
-                          "Tx",
-                        [],
-                        [],
-                        "gas_limit",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
+                              (Ty.associated_in_trait
+                                "revm_handler::handler::Handler"
                                 []
-                                [
-                                  Ty.associated_in_trait
-                                    "revm_context_interface::context::ContextTr"
-                                    []
-                                    []
-                                    (Ty.associated_in_trait
-                                      "revm_handler::evm::EvmTr"
-                                      []
-                                      []
-                                      (Ty.associated_in_trait
-                                        "revm_handler::handler::Handler"
-                                        []
-                                        []
-                                        Self
-                                        "Evm")
-                                      "Context")
-                                    "Tx"
-                                ],
-                              M.get_trait_method (|
-                                "revm_context_interface::context::ContextTr",
+                                []
+                                Self
+                                "Evm")
+                              "Context")
+                            "Tx",
+                          [],
+                          [],
+                          "gas_limit",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.call_closure (|
                                 Ty.apply
-                                  (Ty.path "&mut")
+                                  (Ty.path "&")
                                   []
                                   [
                                     Ty.associated_in_trait
-                                      "revm_handler::evm::EvmTr"
+                                      "revm_context_interface::context::ContextTr"
                                       []
                                       []
                                       (Ty.associated_in_trait
-                                        "revm_handler::handler::Handler"
+                                        "revm_handler::evm::EvmTr"
                                         []
                                         []
-                                        Self
-                                        "Evm")
-                                      "Context"
+                                        (Ty.associated_in_trait
+                                          "revm_handler::handler::Handler"
+                                          []
+                                          []
+                                          Self
+                                          "Evm")
+                                        "Context")
+                                      "Tx"
                                   ],
-                                [],
-                                [],
-                                "tx",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [
-                                        Ty.associated_in_trait
-                                          "revm_handler::evm::EvmTr"
+                                M.get_trait_method (|
+                                  "revm_context_interface::context::ContextTr",
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "revm_handler::evm::EvmTr"
+                                        []
+                                        []
+                                        (Ty.associated_in_trait
+                                          "revm_handler::handler::Handler"
                                           []
                                           []
-                                          (Ty.associated_in_trait
-                                            "revm_handler::handler::Handler"
-                                            []
-                                            []
-                                            Self
-                                            "Evm")
-                                          "Context"
-                                      ],
-                                    M.call_closure (|
+                                          Self
+                                          "Evm")
+                                        "Context"
+                                    ],
+                                  [],
+                                  [],
+                                  "tx",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "&mut")
                                         []
@@ -6433,37 +6416,55 @@ Module handler.
                                               "Evm")
                                             "Context"
                                         ],
-                                      M.get_trait_method (|
-                                        "revm_handler::evm::EvmTr",
-                                        Ty.associated_in_trait
-                                          "revm_handler::handler::Handler"
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&mut")
                                           []
+                                          [
+                                            Ty.associated_in_trait
+                                              "revm_handler::evm::EvmTr"
+                                              []
+                                              []
+                                              (Ty.associated_in_trait
+                                                "revm_handler::handler::Handler"
+                                                []
+                                                []
+                                                Self
+                                                "Evm")
+                                              "Context"
+                                          ],
+                                        M.get_trait_method (|
+                                          "revm_handler::evm::EvmTr",
+                                          Ty.associated_in_trait
+                                            "revm_handler::handler::Handler"
+                                            []
+                                            []
+                                            Self
+                                            "Evm",
+                                          [],
+                                          [],
+                                          "ctx",
+                                          [],
                                           []
-                                          Self
-                                          "Evm",
-                                        [],
-                                        [],
-                                        "ctx",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| evm |) |)
-                                        |)
-                                      ]
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| evm |) |)
+                                          |)
+                                        ]
+                                      |)
                                     |)
                                   |)
-                                |)
-                              ]
+                                ]
+                              |)
                             |)
                           |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |)
+                        ]
+                      |)
+                    ]
+                  |))),
+                fun rhs' => ltac:(M.monadic (M.write (| M.deref (| M.read (| gas |) |), rhs' |)))
               |) in
             let~ _ : Ty.tuple [] :=
               M.match_operator (|

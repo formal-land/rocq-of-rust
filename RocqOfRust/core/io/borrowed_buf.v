@@ -1690,27 +1690,32 @@ Module io.
               M.deref (|
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (|
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic (M.read (| n |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::io::borrowed_buf::BorrowedCursor",
-                              "buf"
+                              M.deref (|
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::io::borrowed_buf::BorrowedCursor",
+                                    "buf"
+                                  |)
+                                |)
+                              |),
+                              "core::io::borrowed_buf::BorrowedBuf",
+                              "filled"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.add,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        |),
-                        "core::io::borrowed_buf::BorrowedBuf",
-                        "filled"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.add,
-                        [ M.read (| β |); M.read (| n |) ]
-                      |)
+                          |)))
                     |) in
                   M.alloc (|
                     Ty.apply
@@ -1954,39 +1959,42 @@ Module io.
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in
               let~ _ : Ty.tuple [] :=
-                let β :=
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (|
-                      M.read (|
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                        "len",
+                        [],
+                        []
+                      |),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |) ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (let β :=
                         M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::io::borrowed_buf::BorrowedCursor",
-                          "buf"
+                          M.deref (|
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::io::borrowed_buf::BorrowedCursor",
+                                "buf"
+                              |)
+                            |)
+                          |),
+                          "core::io::borrowed_buf::BorrowedBuf",
+                          "filled"
+                        |) in
+                      M.write (|
+                        β,
+                        M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.add,
+                          [ M.read (| β |); rhs' ]
                         |)
-                      |)
-                    |),
-                    "core::io::borrowed_buf::BorrowedBuf",
-                    "filled"
-                  |) in
-                M.write (|
-                  β,
-                  M.call_closure (|
-                    Ty.path "usize",
-                    BinOp.Wrap.add,
-                    [
-                      M.read (| β |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                          "len",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |) ]
-                      |)
-                    ]
-                  |)
+                      |)))
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
             |)))
@@ -2201,36 +2209,39 @@ Module io.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                let β :=
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (|
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::io::borrowed_buf::BorrowedCursor",
-                          "buf"
-                        |)
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        buf,
+                        "core::io::borrowed_buf::BorrowedBuf",
+                        "filled"
                       |)
-                    |),
-                    "core::io::borrowed_buf::BorrowedBuf",
-                    "filled"
-                  |) in
-                M.write (|
-                  β,
-                  M.call_closure (|
-                    Ty.path "usize",
-                    BinOp.Wrap.add,
-                    [
-                      M.read (| β |);
-                      M.read (|
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (let β :=
                         M.SubPointer.get_struct_record_field (|
-                          buf,
+                          M.deref (|
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::io::borrowed_buf::BorrowedCursor",
+                                "buf"
+                              |)
+                            |)
+                          |),
                           "core::io::borrowed_buf::BorrowedBuf",
                           "filled"
+                        |) in
+                      M.write (|
+                        β,
+                        M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.add,
+                          [ M.read (| β |); rhs' ]
                         |)
-                      |)
-                    ]
-                  |)
+                      |)))
                 |) in
               res
             |)))

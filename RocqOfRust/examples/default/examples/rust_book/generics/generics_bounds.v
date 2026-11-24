@@ -294,8 +294,8 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             []
             []
             [
-              ("length", M.read (| UnsupportedLiteral |));
-              ("height", M.read (| UnsupportedLiteral |))
+              ("length", M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |));
+              ("height", M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |))
             ] in
         let~ _triangle : Ty.path "generics_bounds::Triangle" :=
           Value.mkStructRecord
@@ -303,8 +303,8 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             []
             []
             [
-              ("length", M.read (| UnsupportedLiteral |));
-              ("height", M.read (| UnsupportedLiteral |))
+              ("length", M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |));
+              ("height", M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |))
             ] in
         let~ _ : Ty.tuple [] :=
           M.call_closure (|

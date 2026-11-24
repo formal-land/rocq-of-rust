@@ -584,17 +584,23 @@ Module local.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context::local::LocalContext",
-                  "precompile_error_message"
-                |),
-                Value.StructTuple
-                  "core::option::Option::None"
-                  []
-                  [ Ty.path "alloc::string::String" ]
-                  []
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::option::Option::None"
+                    []
+                    [ Ty.path "alloc::string::String" ]
+                    [])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context::local::LocalContext",
+                        "precompile_error_message"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -652,17 +658,23 @@ Module local.
           let output := M.alloc (| Ty.path "alloc::string::String", output |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context::local::LocalContext",
-                  "precompile_error_message"
-                |),
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "alloc::string::String" ]
-                  [ M.read (| output |) ]
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ Ty.path "alloc::string::String" ]
+                    [ M.read (| output |) ])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context::local::LocalContext",
+                        "precompile_error_message"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

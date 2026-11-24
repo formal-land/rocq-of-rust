@@ -1598,234 +1598,229 @@ Module hash.
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
-                          let β := out in
-                          M.write (|
-                            β,
-                            M.call_closure (|
-                              Ty.path "u64",
-                              BinOp.Wrap.bit_or,
-                              [
-                                M.read (| β |);
-                                M.call_closure (|
-                                  Ty.path "u64",
-                                  BinOp.Wrap.shl,
-                                  [
-                                    M.cast
-                                      (Ty.path "u64")
-                                      (M.read (|
-                                        let~ _ : Ty.tuple [] :=
-                                          M.match_operator (|
-                                            Ty.tuple [],
-                                            M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                            [
-                                              fun γ =>
-                                                ltac:(M.monadic
-                                                  (let γ :=
-                                                    M.alloc (| Ty.path "bool", Value.Bool true |) in
-                                                  let _ :=
-                                                    is_constant_or_break_match (|
-                                                      M.read (| γ |),
-                                                      Value.Bool true
-                                                    |) in
-                                                  M.read (|
-                                                    let~ _ : Ty.tuple [] :=
-                                                      M.match_operator (|
-                                                        Ty.tuple [],
-                                                        M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                                        [
-                                                          fun γ =>
-                                                            ltac:(M.monadic
-                                                              (let γ :=
-                                                                M.alloc (|
-                                                                  Ty.path "bool",
-                                                                  M.call_closure (|
-                                                                    Ty.path "bool",
-                                                                    UnOp.not,
-                                                                    [
-                                                                      M.call_closure (|
-                                                                        Ty.path "bool",
-                                                                        BinOp.le,
-                                                                        [
-                                                                          M.call_closure (|
-                                                                            Ty.path "usize",
-                                                                            BinOp.Wrap.add,
-                                                                            [
-                                                                              M.call_closure (|
-                                                                                Ty.path "usize",
-                                                                                BinOp.Wrap.add,
-                                                                                [
-                                                                                  M.read (|
-                                                                                    start
-                                                                                  |);
-                                                                                  M.read (| i |)
-                                                                                ]
-                                                                              |);
-                                                                              M.call_closure (|
-                                                                                Ty.path "usize",
-                                                                                M.get_function (|
-                                                                                  "core::mem::size_of",
-                                                                                  [],
-                                                                                  [ Ty.path "u16" ]
-                                                                                |),
-                                                                                []
-                                                                              |)
-                                                                            ]
-                                                                          |);
-                                                                          M.call_closure (|
-                                                                            Ty.path "usize",
-                                                                            M.get_associated_function (|
-                                                                              Ty.apply
-                                                                                (Ty.path "slice")
-                                                                                []
-                                                                                [ Ty.path "u8" ],
-                                                                              "len",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                M.deref (|
-                                                                                  M.read (| buf |)
-                                                                                |)
-                                                                              |)
-                                                                            ]
-                                                                          |)
-                                                                        ]
-                                                                      |)
-                                                                    ]
-                                                                  |)
-                                                                |) in
-                                                              let _ :=
-                                                                is_constant_or_break_match (|
-                                                                  M.read (| γ |),
-                                                                  Value.Bool true
-                                                                |) in
-                                                              M.never_to_any (|
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "u64",
+                                BinOp.Wrap.shl,
+                                [
+                                  M.cast
+                                    (Ty.path "u64")
+                                    (M.read (|
+                                      let~ _ : Ty.tuple [] :=
+                                        M.match_operator (|
+                                          Ty.tuple [],
+                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                          [
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let γ :=
+                                                  M.alloc (| Ty.path "bool", Value.Bool true |) in
+                                                let _ :=
+                                                  is_constant_or_break_match (|
+                                                    M.read (| γ |),
+                                                    Value.Bool true
+                                                  |) in
+                                                M.read (|
+                                                  let~ _ : Ty.tuple [] :=
+                                                    M.match_operator (|
+                                                      Ty.tuple [],
+                                                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                                      [
+                                                        fun γ =>
+                                                          ltac:(M.monadic
+                                                            (let γ :=
+                                                              M.alloc (|
+                                                                Ty.path "bool",
                                                                 M.call_closure (|
-                                                                  Ty.path "never",
-                                                                  M.get_function (|
-                                                                    "core::panicking::panic",
-                                                                    [],
-                                                                    []
-                                                                  |),
+                                                                  Ty.path "bool",
+                                                                  UnOp.not,
                                                                   [
-                                                                    mk_str (|
-                                                                      "assertion failed: start + i + size_of::<u16>() <= buf.len()"
+                                                                    M.call_closure (|
+                                                                      Ty.path "bool",
+                                                                      BinOp.le,
+                                                                      [
+                                                                        M.call_closure (|
+                                                                          Ty.path "usize",
+                                                                          BinOp.Wrap.add,
+                                                                          [
+                                                                            M.call_closure (|
+                                                                              Ty.path "usize",
+                                                                              BinOp.Wrap.add,
+                                                                              [
+                                                                                M.read (| start |);
+                                                                                M.read (| i |)
+                                                                              ]
+                                                                            |);
+                                                                            M.call_closure (|
+                                                                              Ty.path "usize",
+                                                                              M.get_function (|
+                                                                                "core::mem::size_of",
+                                                                                [],
+                                                                                [ Ty.path "u16" ]
+                                                                              |),
+                                                                              []
+                                                                            |)
+                                                                          ]
+                                                                        |);
+                                                                        M.call_closure (|
+                                                                          Ty.path "usize",
+                                                                          M.get_associated_function (|
+                                                                            Ty.apply
+                                                                              (Ty.path "slice")
+                                                                              []
+                                                                              [ Ty.path "u8" ],
+                                                                            "len",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.deref (|
+                                                                                M.read (| buf |)
+                                                                              |)
+                                                                            |)
+                                                                          ]
+                                                                        |)
+                                                                      ]
                                                                     |)
                                                                   ]
                                                                 |)
-                                                              |)));
-                                                          fun γ => ltac:(M.monadic (Value.Tuple []))
-                                                        ]
-                                                      |) in
-                                                    M.alloc (| Ty.tuple [], Value.Tuple [] |)
-                                                  |)));
-                                              fun γ => ltac:(M.monadic (Value.Tuple []))
-                                            ]
-                                          |) in
-                                        let~ data : Ty.path "u16" :=
-                                          M.read (|
-                                            M.use
-                                              (M.alloc (|
-                                                Ty.path "u16",
-                                                Value.Integer IntegerKind.U16 0
-                                              |))
-                                          |) in
-                                        let~ _ : Ty.tuple [] :=
-                                          M.call_closure (|
-                                            Ty.tuple [],
-                                            M.get_function (|
-                                              "core::ptr::copy_nonoverlapping",
-                                              [],
-                                              [ Ty.path "u8" ]
-                                            |),
-                                            [
-                                              M.call_closure (|
-                                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                                M.get_associated_function (|
-                                                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                                  "add",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.call_closure (|
-                                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path "slice")
-                                                        []
-                                                        [ Ty.path "u8" ],
-                                                      "as_ptr",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| buf |) |)
-                                                      |)
-                                                    ]
-                                                  |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    BinOp.Wrap.add,
-                                                    [ M.read (| start |); M.read (| i |) ]
-                                                  |)
-                                                ]
-                                              |);
-                                              M.cast
-                                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                                (M.read (|
-                                                  M.use
-                                                    (M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "*mut")
-                                                        []
-                                                        [ Ty.path "u16" ],
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutPointer,
-                                                        M.deref (|
-                                                          M.borrow (| Pointer.Kind.MutRef, data |)
-                                                        |)
-                                                      |)
-                                                    |))
-                                                |));
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_function (|
-                                                  "core::mem::size_of",
-                                                  [],
-                                                  [ Ty.path "u16" ]
-                                                |),
-                                                []
-                                              |)
-                                            ]
-                                          |) in
-                                        M.alloc (|
-                                          Ty.path "u16",
-                                          M.call_closure (|
-                                            Ty.path "u16",
-                                            M.get_associated_function (|
+                                                              |) in
+                                                            let _ :=
+                                                              is_constant_or_break_match (|
+                                                                M.read (| γ |),
+                                                                Value.Bool true
+                                                              |) in
+                                                            M.never_to_any (|
+                                                              M.call_closure (|
+                                                                Ty.path "never",
+                                                                M.get_function (|
+                                                                  "core::panicking::panic",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  mk_str (|
+                                                                    "assertion failed: start + i + size_of::<u16>() <= buf.len()"
+                                                                  |)
+                                                                ]
+                                                              |)
+                                                            |)));
+                                                        fun γ => ltac:(M.monadic (Value.Tuple []))
+                                                      ]
+                                                    |) in
+                                                  M.alloc (| Ty.tuple [], Value.Tuple [] |)
+                                                |)));
+                                            fun γ => ltac:(M.monadic (Value.Tuple []))
+                                          ]
+                                        |) in
+                                      let~ data : Ty.path "u16" :=
+                                        M.read (|
+                                          M.use
+                                            (M.alloc (|
                                               Ty.path "u16",
-                                              "to_le",
-                                              [],
+                                              Value.Integer IntegerKind.U16 0
+                                            |))
+                                        |) in
+                                      let~ _ : Ty.tuple [] :=
+                                        M.call_closure (|
+                                          Ty.tuple [],
+                                          M.get_function (|
+                                            "core::ptr::copy_nonoverlapping",
+                                            [],
+                                            [ Ty.path "u8" ]
+                                          |),
+                                          [
+                                            M.call_closure (|
+                                              Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.call_closure (|
+                                                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                                  M.get_associated_function (|
+                                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                                    "as_ptr",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| buf |) |)
+                                                    |)
+                                                  ]
+                                                |);
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.add,
+                                                  [ M.read (| start |); M.read (| i |) ]
+                                                |)
+                                              ]
+                                            |);
+                                            M.cast
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                              (M.read (|
+                                                M.use
+                                                  (M.alloc (|
+                                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u16" ],
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutPointer,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.MutRef, data |)
+                                                      |)
+                                                    |)
+                                                  |))
+                                              |));
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_function (|
+                                                "core::mem::size_of",
+                                                [],
+                                                [ Ty.path "u16" ]
+                                              |),
                                               []
-                                            |),
-                                            [ M.read (| data |) ]
-                                          |)
+                                            |)
+                                          ]
+                                        |) in
+                                      M.alloc (|
+                                        Ty.path "u16",
+                                        M.call_closure (|
+                                          Ty.path "u16",
+                                          M.get_associated_function (|
+                                            Ty.path "u16",
+                                            "to_le",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.read (| data |) ]
                                         |)
-                                      |));
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.mul,
-                                      [ M.read (| i |); Value.Integer IntegerKind.Usize 8 ]
-                                    |)
-                                  ]
-                                |)
-                              ]
-                            |)
+                                      |)
+                                    |));
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.mul,
+                                    [ M.read (| i |); Value.Integer IntegerKind.Usize 8 ]
+                                  |)
+                                ]
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (let β := out in
+                                M.write (|
+                                  β,
+                                  M.call_closure (|
+                                    Ty.path "u64",
+                                    BinOp.Wrap.bit_or,
+                                    [ M.read (| β |); rhs' ]
+                                  |)
+                                |)))
                           |) in
                         M.alloc (|
                           Ty.tuple [],
@@ -1862,53 +1857,56 @@ Module hash.
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
-                          let β := out in
-                          M.write (|
-                            β,
-                            M.call_closure (|
-                              Ty.path "u64",
-                              BinOp.Wrap.bit_or,
-                              [
-                                M.read (| β |);
-                                M.call_closure (|
-                                  Ty.path "u64",
-                                  BinOp.Wrap.shl,
-                                  [
-                                    M.cast
-                                      (Ty.path "u64")
-                                      (M.read (|
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                              "get_unchecked",
-                                              [],
-                                              [ Ty.path "usize" ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| buf |) |)
-                                              |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.add,
-                                                [ M.read (| start |); M.read (| i |) ]
-                                              |)
-                                            ]
-                                          |)
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (M.call_closure (|
+                                Ty.path "u64",
+                                BinOp.Wrap.shl,
+                                [
+                                  M.cast
+                                    (Ty.path "u64")
+                                    (M.read (|
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                            "get_unchecked",
+                                            [],
+                                            [ Ty.path "usize" ]
+                                          |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| buf |) |)
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.add,
+                                              [ M.read (| start |); M.read (| i |) ]
+                                            |)
+                                          ]
                                         |)
-                                      |));
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.mul,
-                                      [ M.read (| i |); Value.Integer IntegerKind.Usize 8 ]
-                                    |)
-                                  ]
-                                |)
-                              ]
-                            |)
+                                      |)
+                                    |));
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.mul,
+                                    [ M.read (| i |); Value.Integer IntegerKind.Usize 8 ]
+                                  |)
+                                ]
+                              |))),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (let β := out in
+                                M.write (|
+                                  β,
+                                  M.call_closure (|
+                                    Ty.path "u64",
+                                    BinOp.Wrap.bit_or,
+                                    [ M.read (| β |); rhs' ]
+                                  |)
+                                |)))
                           |) in
                         let~ _ : Ty.tuple [] :=
                           let β := i in
@@ -2254,108 +2252,132 @@ Module hash.
                   Value.Integer IntegerKind.Usize 0
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::hash::sip::Hasher",
-                      "state"
-                    |),
-                    "core::hash::sip::State",
-                    "v0"
-                  |),
-                  M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.bit_xor,
-                    [
-                      M.read (|
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.bit_xor,
+                      [
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::hash::sip::Hasher",
+                            "k0"
+                          |)
+                        |);
+                        Value.Integer IntegerKind.U64 8317987319222330741
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
                         M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::hash::sip::Hasher",
-                          "k0"
-                        |)
-                      |);
-                      Value.Integer IntegerKind.U64 8317987319222330741
-                    ]
-                  |)
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::hash::sip::Hasher",
+                            "state"
+                          |),
+                          "core::hash::sip::State",
+                          "v0"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::hash::sip::Hasher",
-                      "state"
-                    |),
-                    "core::hash::sip::State",
-                    "v1"
-                  |),
-                  M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.bit_xor,
-                    [
-                      M.read (|
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.bit_xor,
+                      [
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::hash::sip::Hasher",
+                            "k1"
+                          |)
+                        |);
+                        Value.Integer IntegerKind.U64 7237128888997146477
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
                         M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::hash::sip::Hasher",
-                          "k1"
-                        |)
-                      |);
-                      Value.Integer IntegerKind.U64 7237128888997146477
-                    ]
-                  |)
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::hash::sip::Hasher",
+                            "state"
+                          |),
+                          "core::hash::sip::State",
+                          "v1"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::hash::sip::Hasher",
-                      "state"
-                    |),
-                    "core::hash::sip::State",
-                    "v2"
-                  |),
-                  M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.bit_xor,
-                    [
-                      M.read (|
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.bit_xor,
+                      [
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::hash::sip::Hasher",
+                            "k0"
+                          |)
+                        |);
+                        Value.Integer IntegerKind.U64 7816392313619706465
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
                         M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::hash::sip::Hasher",
-                          "k0"
-                        |)
-                      |);
-                      Value.Integer IntegerKind.U64 7816392313619706465
-                    ]
-                  |)
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::hash::sip::Hasher",
+                            "state"
+                          |),
+                          "core::hash::sip::State",
+                          "v2"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::hash::sip::Hasher",
-                      "state"
-                    |),
-                    "core::hash::sip::State",
-                    "v3"
-                  |),
-                  M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.bit_xor,
-                    [
-                      M.read (|
+                M.let_ (|
+                  ltac:(M.monadic
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.bit_xor,
+                      [
+                        M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::hash::sip::Hasher",
+                            "k1"
+                          |)
+                        |);
+                        Value.Integer IntegerKind.U64 8387220255154660723
+                      ]
+                    |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
                         M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::hash::sip::Hasher",
-                          "k1"
-                        |)
-                      |);
-                      Value.Integer IntegerKind.U64 8387220255154660723
-                    ]
-                  |)
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::hash::sip::Hasher",
+                            "state"
+                          |),
+                          "core::hash::sip::State",
+                          "v3"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.write (|
@@ -2784,19 +2806,24 @@ Module hash.
                       [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::hash::sip::Hasher",
-                        "length"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.add,
-                        [ M.read (| β |); M.read (| length |) ]
-                      |)
+                    M.let_ (|
+                      ltac:(M.monadic (M.read (| length |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::hash::sip::Hasher",
+                              "length"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.add,
+                              [ M.read (| β |); rhs' ]
+                            |)
+                          |)))
                     |) in
                   let~ needed : Ty.path "usize" := Value.Integer IntegerKind.Usize 0 in
                   let~ _ : Ty.tuple [] :=
@@ -2846,65 +2873,64 @@ Module hash.
                                   |)
                                 |) in
                               let~ _ : Ty.tuple [] :=
-                                let β :=
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::hash::sip::Hasher",
-                                    "tail"
-                                  |) in
-                                M.write (|
-                                  β,
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    BinOp.Wrap.bit_or,
-                                    [
-                                      M.read (| β |);
-                                      M.call_closure (|
-                                        Ty.path "u64",
-                                        BinOp.Wrap.shl,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "u64",
-                                            M.get_function (|
-                                              "core::hash::sip::u8to64_le",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| msg |) |)
-                                              |);
-                                              Value.Integer IntegerKind.Usize 0;
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_function (|
-                                                  "core::cmp::min",
-                                                  [],
-                                                  [ Ty.path "usize" ]
-                                                |),
-                                                [ M.read (| length |); M.read (| needed |) ]
+                                M.let_ (|
+                                  ltac:(M.monadic
+                                    (M.call_closure (|
+                                      Ty.path "u64",
+                                      BinOp.Wrap.shl,
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          M.get_function (| "core::hash::sip::u8to64_le", [], [] |),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| msg |) |)
+                                            |);
+                                            Value.Integer IntegerKind.Usize 0;
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_function (|
+                                                "core::cmp::min",
+                                                [],
+                                                [ Ty.path "usize" ]
+                                              |),
+                                              [ M.read (| length |); M.read (| needed |) ]
+                                            |)
+                                          ]
+                                        |);
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.mul,
+                                          [
+                                            Value.Integer IntegerKind.Usize 8;
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::hash::sip::Hasher",
+                                                "ntail"
                                               |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.mul,
-                                            [
-                                              Value.Integer IntegerKind.Usize 8;
-                                              M.read (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::hash::sip::Hasher",
-                                                  "ntail"
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
+                                            |)
+                                          ]
+                                        |)
+                                      ]
+                                    |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (let β :=
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::hash::sip::Hasher",
+                                          "tail"
+                                        |) in
+                                      M.write (|
+                                        β,
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          BinOp.Wrap.bit_or,
+                                          [ M.read (| β |); rhs' ]
+                                        |)
+                                      |)))
                                 |) in
                               M.alloc (|
                                 Ty.tuple [],
@@ -2931,19 +2957,24 @@ Module hash.
                                         M.never_to_any (|
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
-                                              let β :=
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::hash::sip::Hasher",
-                                                  "ntail"
-                                                |) in
-                                              M.write (|
-                                                β,
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  BinOp.Wrap.add,
-                                                  [ M.read (| β |); M.read (| length |) ]
-                                                |)
+                                              M.let_ (|
+                                                ltac:(M.monadic (M.read (| length |))),
+                                                fun rhs' =>
+                                                  ltac:(M.monadic
+                                                    (let β :=
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "core::hash::sip::Hasher",
+                                                        "ntail"
+                                                      |) in
+                                                    M.write (|
+                                                      β,
+                                                      M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.add,
+                                                        [ M.read (| β |); rhs' ]
+                                                      |)
+                                                    |)))
                                               |) in
                                             M.return_ (| Value.Tuple [] |)
                                           |)
@@ -2952,32 +2983,35 @@ Module hash.
                                       ltac:(M.monadic
                                         (M.read (|
                                           let~ _ : Ty.tuple [] :=
-                                            let β :=
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::hash::sip::Hasher",
-                                                  "state"
-                                                |),
-                                                "core::hash::sip::State",
-                                                "v3"
-                                              |) in
-                                            M.write (|
-                                              β,
-                                              M.call_closure (|
-                                                Ty.path "u64",
-                                                BinOp.Wrap.bit_xor,
-                                                [
-                                                  M.read (| β |);
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "core::hash::sip::Hasher",
-                                                      "tail"
-                                                    |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::hash::sip::Hasher",
+                                                    "tail"
                                                   |)
-                                                ]
-                                              |)
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (let β :=
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "core::hash::sip::Hasher",
+                                                        "state"
+                                                      |),
+                                                      "core::hash::sip::State",
+                                                      "v3"
+                                                    |) in
+                                                  M.write (|
+                                                    β,
+                                                    M.call_closure (|
+                                                      Ty.path "u64",
+                                                      BinOp.Wrap.bit_xor,
+                                                      [ M.read (| β |); rhs' ]
+                                                    |)
+                                                  |)))
                                             |) in
                                           let~ _ : Ty.tuple [] :=
                                             M.call_closure (|
@@ -3008,32 +3042,35 @@ Module hash.
                                               ]
                                             |) in
                                           let~ _ : Ty.tuple [] :=
-                                            let β :=
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::hash::sip::Hasher",
-                                                  "state"
-                                                |),
-                                                "core::hash::sip::State",
-                                                "v0"
-                                              |) in
-                                            M.write (|
-                                              β,
-                                              M.call_closure (|
-                                                Ty.path "u64",
-                                                BinOp.Wrap.bit_xor,
-                                                [
-                                                  M.read (| β |);
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "core::hash::sip::Hasher",
-                                                      "tail"
-                                                    |)
+                                            M.let_ (|
+                                              ltac:(M.monadic
+                                                (M.read (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::hash::sip::Hasher",
+                                                    "tail"
                                                   |)
-                                                ]
-                                              |)
+                                                |))),
+                                              fun rhs' =>
+                                                ltac:(M.monadic
+                                                  (let β :=
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "core::hash::sip::Hasher",
+                                                        "state"
+                                                      |),
+                                                      "core::hash::sip::State",
+                                                      "v0"
+                                                    |) in
+                                                  M.write (|
+                                                    β,
+                                                    M.call_closure (|
+                                                      Ty.path "u64",
+                                                      BinOp.Wrap.bit_xor,
+                                                      [ M.read (| β |); rhs' ]
+                                                    |)
+                                                  |)))
                                             |) in
                                           let~ _ : Ty.tuple [] :=
                                             M.write (|
@@ -3303,23 +3340,28 @@ Module hash.
                                           |)
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β :=
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::hash::sip::Hasher",
-                                              "state"
-                                            |),
-                                            "core::hash::sip::State",
-                                            "v3"
-                                          |) in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "u64",
-                                            BinOp.Wrap.bit_xor,
-                                            [ M.read (| β |); M.read (| mi |) ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic (M.read (| mi |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β :=
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::hash::sip::Hasher",
+                                                    "state"
+                                                  |),
+                                                  "core::hash::sip::State",
+                                                  "v3"
+                                                |) in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "u64",
+                                                  BinOp.Wrap.bit_xor,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       let~ _ : Ty.tuple [] :=
                                         M.call_closure (|
@@ -3350,23 +3392,28 @@ Module hash.
                                           ]
                                         |) in
                                       let~ _ : Ty.tuple [] :=
-                                        let β :=
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::hash::sip::Hasher",
-                                              "state"
-                                            |),
-                                            "core::hash::sip::State",
-                                            "v0"
-                                          |) in
-                                        M.write (|
-                                          β,
-                                          M.call_closure (|
-                                            Ty.path "u64",
-                                            BinOp.Wrap.bit_xor,
-                                            [ M.read (| β |); M.read (| mi |) ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic (M.read (| mi |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (let β :=
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::hash::sip::Hasher",
+                                                    "state"
+                                                  |),
+                                                  "core::hash::sip::State",
+                                                  "v0"
+                                                |) in
+                                              M.write (|
+                                                β,
+                                                M.call_closure (|
+                                                  Ty.path "u64",
+                                                  BinOp.Wrap.bit_xor,
+                                                  [ M.read (| β |); rhs' ]
+                                                |)
+                                              |)))
                                         |) in
                                       let~ _ : Ty.tuple [] :=
                                         let β := i in
@@ -3395,30 +3442,41 @@ Module hash.
                       |)
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::hash::sip::Hasher",
-                        "tail"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_function (| "core::hash::sip::u8to64_le", [], [] |),
-                        [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |);
-                          M.read (| i |);
-                          M.read (| left |)
-                        ]
-                      |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_function (| "core::hash::sip::u8to64_le", [], [] |),
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |);
+                            M.read (| i |);
+                            M.read (| left |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::hash::sip::Hasher",
+                              "tail"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::hash::sip::Hasher",
-                        "ntail"
-                      |),
-                      M.read (| left |)
+                    M.let_ (|
+                      ltac:(M.monadic (M.read (| left |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::hash::sip::Hasher",
+                              "ntail"
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |)))
@@ -3573,19 +3631,24 @@ Module hash.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                let β :=
-                  M.SubPointer.get_struct_record_field (|
-                    state,
-                    "core::hash::sip::State",
-                    "v3"
-                  |) in
-                M.write (|
-                  β,
-                  M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.bit_xor,
-                    [ M.read (| β |); M.read (| b |) ]
-                  |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| b |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (let β :=
+                        M.SubPointer.get_struct_record_field (|
+                          state,
+                          "core::hash::sip::State",
+                          "v3"
+                        |) in
+                      M.write (|
+                        β,
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.bit_xor,
+                          [ M.read (| β |); rhs' ]
+                        |)
+                      |)))
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
@@ -3599,19 +3662,24 @@ Module hash.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                let β :=
-                  M.SubPointer.get_struct_record_field (|
-                    state,
-                    "core::hash::sip::State",
-                    "v0"
-                  |) in
-                M.write (|
-                  β,
-                  M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.bit_xor,
-                    [ M.read (| β |); M.read (| b |) ]
-                  |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| b |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (let β :=
+                        M.SubPointer.get_struct_record_field (|
+                          state,
+                          "core::hash::sip::State",
+                          "v0"
+                        |) in
+                      M.write (|
+                        β,
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.bit_xor,
+                          [ M.read (| β |); rhs' ]
+                        |)
+                      |)))
                 |) in
               let~ _ : Ty.tuple [] :=
                 let β :=
@@ -3959,344 +4027,416 @@ Module hash.
               let~ _ : Ty.tuple [] :=
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 13
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 16
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v2"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 17
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 21
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v0"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in
@@ -4325,1032 +4465,1248 @@ Module hash.
               let~ _ : Ty.tuple [] :=
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 13
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 16
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v2"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 17
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 21
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v0"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 13
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 16
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v2"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 17
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 21
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v0"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 13
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 16
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v2"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 17
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 21
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v0"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in
@@ -5483,688 +5839,832 @@ Module hash.
               let~ _ : Ty.tuple [] :=
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 13
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 16
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v2"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 17
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 21
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v0"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 13
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 16
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v2"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 17
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 21
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v0"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in
@@ -6194,1376 +6694,1664 @@ Module hash.
               let~ _ : Ty.tuple [] :=
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 13
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 16
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v2"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 17
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 21
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v0"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 13
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 16
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v2"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 17
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 21
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v0"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 13
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 16
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v2"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 17
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 21
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v0"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 13
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 16
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v2"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |)
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |);
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
                             |)
-                          |);
-                          M.read (|
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| state |) |),
+                              "core::hash::sip::State",
+                              "v0"
+                            |),
+                            rhs'
+                          |)))
+                    |) in
+                  let~ _ : Ty.tuple [] :=
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 17
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
-                            |)
-                          |)
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v0"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v2"
                           |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v1"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v1"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |) in
-                  let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 21
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v3"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| β |);
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| state |) |),
+                            "core::hash::sip::State",
+                            "v0"
+                          |)
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
-                              "v0"
+                              "v3"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "u64",
+                              BinOp.Wrap.bit_xor,
+                              [ M.read (| β |); rhs' ]
                             |)
-                          |)
-                        ]
-                      |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| state |) |),
-                        "core::hash::sip::State",
-                        "v2"
-                      |),
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                        [
-                          M.read (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.U32 32
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| state |) |),
                               "core::hash::sip::State",
                               "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                 |) in

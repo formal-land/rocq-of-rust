@@ -995,29 +995,35 @@ Module iter.
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
-                          M.write (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::iter::adapters::peekable::Peekable",
-                              "peeked"
-                            |),
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [
-                                    Ty.associated_in_trait
-                                      "core::iter::traits::iterator::Iterator"
-                                      []
-                                      []
-                                      I
-                                      "Item"
-                                  ]
-                              ]
-                              [ M.read (| other |) ]
+                          M.let_ (|
+                            ltac:(M.monadic
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::iter::traits::iterator::Iterator"
+                                        []
+                                        []
+                                        I
+                                        "Item"
+                                    ]
+                                ]
+                                [ M.read (| other |) ])),
+                            fun rhs' =>
+                              ltac:(M.monadic
+                                (M.write (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::iter::adapters::peekable::Peekable",
+                                    "peeked"
+                                  |),
+                                  rhs'
+                                |)))
                           |) in
                         M.alloc (|
                           Ty.apply
@@ -1452,29 +1458,35 @@ Module iter.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::adapters::peekable::Peekable",
-                          "peeked"
-                        |),
-                        Value.StructTuple
-                          "core::option::Option::Some"
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::option::Option")
-                              []
-                              [
-                                Ty.associated_in_trait
-                                  "core::iter::traits::iterator::Iterator"
-                                  []
-                                  []
-                                  I
-                                  "Item"
-                              ]
-                          ]
-                          [ M.read (| unpeek |) ]
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (Value.StructTuple
+                            "core::option::Option::Some"
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::iter::traits::iterator::Iterator"
+                                    []
+                                    []
+                                    I
+                                    "Item"
+                                ]
+                            ]
+                            [ M.read (| unpeek |) ])),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::iter::adapters::peekable::Peekable",
+                                "peeked"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     M.alloc (|
                       Ty.apply (Ty.path "core::option::Option") [] [ R ],
@@ -1723,29 +1735,35 @@ Module iter.
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
-                      M.write (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::adapters::peekable::Peekable",
-                          "peeked"
-                        |),
-                        Value.StructTuple
-                          "core::option::Option::Some"
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::option::Option")
-                              []
-                              [
-                                Ty.associated_in_trait
-                                  "core::iter::traits::iterator::Iterator"
-                                  []
-                                  []
-                                  I
-                                  "Item"
-                              ]
-                          ]
-                          [ M.read (| unpeek |) ]
+                      M.let_ (|
+                        ltac:(M.monadic
+                          (Value.StructTuple
+                            "core::option::Option::Some"
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::iter::traits::iterator::Iterator"
+                                    []
+                                    []
+                                    I
+                                    "Item"
+                                ]
+                            ]
+                            [ M.read (| unpeek |) ])),
+                        fun rhs' =>
+                          ltac:(M.monadic
+                            (M.write (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::iter::adapters::peekable::Peekable",
+                                "peeked"
+                              |),
+                              rhs'
+                            |)))
                       |) in
                     M.alloc (|
                       Ty.apply (Ty.path "core::option::Option") [] [ R ],
@@ -3935,42 +3953,48 @@ Module iter.
                                 |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
-                                  M.write (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::iter::adapters::peekable::Peekable",
-                                      "peeked"
-                                    |),
-                                    Value.StructTuple
-                                      "core::option::Option::Some"
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [
-                                            Ty.associated_in_trait
-                                              "core::iter::traits::iterator::Iterator"
-                                              []
-                                              []
-                                              I
-                                              "Item"
-                                          ]
-                                      ]
-                                      [
-                                        Value.StructTuple
-                                          "core::option::Option::Some"
-                                          []
-                                          [
-                                            Ty.associated_in_trait
-                                              "core::iter::traits::iterator::Iterator"
-                                              []
-                                              []
-                                              I
-                                              "Item"
-                                          ]
-                                          [ M.read (| v |) ]
-                                      ]
+                                  M.let_ (|
+                                    ltac:(M.monadic
+                                      (Value.StructTuple
+                                        "core::option::Option::Some"
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [
+                                              Ty.associated_in_trait
+                                                "core::iter::traits::iterator::Iterator"
+                                                []
+                                                []
+                                                I
+                                                "Item"
+                                            ]
+                                        ]
+                                        [
+                                          Value.StructTuple
+                                            "core::option::Option::Some"
+                                            []
+                                            [
+                                              Ty.associated_in_trait
+                                                "core::iter::traits::iterator::Iterator"
+                                                []
+                                                []
+                                                I
+                                                "Item"
+                                            ]
+                                            [ M.read (| v |) ]
+                                        ])),
+                                    fun rhs' =>
+                                      ltac:(M.monadic
+                                        (M.write (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::iter::adapters::peekable::Peekable",
+                                            "peeked"
+                                          |),
+                                          rhs'
+                                        |)))
                                   |) in
                                 M.alloc (|
                                   R,

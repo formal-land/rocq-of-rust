@@ -3013,29 +3013,35 @@ Module cell.
             M.deref (|
               M.read (|
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "isize" ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ],
-                          "get_mut",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::cell::RefCell",
-                              "borrow"
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.read (| get_constant (| "core::cell::UNUSED", Ty.path "isize" |) |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&mut") [] [ Ty.path "isize" ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::cell::Cell") [] [ Ty.path "isize" ],
+                                "get_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::cell::RefCell",
+                                    "borrow"
+                                  |)
+                                |)
+                              ]
                             |)
-                          |)
-                        ]
-                      |)
-                    |),
-                    M.read (| get_constant (| "core::cell::UNUSED", Ty.path "isize" |) |)
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 M.alloc (|
                   Ty.apply (Ty.path "&mut") [] [ T ],

@@ -685,65 +685,35 @@ Import Notations.
 (** A tactic that replaces all [M.run] markers with a bind operation.
     This allows to represent Rust programs without introducing
     explicit names for all intermediate computation results. *)
-Ltac monadic e :=
+Ltac monadic_value e k :=
   lazymatch e with
-  | context ctxt [let v := ?x in @?f v] =>
-    refine (let_ _ _);
-      [ monadic x
-      | let v' := fresh v in
-        intro v';
-        let y := (eval cbn beta in (f v')) in
-        lazymatch context ctxt [let v := x in y] with
-        | let _ := x in y => monadic y
-        | _ =>
-          refine (let_ _ _);
-            [ monadic y
-            | let w := fresh "v" in
-              intro w;
-              let z := context ctxt [w] in
-              monadic z
-            ]
-        end
-      ]
-  (* We uses the `let~` notation for lets that come from the source code, in order to keep this
-     abstraction barrier. The code below is simply a copy and paste of the code for the
-     normal `let`. *)
-  | context ctxt [let~ v : ?ty := ?x in @?f v] =>
+  | let v := ?rhs in @?f v =>
+    monadic_value rhs ltac:(fun value =>
+      let body := (eval cbv beta in (f value)) in
+      monadic_value body k)
+  | let~ v : ?ty := ?rhs in @?f v =>
     refine (let_user_monadic ty _ _);
-      [ monadic x
-      | let v' := fresh v in
-        intro v';
-        let y := (eval cbn beta in (f v')) in
-        lazymatch context ctxt [let v := x in y] with
-        | let _ := x in y => monadic y
-        | _ =>
-          refine (let_ _ _);
-            [ monadic y
-            | let w := fresh "v" in
-              intro w;
-              let z := context ctxt [w] in
-              monadic z
-            ]
-        end
-      ]
-  | context ctxt [run ?x] =>
-    lazymatch context ctxt [run x] with
-    | run x => monadic x
-    | _ =>
-      refine (let_ _ _);
-        [ monadic x
-        | let v := fresh "v" in
-          intro v;
-          let y := context ctxt [v] in
-          monadic y
-        ]
-    end
-  | _ =>
-    lazymatch type of e with
-    | M => exact e
-    | _ => exact (pure e)
-    end
+    [ monadic_value rhs ltac:(fun value => exact (pure value))
+    | let ptr := fresh v in intro ptr;
+      let body := (eval cbv beta in (f ptr)) in
+      monadic_value body k ]
+  | run ?computation =>
+    monadic_value computation ltac:(fun m =>
+      refine (let_ m _);
+      let value := fresh "value" in intro value; k value)
+  | ?f ?arg =>
+    monadic_value f ltac:(fun func =>
+      monadic_value arg ltac:(fun value =>
+        let applied := constr:(@func value) in k applied))
+  | _ => k e
   end.
+
+Ltac monadic e :=
+  monadic_value e ltac:(fun result =>
+    lazymatch type of result with
+    | M => exact result
+    | _ => exact (pure result)
+    end).
 
 Definition raise (exception : Exception.t) : M :=
   LowM.Pure (inr exception).
@@ -770,6 +740,13 @@ Arguments call_logical_op /.
 
 Definition impossible {A : Set} (payload : A) : M :=
   LowM.Impossible payload.
+
+(** Rust's assume intrinsic has a defined execution only for true. *)
+Definition assume (condition : Value.t) : M :=
+  match condition with
+  | Value.Bool true => pure (Value.Tuple [])
+  | _ => impossible "false or ill-typed assumption"
+  end.
 
 Module Panic.
   Inductive t : Set :=
@@ -873,11 +850,17 @@ Definition catch_break (ty : Ty.t) (body : M) : M :=
     ).
 
 Definition loop (ty : Ty.t) (body : M) : M :=
-  LowM.Loop
-    ty
-    (let_ (catch_continue ty body) read)
+  LowM.Loop ty
+    (catch ty (let_ body read) (fun exception =>
+      if Exception.is_continue exception then pure (Value.Tuple [])
+      else raise exception))
     (fun result =>
-      catch_break ty (LowM.Pure result)).
+      match result with
+      | inl ref => pure ref
+      | inr exception =>
+          if Exception.is_break exception then alloc (Ty.tuple []) (Value.Tuple [])
+          else raise exception
+      end).
 
 (** The type [ty] is the type of each arm. *)
 Fixpoint match_operator
@@ -990,7 +973,8 @@ Definition is_struct_tuple (value : Value.t) (constructor : string) : M :=
   let* value := deref value in
   let* value := read value in
   match value with
-  | Value.StructTuple current_constructor _ _ _ =>
+  | Value.StructTuple current_constructor _ _ _
+  | Value.StructRecord current_constructor _ _ _ =>
     match PrimString.compare current_constructor constructor with
     | Eq => pure (Value.Tuple [])
     | _ => break_match
@@ -1054,6 +1038,9 @@ Definition pointer_coercion (coercion : PointerCoercion.t) (source target : Ty.t
 Arguments pointer_coercion /.
 
 Parameter struct_record_update : Value.t -> list (string * Value.t) -> Value.t.
+
+(** An opaque Rust constant still depending on its generic arguments. *)
+Parameter symbolic_const : string -> list Value.t -> list Ty.t -> Value.t.
 
 Parameter unevaluated_const : Value.t -> Value.t.
 

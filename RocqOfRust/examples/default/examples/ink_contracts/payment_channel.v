@@ -2302,17 +2302,23 @@ Module Impl_payment_channel_PaymentChannel.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                M.write (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "payment_channel::PaymentChannel",
-                    "expiration"
-                  |),
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "u64" ]
-                    [ M.read (| expiration |) ]
+                M.let_ (|
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      []
+                      [ Ty.path "u64" ]
+                      [ M.read (| expiration |) ])),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "payment_channel::PaymentChannel",
+                          "expiration"
+                        |),
+                        rhs'
+                      |)))
                 |) in
               M.alloc (|
                 Ty.apply
@@ -2787,19 +2793,24 @@ Module Impl_payment_channel_PaymentChannel.
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
-                let β :=
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "payment_channel::PaymentChannel",
-                    "withdrawn"
-                  |) in
-                M.write (|
-                  β,
-                  M.call_closure (|
-                    Ty.path "u128",
-                    BinOp.Wrap.add,
-                    [ M.read (| β |); M.read (| amount_to_withdraw |) ]
-                  |)
+                M.let_ (|
+                  ltac:(M.monadic (M.read (| amount_to_withdraw |))),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (let β :=
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "payment_channel::PaymentChannel",
+                          "withdrawn"
+                        |) in
+                      M.write (|
+                        β,
+                        M.call_closure (|
+                          Ty.path "u128",
+                          BinOp.Wrap.add,
+                          [ M.read (| β |); rhs' ]
+                        |)
+                      |)))
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|

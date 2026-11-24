@@ -1,8 +1,17 @@
 Require Import links.RocqOfRust.
 Require Import core.links.option.
-Require Import core.slice.mod.
+Require Import core.slice.mod core.ptr.metadata core.intrinsics.links.mod.
 Require Import core.slice.links.index.
 Require Import core.slice.links.iter.
+
+Instance run_metadata_for_slice {T : Set} `{Link T} (ptr : '*const (list T)) :
+  Run.Trait ptr.metadata.metadata [] [Φ (list T)] [φ ptr] usize.
+Proof.
+  constructor. unfold ptr.metadata.metadata.
+  change (Φ (list T)) with (Ty.apply (Ty.path "slice") [] [Φ T]).
+  eapply Run.Rewrite; [rewrite SliceMetadata.metadata_type; reflexivity |]. run_symbolic.
+Defined.
+Global Opaque run_metadata_for_slice.
 
 Module Impl_Slice.
   Definition Self (T : Set) : Set :=
@@ -51,7 +60,8 @@ Module Impl_Slice.
     Run.Trait (slice.Impl_slice_T.len (Φ T)) [] [] [φ self]
       usize.
   Proof.
-  Admitted.
+    constructor. run_symbolic.
+  Defined.
   Global Opaque run_len.
 
   (* pub const fn is_empty(&self) -> bool *)

@@ -40,7 +40,7 @@ plugin/rocqofrust_link_plugin/rocqofrust_link_plugin.cmxs: $(PLUGIN_ML) plugin/r
 	mkdir -p plugin/rocqofrust_link_plugin
 	ocamlfind ocamlopt -I plugin -package $(PLUGIN_PACKAGES) -linkall -shared $(PLUGIN_ML) -o $@
 
-plugin-inline-print-check: plugin $(PLUGIN_INLINE_PRINT_TEST) $(PLUGIN_INLINE_PRINT_EXPECTED)
+plugin-inline-print-check: plugin revm/revm_interpreter/links/interpreter_types.vo $(PLUGIN_INLINE_PRINT_TEST) $(PLUGIN_INLINE_PRINT_EXPECTED)
 	@echo "COQC plugin inline print $(PLUGIN_INLINE_PRINT_TEST)"
 	@coqc -R . RocqOfRust -I plugin -impredicative-set $(PLUGIN_INLINE_PRINT_TEST) > $(PLUGIN_INLINE_PRINT_OUTPUT)
 	@diff -u $(PLUGIN_INLINE_PRINT_EXPECTED) $(PLUGIN_INLINE_PRINT_OUTPUT)

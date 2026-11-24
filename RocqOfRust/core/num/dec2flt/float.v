@@ -265,8 +265,12 @@ Module num.
                                             BinOp.Wrap.sub,
                                             [
                                               M.read (|
-                                                get_constant (|
-                                                  "core::num::dec2flt::float::RawFloat::BITS",
+                                                get_trait_constant (|
+                                                  "core::num::dec2flt::float::RawFloat",
+                                                  Self,
+                                                  [],
+                                                  [],
+                                                  "BITS",
                                                   Ty.path "u32"
                                                 |)
                                               |);
@@ -279,8 +283,17 @@ Module num.
                                   |);
                                   M.borrow (|
                                     Pointer.Kind.Ref,
-                                    get_constant (|
-                                      "core::num::dec2flt::float::Integer::ZERO",
+                                    get_trait_constant (|
+                                      "core::num::dec2flt::float::Integer",
+                                      Ty.associated_in_trait
+                                        "core::num::dec2flt::float::RawFloat"
+                                        []
+                                        []
+                                        Self
+                                        "Int",
+                                      [],
+                                      [],
+                                      "ZERO",
                                       Ty.associated_in_trait
                                         "core::num::dec2flt::float::RawFloat"
                                         []
@@ -364,8 +377,12 @@ Module num.
                             [
                               M.read (| bits |);
                               M.read (|
-                                get_constant (|
-                                  "core::num::dec2flt::float::RawFloat::EXP_MASK",
+                                get_trait_constant (|
+                                  "core::num::dec2flt::float::RawFloat",
+                                  Self,
+                                  [],
+                                  [],
+                                  "EXP_MASK",
                                   Ty.associated_in_trait
                                     "core::num::dec2flt::float::RawFloat"
                                     []
@@ -377,8 +394,12 @@ Module num.
                             ]
                           |);
                           M.read (|
-                            get_constant (|
-                              "core::num::dec2flt::float::RawFloat::SIG_BITS",
+                            get_trait_constant (|
+                              "core::num::dec2flt::float::RawFloat",
+                              Self,
+                              [],
+                              [],
+                              "SIG_BITS",
                               Ty.path "u32"
                             |)
                           |)
@@ -458,8 +479,12 @@ Module num.
                                 [
                                   M.read (| bits |);
                                   M.read (|
-                                    get_constant (|
-                                      "core::num::dec2flt::float::RawFloat::SIG_MASK",
+                                    get_trait_constant (|
+                                      "core::num::dec2flt::float::RawFloat",
+                                      Self,
+                                      [],
+                                      [],
+                                      "SIG_MASK",
                                       Ty.associated_in_trait
                                         "core::num::dec2flt::float::RawFloat"
                                         []
@@ -535,8 +560,12 @@ Module num.
                                 [
                                   M.read (| bits |);
                                   M.read (|
-                                    get_constant (|
-                                      "core::num::dec2flt::float::RawFloat::SIG_MASK",
+                                    get_trait_constant (|
+                                      "core::num::dec2flt::float::RawFloat",
+                                      Self,
+                                      [],
+                                      [],
+                                      "SIG_MASK",
                                       Ty.associated_in_trait
                                         "core::num::dec2flt::float::RawFloat"
                                         []
@@ -570,8 +599,17 @@ Module num.
                                 |),
                                 [
                                   M.read (|
-                                    get_constant (|
-                                      "core::num::dec2flt::float::Integer::ONE",
+                                    get_trait_constant (|
+                                      "core::num::dec2flt::float::Integer",
+                                      Ty.associated_in_trait
+                                        "core::num::dec2flt::float::RawFloat"
+                                        []
+                                        []
+                                        Self
+                                        "Int",
+                                      [],
+                                      [],
+                                      "ONE",
                                       Ty.associated_in_trait
                                         "core::num::dec2flt::float::RawFloat"
                                         []
@@ -581,8 +619,12 @@ Module num.
                                     |)
                                   |);
                                   M.read (|
-                                    get_constant (|
-                                      "core::num::dec2flt::float::RawFloat::SIG_BITS",
+                                    get_trait_constant (|
+                                      "core::num::dec2flt::float::RawFloat",
+                                      Self,
+                                      [],
+                                      [],
+                                      "SIG_BITS",
                                       Ty.path "u32"
                                     |)
                                   |)
@@ -593,36 +635,47 @@ Module num.
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  let β := exponent in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "i16",
-                      BinOp.Wrap.sub,
-                      [
-                        M.read (| β |);
-                        M.cast
-                          (Ty.path "i16")
-                          (M.call_closure (|
-                            Ty.path "u32",
-                            BinOp.Wrap.add,
-                            [
-                              M.read (|
-                                get_constant (|
-                                  "core::num::dec2flt::float::RawFloat::EXP_BIAS",
-                                  Ty.path "u32"
-                                |)
-                              |);
-                              M.read (|
-                                get_constant (|
-                                  "core::num::dec2flt::float::RawFloat::SIG_BITS",
-                                  Ty.path "u32"
-                                |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.cast
+                        (Ty.path "i16")
+                        (M.call_closure (|
+                          Ty.path "u32",
+                          BinOp.Wrap.add,
+                          [
+                            M.read (|
+                              get_trait_constant (|
+                                "core::num::dec2flt::float::RawFloat",
+                                Self,
+                                [],
+                                [],
+                                "EXP_BIAS",
+                                Ty.path "u32"
                               |)
-                            ]
-                          |))
-                      ]
-                    |)
+                            |);
+                            M.read (|
+                              get_trait_constant (|
+                                "core::num::dec2flt::float::RawFloat",
+                                Self,
+                                [],
+                                [],
+                                "SIG_BITS",
+                                Ty.path "u32"
+                              |)
+                            |)
+                          ]
+                        |)))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (let β := exponent in
+                        M.write (|
+                          β,
+                          M.call_closure (|
+                            Ty.path "i16",
+                            BinOp.Wrap.sub,
+                            [ M.read (| β |); rhs' ]
+                          |)
+                        |)))
                   |) in
                 M.alloc (|
                   Ty.tuple [ Ty.path "u64"; Ty.path "i16"; Ty.path "i8" ],
@@ -826,8 +879,12 @@ Module num.
                                                 [
                                                   M.read (| v |);
                                                   M.read (|
-                                                    get_constant (|
-                                                      "core::num::dec2flt::float::RawFloat::MAX_MANTISSA_FAST_PATH",
+                                                    get_trait_constant (|
+                                                      "core::num::dec2flt::float::RawFloat",
+                                                      Ty.path "f16",
+                                                      [],
+                                                      [],
+                                                      "MAX_MANTISSA_FAST_PATH",
                                                       Ty.path "u64"
                                                     |)
                                                   |)
@@ -1124,8 +1181,12 @@ Module num.
                                                 [
                                                   M.read (| v |);
                                                   M.read (|
-                                                    get_constant (|
-                                                      "core::num::dec2flt::float::RawFloat::MAX_MANTISSA_FAST_PATH",
+                                                    get_trait_constant (|
+                                                      "core::num::dec2flt::float::RawFloat",
+                                                      Ty.path "f32",
+                                                      [],
+                                                      [],
+                                                      "MAX_MANTISSA_FAST_PATH",
                                                       Ty.path "u64"
                                                     |)
                                                   |)
@@ -1423,8 +1484,12 @@ Module num.
                                                 [
                                                   M.read (| v |);
                                                   M.read (|
-                                                    get_constant (|
-                                                      "core::num::dec2flt::float::RawFloat::MAX_MANTISSA_FAST_PATH",
+                                                    get_trait_constant (|
+                                                      "core::num::dec2flt::float::RawFloat",
+                                                      Ty.path "f64",
+                                                      [],
+                                                      [],
+                                                      "MAX_MANTISSA_FAST_PATH",
                                                       Ty.path "u64"
                                                     |)
                                                   |)

@@ -86,7 +86,8 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
   | [], [], [] =>
     ltac:(M.monadic
       (M.read (|
-        let~ decimal : Ty.path "f32" := M.read (| UnsupportedLiteral |) in
+        let~ decimal : Ty.path "f32" :=
+          M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |) in
         let~ integer : Ty.path "u8" := M.cast (Ty.path "u8") (M.read (| decimal |)) in
         let~ character : Ty.path "char" := M.cast (Ty.path "char") (M.read (| integer |)) in
         let~ _ : Ty.tuple [] :=
@@ -1023,7 +1024,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                             Pointer.Kind.Ref,
                             M.alloc (|
                               Ty.path "u8",
-                              M.cast (Ty.path "u8") (M.read (| UnsupportedLiteral |))
+                              M.cast
+                                (Ty.path "u8")
+                                (M.read (|
+                                  M.impossible (| "[ROR003] floating-point literal in main" |)
+                                |))
                             |)
                           |)
                         ] in
@@ -1122,7 +1127,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                             Pointer.Kind.Ref,
                             M.alloc (|
                               Ty.path "u8",
-                              M.cast (Ty.path "u8") (M.read (| UnsupportedLiteral |))
+                              M.cast
+                                (Ty.path "u8")
+                                (M.read (|
+                                  M.impossible (| "[ROR003] floating-point literal in main" |)
+                                |))
                             |)
                           |)
                         ] in
@@ -1332,7 +1341,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                   [],
                                   [ Ty.path "u8" ]
                                 |),
-                                [ M.read (| UnsupportedLiteral |) ]
+                                [
+                                  M.read (|
+                                    M.impossible (| "[ROR003] floating-point literal in main" |)
+                                  |)
+                                ]
                               |)
                             |)
                           |)
@@ -1440,7 +1453,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                   [],
                                   [ Ty.path "u8" ]
                                 |),
-                                [ M.read (| UnsupportedLiteral |) ]
+                                [
+                                  M.read (|
+                                    M.impossible (| "[ROR003] floating-point literal in main" |)
+                                  |)
+                                ]
                               |)
                             |)
                           |)

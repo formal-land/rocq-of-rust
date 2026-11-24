@@ -45,7 +45,7 @@ where
 }
 *)
 Instance run_from_fn (T : Set) `{Link T} (N : usize) (F : Set) `{Link F}
-    {run_FnMut_for_F : FnMut.Run F usize T}
+    {run_FnMut_for_F : FnMut.Run F (OneElementTuple.t usize) T}
     (cb : F) :
   Run.Trait array.from_fn
     [φ N] [Φ T; Φ F] [φ cb]

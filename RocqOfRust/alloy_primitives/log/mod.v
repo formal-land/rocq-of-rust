@@ -1241,13 +1241,18 @@ Module log.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloy_primitives::log::LogData",
-                  "topics"
-                |),
-                M.read (| topics |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| topics |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloy_primitives::log::LogData",
+                        "topics"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

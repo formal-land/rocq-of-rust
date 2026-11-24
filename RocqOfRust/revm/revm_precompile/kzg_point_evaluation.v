@@ -1162,14 +1162,20 @@ Module kzg_point_evaluation.
               ]
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| hash, Value.Integer IntegerKind.Usize 0 |),
-              M.read (|
-                get_constant (|
-                  "revm_precompile::kzg_point_evaluation::VERSIONED_HASH_VERSION_KZG",
-                  Ty.path "u8"
-                |)
-              |)
+            M.let_ (|
+              ltac:(M.monadic
+                (M.read (|
+                  get_constant (|
+                    "revm_precompile::kzg_point_evaluation::VERSIONED_HASH_VERSION_KZG",
+                    Ty.path "u8"
+                  |)
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| hash, Value.Integer IntegerKind.Usize 0 |),
+                    rhs'
+                  |)))
             |) in
           hash
         |)))

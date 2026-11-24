@@ -516,13 +516,19 @@ Module local.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::local::FrameStack",
-                  "index"
-                |),
-                Value.StructTuple "core::option::Option::None" [] [ Ty.path "usize" ] []
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple "core::option::Option::None" [] [ Ty.path "usize" ] [])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context_interface::local::FrameStack",
+                        "index"
+                      |),
+                      rhs'
+                    |)))
               |) in
             let~ _ : Ty.tuple [] :=
               M.match_operator (|
@@ -715,17 +721,23 @@ Module local.
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::local::FrameStack",
-                  "index"
-                |),
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "usize" ]
-                  [ Value.Integer IntegerKind.Usize 0 ]
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    []
+                    [ Ty.path "usize" ]
+                    [ Value.Integer IntegerKind.Usize 0 ])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context_interface::local::FrameStack",
+                        "index"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1082,13 +1094,19 @@ Module local.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::local::FrameStack",
-                  "index"
-                |),
-                Value.StructTuple "core::option::Option::None" [] [ Ty.path "usize" ] []
+              M.let_ (|
+                ltac:(M.monadic
+                  (Value.StructTuple "core::option::Option::None" [] [ Ty.path "usize" ] [])),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context_interface::local::FrameStack",
+                        "index"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1122,38 +1140,44 @@ Module local.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "revm_context_interface::local::FrameStack",
-                  "index"
-                |),
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                  M.get_associated_function (| Ty.path "usize", "checked_sub", [], [] |),
-                  [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                        "unwrap_or",
-                        [],
-                        []
+              M.let_ (|
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                    M.get_associated_function (| Ty.path "usize", "checked_sub", [], [] |),
+                    [
+                      M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                          "unwrap_or",
+                          [],
+                          []
+                        |),
+                        [
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_context_interface::local::FrameStack",
+                              "index"
+                            |)
+                          |);
+                          Value.Integer IntegerKind.Usize 0
+                        ]
+                      |);
+                      Value.Integer IntegerKind.Usize 1
+                    ]
+                  |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context_interface::local::FrameStack",
+                        "index"
                       |),
-                      [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::local::FrameStack",
-                            "index"
-                          |)
-                        |);
-                        Value.Integer IntegerKind.Usize 0
-                      ]
-                    |);
-                    Value.Integer IntegerKind.Usize 1
-                  ]
-                |)
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

@@ -1079,24 +1079,27 @@ Module slice.
                                                     |)
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
-                                                  let β := offset in
-                                                  M.write (|
-                                                    β,
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.sub,
-                                                      [
-                                                        M.read (| β |);
-                                                        M.call_closure (|
-                                                          Ty.path "usize",
-                                                          BinOp.Wrap.mul,
-                                                          [
-                                                            Value.Integer IntegerKind.Usize 2;
-                                                            M.read (| chunk_bytes |)
-                                                          ]
-                                                        |)
-                                                      ]
-                                                    |)
+                                                  M.let_ (|
+                                                    ltac:(M.monadic
+                                                      (M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.mul,
+                                                        [
+                                                          Value.Integer IntegerKind.Usize 2;
+                                                          M.read (| chunk_bytes |)
+                                                        ]
+                                                      |))),
+                                                    fun rhs' =>
+                                                      ltac:(M.monadic
+                                                        (let β := offset in
+                                                        M.write (|
+                                                          β,
+                                                          M.call_closure (|
+                                                            Ty.path "usize",
+                                                            BinOp.Wrap.sub,
+                                                            [ M.read (| β |); rhs' ]
+                                                          |)
+                                                        |)))
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                               |)));

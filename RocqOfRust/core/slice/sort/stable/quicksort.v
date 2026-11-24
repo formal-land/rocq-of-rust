@@ -2134,31 +2134,37 @@ Module slice.
                 let towards_left := M.alloc (| Ty.path "bool", towards_left |) in
                 M.read (|
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::slice::sort::stable::quicksort::PartitionState",
-                        "scratch_rev"
-                      |),
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*mut") [] [ T ],
-                        M.get_associated_function (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
                           Ty.apply (Ty.path "*mut") [] [ T ],
-                          "sub",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (|
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "*mut") [] [ T ],
+                            "sub",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::slice::sort::stable::quicksort::PartitionState",
+                                "scratch_rev"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.Usize 1
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "core::slice::sort::stable::quicksort::PartitionState",
                               "scratch_rev"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.Usize 1
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   let~ dst_base : Ty.apply (Ty.path "*mut") [] [ T ] :=
                     M.match_operator (|
@@ -2225,46 +2231,57 @@ Module slice.
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    let β :=
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::slice::sort::stable::quicksort::PartitionState",
-                        "num_left"
-                      |) in
-                    M.write (|
-                      β,
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.add,
-                        [ M.read (| β |); M.cast (Ty.path "usize") (M.read (| towards_left |)) ]
-                      |)
+                    M.let_ (|
+                      ltac:(M.monadic (M.cast (Ty.path "usize") (M.read (| towards_left |)))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (let β :=
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::slice::sort::stable::quicksort::PartitionState",
+                              "num_left"
+                            |) in
+                          M.write (|
+                            β,
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.add,
+                              [ M.read (| β |); rhs' ]
+                            |)
+                          |)))
                     |) in
                   let~ _ : Ty.tuple [] :=
-                    M.write (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::slice::sort::stable::quicksort::PartitionState",
-                        "scan"
-                      |),
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*const") [] [ T ],
-                        M.get_associated_function (|
+                    M.let_ (|
+                      ltac:(M.monadic
+                        (M.call_closure (|
                           Ty.apply (Ty.path "*const") [] [ T ],
-                          "add",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (|
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "*const") [] [ T ],
+                            "add",
+                            [],
+                            []
+                          |),
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::slice::sort::stable::quicksort::PartitionState",
+                                "scan"
+                              |)
+                            |);
+                            Value.Integer IntegerKind.Usize 1
+                          ]
+                        |))),
+                      fun rhs' =>
+                        ltac:(M.monadic
+                          (M.write (|
                             M.SubPointer.get_struct_record_field (|
                               M.deref (| M.read (| self |) |),
                               "core::slice::sort::stable::quicksort::PartitionState",
                               "scan"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.Usize 1
-                        ]
-                      |)
+                            |),
+                            rhs'
+                          |)))
                     |) in
                   dst
                 |)))

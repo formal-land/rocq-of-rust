@@ -278,7 +278,10 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             "structures::Point"
             []
             []
-            [ ("x", M.read (| UnsupportedLiteral |)); ("y", M.read (| UnsupportedLiteral |)) ] in
+            [
+              ("x", M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |));
+              ("y", M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |))
+            ] in
         let~ _ : Ty.tuple [] :=
           M.read (|
             let~ _ : Ty.tuple [] :=
@@ -417,7 +420,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |) in
         let~ bottom_right : Ty.path "structures::Point" :=
-          M.struct_record_update (M.read (| point |)) [ ("x", M.read (| UnsupportedLiteral |)) ] in
+          M.struct_record_update
+            (M.read (| point |))
+            [ ("x", M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |)) ] in
         let~ _ : Ty.tuple [] :=
           M.read (|
             let~ _ : Ty.tuple [] :=
@@ -586,7 +591,10 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         "structures::Pair"
                         []
                         []
-                        [ Value.Integer IntegerKind.I32 1; M.read (| UnsupportedLiteral |) ] in
+                        [
+                          Value.Integer IntegerKind.I32 1;
+                          M.read (| M.impossible (| "[ROR003] floating-point literal in main" |) |)
+                        ] in
                     let~ _ : Ty.tuple [] :=
                       M.read (|
                         let~ _ : Ty.tuple [] :=

@@ -1761,17 +1761,22 @@ Module journal.
           let spec_id := M.alloc (| Ty.path "revm_primitives::hardfork::SpecId", spec_id |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_struct_record_field (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context::journal::Journal",
-                    "inner"
-                  |),
-                  "revm_context::journal::inner::JournalInner",
-                  "spec"
-                |),
-                M.read (| spec_id |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| spec_id |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context::journal::Journal",
+                          "inner"
+                        |),
+                        "revm_context::journal::inner::JournalInner",
+                        "spec"
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

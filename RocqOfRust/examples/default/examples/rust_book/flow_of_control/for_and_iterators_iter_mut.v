@@ -272,34 +272,39 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                               [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
                                             γ0_0
                                           |) in
-                                        M.write (|
-                                          M.deref (| M.read (| name |) |),
-                                          M.match_operator (|
-                                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                            name,
-                                            [
-                                              fun γ =>
-                                                ltac:(M.monadic
-                                                  (let γ := M.deref (| M.read (| γ |) |) in
-                                                  let _ :=
-                                                    is_constant_or_break_match (|
-                                                      M.read (| γ |),
-                                                      mk_str (| "Ferris" |)
-                                                    |) in
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      mk_str (| "There is a rustacean among us!" |)
-                                                    |)
-                                                  |)));
-                                              fun γ =>
-                                                ltac:(M.monadic
-                                                  (M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| mk_str (| "Hello" |) |)
-                                                  |)))
-                                            ]
-                                          |)
+                                        M.let_ (|
+                                          ltac:(M.monadic
+                                            (M.match_operator (|
+                                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                              name,
+                                              [
+                                                fun γ =>
+                                                  ltac:(M.monadic
+                                                    (let γ := M.deref (| M.read (| γ |) |) in
+                                                    let _ :=
+                                                      is_constant_or_break_match (|
+                                                        M.read (| γ |),
+                                                        mk_str (| "Ferris" |)
+                                                      |) in
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        mk_str (|
+                                                          "There is a rustacean among us!"
+                                                        |)
+                                                      |)
+                                                    |)));
+                                                fun γ =>
+                                                  ltac:(M.monadic
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| mk_str (| "Hello" |) |)
+                                                    |)))
+                                              ]
+                                            |))),
+                                          fun rhs' =>
+                                            ltac:(M.monadic
+                                              (M.write (| M.deref (| M.read (| name |) |), rhs' |)))
                                         |)))
                                   ]
                                 |) in

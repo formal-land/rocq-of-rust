@@ -11,26 +11,31 @@ Require Import core.simulate.default.
 Module Impl_Option.
   Definition Self (T : Set) : Set := option T.
 
-  Definition map {T U F : Set}
-      `{FnOnce.C F T U}
+  Definition map {T U F : Set} `{Link T} `{FnOnce.C F (OneElementTuple.t T) U}
       (self : Self T) (f : F) : option U :=
-    match self with
-    | Some value => Some (FnOnce.call_once f value)
-    | None => None
-    end.
+    option_map (fun x => FnOnce.call_once f {| OneElementTuple.value := x |}) self.
 
-  Lemma map_eq
-      {T U F : Set} `{Link T} `{Link U} `{Link F}
-      (Run_FnOnce_for_F : function.FnOnce.Run F T U)
-      `{IFnOnce : FnOnce.C F T U}
-      `{!FnOnce.Eq.C IFnOnce}
-    (self : Self T) (f : F) (stack : Stack.t) :
-    {{
-      SimulateM.eval_f (Impl_Option.run_map Run_FnOnce_for_F self f) stack 🌲
-      (Output.Success (map self f), stack)
-    }}.
+  (* Rust may drop captured values when None leaves its callback unused. The
+     translation omits implicit drops. A caller using this simulation for Rust
+     must establish that dropping this particular callback is trivial. *)
+  Parameter callback_has_trivial_drop : Ty.t -> Value.t -> Prop.
+
+  Lemma map_eq {T U F : Set} `{Link T} `{Link U} `{Link F}
+      (R : function.FnOnce.Run F (OneElementTuple.t T) U)
+      (S : FnOnce.C F (OneElementTuple.t T) U)
+      (HS : @FnOnce.Eq.C F (OneElementTuple.t T) U _ _ _ R S)
+      (self : Self T) (f : F) (stack : Stack.t)
+      (unused_callback : self = None -> callback_has_trivial_drop (Φ F) (φ f)) :
+    {{ SimulateM.eval_f (Impl_Option.run_map R self f) stack 🌲
+       (Output.Success (map self f), stack) }}.
   Proof.
-  Admitted.
+    pose proof (@FnOnce.Eq.call_once _ _ _ _ _ _ R S HS) as call_eq.
+    destruct R as [[method is_method run_method]].
+    cbn in call_eq.
+    destruct self; with_strategy transparent [Impl_Option.run_map] (unfold Impl_Option.run_map; cbn).
+    - eapply Run.Call; [apply call_eq | p].
+    - p.
+  Qed.
 
   Definition ok_or {T E : Set} (self : Self T) (err : E) : Result.t T E :=
     match self with

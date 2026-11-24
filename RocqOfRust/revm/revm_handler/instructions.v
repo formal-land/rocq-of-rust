@@ -756,20 +756,25 @@ Module instructions.
             |) in
           M.read (|
             let~ _ : Ty.tuple [] :=
-              M.write (|
-                M.SubPointer.get_array_field (|
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_handler::instructions::EthInstructions",
-                        "instruction_table"
-                      |)
-                    |)
-                  |),
-                  M.cast (Ty.path "usize") (M.read (| opcode |))
-                |),
-                M.read (| instruction |)
+              M.let_ (|
+                ltac:(M.monadic (M.read (| instruction |))),
+                fun rhs' =>
+                  ltac:(M.monadic
+                    (M.write (|
+                      M.SubPointer.get_array_field (|
+                        M.deref (|
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_handler::instructions::EthInstructions",
+                              "instruction_table"
+                            |)
+                          |)
+                        |),
+                        M.cast (Ty.path "usize") (M.read (| opcode |))
+                      |),
+                      rhs'
+                    |)))
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

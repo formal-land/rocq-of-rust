@@ -18,7 +18,9 @@ Module Pack.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (M.read (| get_constant (| "solana_program_pack::Pack::LEN", Ty.path "usize" |) |)))
+        (M.read (|
+          get_trait_constant (| "solana_program_pack::Pack", Self, [], [], "LEN", Ty.path "usize" |)
+        |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -278,8 +280,12 @@ Module Pack.
                                   ]
                                 |);
                                 M.read (|
-                                  get_constant (|
-                                    "solana_program_pack::Pack::LEN",
+                                  get_trait_constant (|
+                                    "solana_program_pack::Pack",
+                                    Self,
+                                    [],
+                                    [],
+                                    "LEN",
                                     Ty.path "usize"
                                   |)
                                 |)
@@ -379,8 +385,12 @@ Module Pack.
                                   ]
                                 |);
                                 M.read (|
-                                  get_constant (|
-                                    "solana_program_pack::Pack::LEN",
+                                  get_trait_constant (|
+                                    "solana_program_pack::Pack",
+                                    Self,
+                                    [],
+                                    [],
+                                    "LEN",
                                     Ty.path "usize"
                                   |)
                                 |)

@@ -3512,7 +3512,13 @@ Module sync.
                                             "Residual",
                                           γ0_0
                                         |) in
-                                      M.never_to_any (| M.read (| M.break (||) |) |)));
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.impossible (|
+                                            "[ROR001] value-carrying break in sync::Arc::<T>::try_map"
+                                          |)
+                                        |)
+                                      |)));
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ0_0 :=
@@ -10636,69 +10642,72 @@ Module sync.
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.deref (| M.read (| this |) |),
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                                  M.get_associated_function (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.call_closure (|
                                     Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                                    "clone_from_ref_in",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply (Ty.path "&") [] [ T ],
-                                              M.get_trait_method (|
-                                                "core::ops::deref::Deref",
-                                                Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
-                                                [],
-                                                [],
-                                                "deref",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| this |) |)
-                                                |)
-                                              ]
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                                      "clone_from_ref_in",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply (Ty.path "&") [] [ T ],
+                                                M.get_trait_method (|
+                                                  "core::ops::deref::Deref",
+                                                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ T; A ],
+                                                  [],
+                                                  [],
+                                                  "deref",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| this |) |)
+                                                  |)
+                                                ]
+                                              |)
                                             |)
                                           |)
                                         |)
-                                      |)
-                                    |);
-                                    M.call_closure (|
-                                      A,
-                                      M.get_trait_method (|
-                                        "core::clone::Clone",
+                                      |);
+                                      M.call_closure (|
                                         A,
-                                        [],
-                                        [],
-                                        "clone",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| this |) |),
-                                            "alloc::sync::Arc",
-                                            "alloc"
+                                        M.get_trait_method (|
+                                          "core::clone::Clone",
+                                          A,
+                                          [],
+                                          [],
+                                          "clone",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| this |) |),
+                                              "alloc::sync::Arc",
+                                              "alloc"
+                                            |)
                                           |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
+                                        ]
+                                      |)
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (| M.deref (| M.read (| this |) |), rhs' |)))
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -14991,7 +15000,7 @@ Module sync.
         (* Instance *) [ ("drop", InstanceField.Method (drop T A)) ].
   End Impl_core_ops_drop_Drop_where_core_marker_Sized_T_where_core_alloc_Allocator_A_for_alloc_sync_Arc_T_A.
   
-  Module Impl_alloc_sync_Arc_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_A.
+  Module Impl_alloc_sync_Arc_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait_core_marker_Sync_AutoTrait_A.
     Definition Self (A : Ty.t) : Ty.t :=
       Ty.apply
         (Ty.path "alloc::sync::Arc")
@@ -15000,8 +15009,8 @@ Module sync.
           Ty.dyn
             [
               ("core::any::Any::Trait", []);
-              ("core::marker::Sync::AutoTrait", []);
-              ("core::marker::Send::AutoTrait", [])
+              ("core::marker::Send::AutoTrait", []);
+              ("core::marker::Sync::AutoTrait", [])
             ];
           A
         ].
@@ -15035,8 +15044,8 @@ Module sync.
                   Ty.dyn
                     [
                       ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::marker::Send::AutoTrait", []);
+                      ("core::marker::Sync::AutoTrait", [])
                     ];
                   A
                 ],
@@ -15055,8 +15064,8 @@ Module sync.
                     Ty.dyn
                       [
                         ("core::any::Any::Trait", []);
-                        ("core::marker::Sync::AutoTrait", []);
-                        ("core::marker::Send::AutoTrait", [])
+                        ("core::marker::Send::AutoTrait", []);
+                        ("core::marker::Sync::AutoTrait", [])
                       ];
                     A
                   ]
@@ -15074,8 +15083,8 @@ Module sync.
                           Ty.dyn
                             [
                               ("core::any::Any::Trait", []);
-                              ("core::marker::Sync::AutoTrait", []);
-                              ("core::marker::Send::AutoTrait", [])
+                              ("core::marker::Send::AutoTrait", []);
+                              ("core::marker::Sync::AutoTrait", [])
                             ],
                           "is",
                           [],
@@ -15093,8 +15102,8 @@ Module sync.
                                     Ty.dyn
                                       [
                                         ("core::any::Any::Trait", []);
-                                        ("core::marker::Sync::AutoTrait", []);
-                                        ("core::marker::Send::AutoTrait", [])
+                                        ("core::marker::Send::AutoTrait", []);
+                                        ("core::marker::Sync::AutoTrait", [])
                                       ]
                                   ],
                                 M.get_trait_method (|
@@ -15106,8 +15115,8 @@ Module sync.
                                       Ty.dyn
                                         [
                                           ("core::any::Any::Trait", []);
-                                          ("core::marker::Sync::AutoTrait", []);
-                                          ("core::marker::Send::AutoTrait", [])
+                                          ("core::marker::Send::AutoTrait", []);
+                                          ("core::marker::Sync::AutoTrait", [])
                                         ];
                                       A
                                     ],
@@ -15138,8 +15147,8 @@ Module sync.
                             Ty.dyn
                               [
                                 ("core::any::Any::Trait", []);
-                                ("core::marker::Sync::AutoTrait", []);
-                                ("core::marker::Send::AutoTrait", [])
+                                ("core::marker::Send::AutoTrait", []);
+                                ("core::marker::Sync::AutoTrait", [])
                               ];
                             A
                           ]
@@ -15158,8 +15167,8 @@ Module sync.
                                   Ty.dyn
                                     [
                                       ("core::any::Any::Trait", []);
-                                      ("core::marker::Sync::AutoTrait", []);
-                                      ("core::marker::Send::AutoTrait", [])
+                                      ("core::marker::Send::AutoTrait", []);
+                                      ("core::marker::Sync::AutoTrait", [])
                                     ]
                                 ]
                             ];
@@ -15179,8 +15188,8 @@ Module sync.
                                     Ty.dyn
                                       [
                                         ("core::any::Any::Trait", []);
-                                        ("core::marker::Sync::AutoTrait", []);
-                                        ("core::marker::Send::AutoTrait", [])
+                                        ("core::marker::Send::AutoTrait", []);
+                                        ("core::marker::Sync::AutoTrait", [])
                                       ]
                                   ]
                               ];
@@ -15194,8 +15203,8 @@ Module sync.
                               Ty.dyn
                                 [
                                   ("core::any::Any::Trait", []);
-                                  ("core::marker::Sync::AutoTrait", []);
-                                  ("core::marker::Send::AutoTrait", [])
+                                  ("core::marker::Send::AutoTrait", []);
+                                  ("core::marker::Sync::AutoTrait", [])
                                 ];
                               A
                             ],
@@ -15224,8 +15233,8 @@ Module sync.
                                       Ty.dyn
                                         [
                                           ("core::any::Any::Trait", []);
-                                          ("core::marker::Sync::AutoTrait", []);
-                                          ("core::marker::Send::AutoTrait", [])
+                                          ("core::marker::Send::AutoTrait", []);
+                                          ("core::marker::Sync::AutoTrait", [])
                                         ]
                                     ]
                                 ],
@@ -15244,8 +15253,8 @@ Module sync.
                                   Ty.dyn
                                     [
                                       ("core::any::Any::Trait", []);
-                                      ("core::marker::Sync::AutoTrait", []);
-                                      ("core::marker::Send::AutoTrait", [])
+                                      ("core::marker::Send::AutoTrait", []);
+                                      ("core::marker::Sync::AutoTrait", [])
                                     ];
                                   A
                                 ]
@@ -15277,8 +15286,8 @@ Module sync.
                                               Ty.dyn
                                                 [
                                                   ("core::any::Any::Trait", []);
-                                                  ("core::marker::Sync::AutoTrait", []);
-                                                  ("core::marker::Send::AutoTrait", [])
+                                                  ("core::marker::Send::AutoTrait", []);
+                                                  ("core::marker::Sync::AutoTrait", [])
                                                 ]
                                             ]
                                         ],
@@ -15308,8 +15317,8 @@ Module sync.
                           Ty.dyn
                             [
                               ("core::any::Any::Trait", []);
-                              ("core::marker::Sync::AutoTrait", []);
-                              ("core::marker::Send::AutoTrait", [])
+                              ("core::marker::Send::AutoTrait", []);
+                              ("core::marker::Sync::AutoTrait", [])
                             ];
                           A
                         ]
@@ -15323,8 +15332,8 @@ Module sync.
                             Ty.dyn
                               [
                                 ("core::any::Any::Trait", []);
-                                ("core::marker::Sync::AutoTrait", []);
-                                ("core::marker::Send::AutoTrait", [])
+                                ("core::marker::Send::AutoTrait", []);
+                                ("core::marker::Sync::AutoTrait", [])
                               ];
                             A
                           ],
@@ -15337,8 +15346,8 @@ Module sync.
                               Ty.dyn
                                 [
                                   ("core::any::Any::Trait", []);
-                                  ("core::marker::Sync::AutoTrait", []);
-                                  ("core::marker::Send::AutoTrait", [])
+                                  ("core::marker::Send::AutoTrait", []);
+                                  ("core::marker::Sync::AutoTrait", [])
                                 ];
                               A
                             ])
@@ -15349,8 +15358,8 @@ Module sync.
                               Ty.dyn
                                 [
                                   ("core::any::Any::Trait", []);
-                                  ("core::marker::Sync::AutoTrait", []);
-                                  ("core::marker::Send::AutoTrait", [])
+                                  ("core::marker::Send::AutoTrait", []);
+                                  ("core::marker::Sync::AutoTrait", [])
                                 ];
                               A
                             ]),
@@ -15399,8 +15408,8 @@ Module sync.
                   Ty.dyn
                     [
                       ("core::any::Any::Trait", []);
-                      ("core::marker::Sync::AutoTrait", []);
-                      ("core::marker::Send::AutoTrait", [])
+                      ("core::marker::Send::AutoTrait", []);
+                      ("core::marker::Sync::AutoTrait", [])
                     ];
                   A
                 ],
@@ -15422,8 +15431,8 @@ Module sync.
                           Ty.dyn
                             [
                               ("core::any::Any::Trait", []);
-                              ("core::marker::Sync::AutoTrait", []);
-                              ("core::marker::Send::AutoTrait", [])
+                              ("core::marker::Send::AutoTrait", []);
+                              ("core::marker::Sync::AutoTrait", [])
                             ]
                         ]
                     ];
@@ -15443,8 +15452,8 @@ Module sync.
                             Ty.dyn
                               [
                                 ("core::any::Any::Trait", []);
-                                ("core::marker::Sync::AutoTrait", []);
-                                ("core::marker::Send::AutoTrait", [])
+                                ("core::marker::Send::AutoTrait", []);
+                                ("core::marker::Sync::AutoTrait", [])
                               ]
                           ]
                       ];
@@ -15458,8 +15467,8 @@ Module sync.
                       Ty.dyn
                         [
                           ("core::any::Any::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
+                          ("core::marker::Send::AutoTrait", []);
+                          ("core::marker::Sync::AutoTrait", [])
                         ];
                       A
                     ],
@@ -15488,8 +15497,8 @@ Module sync.
                               Ty.dyn
                                 [
                                   ("core::any::Any::Trait", []);
-                                  ("core::marker::Sync::AutoTrait", []);
-                                  ("core::marker::Send::AutoTrait", [])
+                                  ("core::marker::Send::AutoTrait", []);
+                                  ("core::marker::Sync::AutoTrait", [])
                                 ]
                             ]
                         ],
@@ -15522,8 +15531,8 @@ Module sync.
                                   Ty.dyn
                                     [
                                       ("core::any::Any::Trait", []);
-                                      ("core::marker::Sync::AutoTrait", []);
-                                      ("core::marker::Send::AutoTrait", [])
+                                      ("core::marker::Send::AutoTrait", []);
+                                      ("core::marker::Sync::AutoTrait", [])
                                     ]
                                 ]
                             ],
@@ -15547,7 +15556,7 @@ Module sync.
     Proof.
     Admitted.
     Global Typeclasses Opaque downcast_unchecked.
-  End Impl_alloc_sync_Arc_Dyn_core_any_Any_Trait_core_marker_Sync_AutoTrait_core_marker_Send_AutoTrait_A.
+  End Impl_alloc_sync_Arc_Dyn_core_any_Any_Trait_core_marker_Send_AutoTrait_core_marker_Sync_AutoTrait_A.
   
   Module Impl_alloc_sync_Weak_T_alloc_alloc_Global.
     Definition Self (T : Ty.t) : Ty.t :=
@@ -26006,7 +26015,13 @@ Module sync.
                                             "Residual",
                                           γ0_0
                                         |) in
-                                      M.never_to_any (| M.read (| M.break (||) |) |)));
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.impossible (|
+                                            "[ROR001] value-carrying break in sync::UniqueArc::<T>::try_map"
+                                          |)
+                                        |)
+                                      |)));
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let γ0_0 :=

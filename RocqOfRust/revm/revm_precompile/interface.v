@@ -2236,18 +2236,9 @@ Module interface.
                 [
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                  Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               a
             |) in
@@ -2257,18 +2248,9 @@ Module interface.
                 [
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                  Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               b
             |) in
@@ -2347,32 +2329,17 @@ Module interface.
                 [
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                  Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               a
             |) in
@@ -2382,32 +2349,17 @@ Module interface.
                 [
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
                   Ty.apply
                     (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
+                    [ Value.Integer IntegerKind.Usize 48 ]
                     [ Ty.path "u8" ];
-                  Ty.apply
-                    (Ty.path "array")
-                    [
-                      M.unevaluated_const
-                        (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                    ]
-                    [ Ty.path "u8" ]
+                  Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 48 ] [ Ty.path "u8" ]
                 ],
               b
             |) in
@@ -2496,48 +2448,30 @@ Module interface.
                             [
                               Ty.apply
                                 (Ty.path "array")
-                                [
-                                  M.unevaluated_const
-                                    (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
-                                ]
+                                [ Value.Integer IntegerKind.Usize 48 ]
                                 [ Ty.path "u8" ];
                               Ty.apply
                                 (Ty.path "array")
-                                [
-                                  M.unevaluated_const
-                                    (mk_str (| "revm_precompile_bls12_381_G1Point_discriminant" |))
-                                ]
+                                [ Value.Integer IntegerKind.Usize 48 ]
                                 [ Ty.path "u8" ]
                             ];
                           Ty.tuple
                             [
                               Ty.apply
                                 (Ty.path "array")
-                                [
-                                  M.unevaluated_const
-                                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                                ]
+                                [ Value.Integer IntegerKind.Usize 48 ]
                                 [ Ty.path "u8" ];
                               Ty.apply
                                 (Ty.path "array")
-                                [
-                                  M.unevaluated_const
-                                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                                ]
+                                [ Value.Integer IntegerKind.Usize 48 ]
                                 [ Ty.path "u8" ];
                               Ty.apply
                                 (Ty.path "array")
-                                [
-                                  M.unevaluated_const
-                                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                                ]
+                                [ Value.Integer IntegerKind.Usize 48 ]
                                 [ Ty.path "u8" ];
                               Ty.apply
                                 (Ty.path "array")
-                                [
-                                  M.unevaluated_const
-                                    (mk_str (| "revm_precompile_bls12_381_G2Point_discriminant" |))
-                                ]
+                                [ Value.Integer IntegerKind.Usize 48 ]
                                 [ Ty.path "u8" ]
                             ]
                         ]

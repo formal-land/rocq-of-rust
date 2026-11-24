@@ -104,14 +104,25 @@ Module escape.
               N
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 0 |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::ReverseSolidus" [] [] []
+            M.let_ (|
+              ltac:(M.monadic
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::ReverseSolidus" [] [] [])),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 0 |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 1 |),
-              M.read (| a |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| a |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 1 |),
+                    rhs'
+                  |)))
             |) in
           M.alloc (|
             Ty.tuple
@@ -212,24 +223,46 @@ Module escape.
               |)
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 0 |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::ReverseSolidus" [] [] []
+            M.let_ (|
+              ltac:(M.monadic
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::ReverseSolidus" [] [] [])),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 0 |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 1 |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallX" [] [] []
+            M.let_ (|
+              ltac:(M.monadic
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallX" [] [] [])),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 1 |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 2 |),
-              M.read (| hi |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| hi |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 2 |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 3 |),
-              M.read (| lo |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| lo |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 3 |),
+                    rhs'
+                  |)))
             |) in
           M.alloc (|
             Ty.tuple
@@ -286,9 +319,14 @@ Module escape.
               N
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 0 |),
-              M.read (| a |)
+            M.let_ (|
+              ltac:(M.monadic (M.read (| a |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 0 |),
+                    rhs'
+                  |)))
             |) in
           M.alloc (|
             Ty.tuple
@@ -586,187 +624,193 @@ Module escape.
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
-                              M.write (|
-                                M.SubPointer.get_array_field (| arr, M.read (| idx |) |),
-                                M.match_operator (|
-                                  Ty.path "u8",
-                                  M.alloc (|
+                              M.let_ (|
+                                ltac:(M.monadic
+                                  (M.match_operator (|
                                     Ty.path "u8",
-                                    M.cast (Ty.path "u8") (M.read (| idx |))
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let _ :=
-                                          is_constant_or_break_match (|
-                                            M.read (| γ |),
-                                            Value.Integer IntegerKind.U8 9
-                                          |) in
-                                        M.call_closure (|
-                                          Ty.path "u8",
-                                          BinOp.Wrap.bit_or,
-                                          [
-                                            Value.Integer IntegerKind.U8 128;
-                                            Value.Integer IntegerKind.U8 116
-                                          ]
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let _ :=
-                                          is_constant_or_break_match (|
-                                            M.read (| γ |),
-                                            Value.Integer IntegerKind.U8 13
-                                          |) in
-                                        M.call_closure (|
-                                          Ty.path "u8",
-                                          BinOp.Wrap.bit_or,
-                                          [
-                                            Value.Integer IntegerKind.U8 128;
-                                            Value.Integer IntegerKind.U8 114
-                                          ]
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let _ :=
-                                          is_constant_or_break_match (|
-                                            M.read (| γ |),
-                                            Value.Integer IntegerKind.U8 10
-                                          |) in
-                                        M.call_closure (|
-                                          Ty.path "u8",
-                                          BinOp.Wrap.bit_or,
-                                          [
-                                            Value.Integer IntegerKind.U8 128;
-                                            Value.Integer IntegerKind.U8 110
-                                          ]
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let _ :=
-                                          is_constant_or_break_match (|
-                                            M.read (| γ |),
-                                            Value.Integer IntegerKind.U8 92
-                                          |) in
-                                        M.call_closure (|
-                                          Ty.path "u8",
-                                          BinOp.Wrap.bit_or,
-                                          [
-                                            Value.Integer IntegerKind.U8 128;
-                                            Value.Integer IntegerKind.U8 92
-                                          ]
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let _ :=
-                                          is_constant_or_break_match (|
-                                            M.read (| γ |),
-                                            Value.Integer IntegerKind.U8 39
-                                          |) in
-                                        M.call_closure (|
-                                          Ty.path "u8",
-                                          BinOp.Wrap.bit_or,
-                                          [
-                                            Value.Integer IntegerKind.U8 128;
-                                            Value.Integer IntegerKind.U8 39
-                                          ]
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let _ :=
-                                          is_constant_or_break_match (|
-                                            M.read (| γ |),
-                                            Value.Integer IntegerKind.U8 34
-                                          |) in
-                                        M.call_closure (|
-                                          Ty.path "u8",
-                                          BinOp.Wrap.bit_or,
-                                          [
-                                            Value.Integer IntegerKind.U8 128;
-                                            Value.Integer IntegerKind.U8 34
-                                          ]
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (M.find_or_pattern (Ty.tuple []) (|
-                                          γ,
-                                          [
+                                    M.alloc (|
+                                      Ty.path "u8",
+                                      M.cast (Ty.path "u8") (M.read (| idx |))
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let _ :=
+                                            is_constant_or_break_match (|
+                                              M.read (| γ |),
+                                              Value.Integer IntegerKind.U8 9
+                                            |) in
+                                          M.call_closure (|
+                                            Ty.path "u8",
+                                            BinOp.Wrap.bit_or,
+                                            [
+                                              Value.Integer IntegerKind.U8 128;
+                                              Value.Integer IntegerKind.U8 116
+                                            ]
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let _ :=
+                                            is_constant_or_break_match (|
+                                              M.read (| γ |),
+                                              Value.Integer IntegerKind.U8 13
+                                            |) in
+                                          M.call_closure (|
+                                            Ty.path "u8",
+                                            BinOp.Wrap.bit_or,
+                                            [
+                                              Value.Integer IntegerKind.U8 128;
+                                              Value.Integer IntegerKind.U8 114
+                                            ]
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let _ :=
+                                            is_constant_or_break_match (|
+                                              M.read (| γ |),
+                                              Value.Integer IntegerKind.U8 10
+                                            |) in
+                                          M.call_closure (|
+                                            Ty.path "u8",
+                                            BinOp.Wrap.bit_or,
+                                            [
+                                              Value.Integer IntegerKind.U8 128;
+                                              Value.Integer IntegerKind.U8 110
+                                            ]
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let _ :=
+                                            is_constant_or_break_match (|
+                                              M.read (| γ |),
+                                              Value.Integer IntegerKind.U8 92
+                                            |) in
+                                          M.call_closure (|
+                                            Ty.path "u8",
+                                            BinOp.Wrap.bit_or,
+                                            [
+                                              Value.Integer IntegerKind.U8 128;
+                                              Value.Integer IntegerKind.U8 92
+                                            ]
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let _ :=
+                                            is_constant_or_break_match (|
+                                              M.read (| γ |),
+                                              Value.Integer IntegerKind.U8 39
+                                            |) in
+                                          M.call_closure (|
+                                            Ty.path "u8",
+                                            BinOp.Wrap.bit_or,
+                                            [
+                                              Value.Integer IntegerKind.U8 128;
+                                              Value.Integer IntegerKind.U8 39
+                                            ]
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let _ :=
+                                            is_constant_or_break_match (|
+                                              M.read (| γ |),
+                                              Value.Integer IntegerKind.U8 34
+                                            |) in
+                                          M.call_closure (|
+                                            Ty.path "u8",
+                                            BinOp.Wrap.bit_or,
+                                            [
+                                              Value.Integer IntegerKind.U8 128;
+                                              Value.Integer IntegerKind.U8 34
+                                            ]
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (M.find_or_pattern (Ty.tuple []) (|
+                                            γ,
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let _ :=
+                                                    is_constant_or_break_match (|
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.ge,
+                                                        [
+                                                          M.read (| γ |);
+                                                          Value.Integer IntegerKind.U8 0
+                                                        ]
+                                                      |),
+                                                      Value.Bool true
+                                                    |) in
+                                                  let _ :=
+                                                    is_constant_or_break_match (|
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.le,
+                                                        [
+                                                          M.read (| γ |);
+                                                          Value.Integer IntegerKind.U8 31
+                                                        ]
+                                                      |),
+                                                      Value.Bool true
+                                                    |) in
+                                                  Value.Tuple []));
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let _ :=
+                                                    is_constant_or_break_match (|
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.ge,
+                                                        [
+                                                          M.read (| γ |);
+                                                          Value.Integer IntegerKind.U8 127
+                                                        ]
+                                                      |),
+                                                      Value.Bool true
+                                                    |) in
+                                                  let _ :=
+                                                    is_constant_or_break_match (|
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.le,
+                                                        [
+                                                          M.read (| γ |);
+                                                          Value.Integer IntegerKind.U8 255
+                                                        ]
+                                                      |),
+                                                      Value.Bool true
+                                                    |) in
+                                                  Value.Tuple []))
+                                            ],
                                             fun γ =>
                                               ltac:(M.monadic
-                                                (let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ge,
+                                                match γ with
+                                                | [] =>
+                                                  ltac:(M.monadic
+                                                    (M.call_closure (|
+                                                      Ty.path "u8",
+                                                      BinOp.Wrap.bit_or,
                                                       [
-                                                        M.read (| γ |);
+                                                        Value.Integer IntegerKind.U8 128;
                                                         Value.Integer IntegerKind.U8 0
                                                       ]
-                                                    |),
-                                                    Value.Bool true
-                                                  |) in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.le,
-                                                      [
-                                                        M.read (| γ |);
-                                                        Value.Integer IntegerKind.U8 31
-                                                      ]
-                                                    |),
-                                                    Value.Bool true
-                                                  |) in
-                                                Value.Tuple []));
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.ge,
-                                                      [
-                                                        M.read (| γ |);
-                                                        Value.Integer IntegerKind.U8 127
-                                                      ]
-                                                    |),
-                                                    Value.Bool true
-                                                  |) in
-                                                let _ :=
-                                                  is_constant_or_break_match (|
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.le,
-                                                      [
-                                                        M.read (| γ |);
-                                                        Value.Integer IntegerKind.U8 255
-                                                      ]
-                                                    |),
-                                                    Value.Bool true
-                                                  |) in
-                                                Value.Tuple []))
-                                          ],
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              match γ with
-                                              | [] =>
-                                                ltac:(M.monadic
-                                                  (M.call_closure (|
-                                                    Ty.path "u8",
-                                                    BinOp.Wrap.bit_or,
-                                                    [
-                                                      Value.Integer IntegerKind.U8 128;
-                                                      Value.Integer IntegerKind.U8 0
-                                                    ]
-                                                  |)))
-                                              | _ => M.impossible "wrong number of arguments"
-                                              end)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let idx := M.copy (| Ty.path "u8", γ |) in
-                                        M.read (| idx |)))
-                                  ]
-                                |)
+                                                    |)))
+                                                | _ => M.impossible "wrong number of arguments"
+                                                end)
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let idx := M.copy (| Ty.path "u8", γ |) in
+                                          M.read (| idx |)))
+                                    ]
+                                  |))),
+                                fun rhs' =>
+                                  ltac:(M.monadic
+                                    (M.write (|
+                                      M.SubPointer.get_array_field (| arr, M.read (| idx |) |),
+                                      rhs'
+                                    |)))
                               |) in
                             let~ _ : Ty.tuple [] :=
                               let β := idx in
@@ -874,219 +918,287 @@ Module escape.
               N
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 3 |),
-              M.read (|
-                M.SubPointer.get_array_field (|
-                  get_constant (|
-                    "core::escape::HEX_DIGITS",
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 16 ]
-                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                  |),
-                  M.cast
-                    (Ty.path "usize")
-                    (M.call_closure (|
-                      Ty.path "u32",
-                      BinOp.Wrap.bit_and,
-                      [
-                        M.call_closure (|
-                          Ty.path "u32",
-                          BinOp.Wrap.shr,
-                          [ M.read (| c |); Value.Integer IntegerKind.I32 20 ]
-                        |);
-                        Value.Integer IntegerKind.U32 15
-                      ]
-                    |))
-                |)
-              |)
+            M.let_ (|
+              ltac:(M.monadic
+                (M.read (|
+                  M.SubPointer.get_array_field (|
+                    get_constant (|
+                      "core::escape::HEX_DIGITS",
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 16 ]
+                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                    |),
+                    M.cast
+                      (Ty.path "usize")
+                      (M.call_closure (|
+                        Ty.path "u32",
+                        BinOp.Wrap.bit_and,
+                        [
+                          M.call_closure (|
+                            Ty.path "u32",
+                            BinOp.Wrap.shr,
+                            [ M.read (| c |); Value.Integer IntegerKind.I32 20 ]
+                          |);
+                          Value.Integer IntegerKind.U32 15
+                        ]
+                      |))
+                  |)
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 3 |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 4 |),
-              M.read (|
-                M.SubPointer.get_array_field (|
-                  get_constant (|
-                    "core::escape::HEX_DIGITS",
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 16 ]
-                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                  |),
-                  M.cast
-                    (Ty.path "usize")
-                    (M.call_closure (|
-                      Ty.path "u32",
-                      BinOp.Wrap.bit_and,
-                      [
-                        M.call_closure (|
-                          Ty.path "u32",
-                          BinOp.Wrap.shr,
-                          [ M.read (| c |); Value.Integer IntegerKind.I32 16 ]
-                        |);
-                        Value.Integer IntegerKind.U32 15
-                      ]
-                    |))
-                |)
-              |)
+            M.let_ (|
+              ltac:(M.monadic
+                (M.read (|
+                  M.SubPointer.get_array_field (|
+                    get_constant (|
+                      "core::escape::HEX_DIGITS",
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 16 ]
+                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                    |),
+                    M.cast
+                      (Ty.path "usize")
+                      (M.call_closure (|
+                        Ty.path "u32",
+                        BinOp.Wrap.bit_and,
+                        [
+                          M.call_closure (|
+                            Ty.path "u32",
+                            BinOp.Wrap.shr,
+                            [ M.read (| c |); Value.Integer IntegerKind.I32 16 ]
+                          |);
+                          Value.Integer IntegerKind.U32 15
+                        ]
+                      |))
+                  |)
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 4 |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 5 |),
-              M.read (|
-                M.SubPointer.get_array_field (|
-                  get_constant (|
-                    "core::escape::HEX_DIGITS",
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 16 ]
-                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                  |),
-                  M.cast
-                    (Ty.path "usize")
-                    (M.call_closure (|
-                      Ty.path "u32",
-                      BinOp.Wrap.bit_and,
-                      [
-                        M.call_closure (|
-                          Ty.path "u32",
-                          BinOp.Wrap.shr,
-                          [ M.read (| c |); Value.Integer IntegerKind.I32 12 ]
-                        |);
-                        Value.Integer IntegerKind.U32 15
-                      ]
-                    |))
-                |)
-              |)
+            M.let_ (|
+              ltac:(M.monadic
+                (M.read (|
+                  M.SubPointer.get_array_field (|
+                    get_constant (|
+                      "core::escape::HEX_DIGITS",
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 16 ]
+                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                    |),
+                    M.cast
+                      (Ty.path "usize")
+                      (M.call_closure (|
+                        Ty.path "u32",
+                        BinOp.Wrap.bit_and,
+                        [
+                          M.call_closure (|
+                            Ty.path "u32",
+                            BinOp.Wrap.shr,
+                            [ M.read (| c |); Value.Integer IntegerKind.I32 12 ]
+                          |);
+                          Value.Integer IntegerKind.U32 15
+                        ]
+                      |))
+                  |)
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 5 |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 6 |),
-              M.read (|
-                M.SubPointer.get_array_field (|
-                  get_constant (|
-                    "core::escape::HEX_DIGITS",
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 16 ]
-                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                  |),
-                  M.cast
-                    (Ty.path "usize")
-                    (M.call_closure (|
-                      Ty.path "u32",
-                      BinOp.Wrap.bit_and,
-                      [
-                        M.call_closure (|
-                          Ty.path "u32",
-                          BinOp.Wrap.shr,
-                          [ M.read (| c |); Value.Integer IntegerKind.I32 8 ]
-                        |);
-                        Value.Integer IntegerKind.U32 15
-                      ]
-                    |))
-                |)
-              |)
+            M.let_ (|
+              ltac:(M.monadic
+                (M.read (|
+                  M.SubPointer.get_array_field (|
+                    get_constant (|
+                      "core::escape::HEX_DIGITS",
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 16 ]
+                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                    |),
+                    M.cast
+                      (Ty.path "usize")
+                      (M.call_closure (|
+                        Ty.path "u32",
+                        BinOp.Wrap.bit_and,
+                        [
+                          M.call_closure (|
+                            Ty.path "u32",
+                            BinOp.Wrap.shr,
+                            [ M.read (| c |); Value.Integer IntegerKind.I32 8 ]
+                          |);
+                          Value.Integer IntegerKind.U32 15
+                        ]
+                      |))
+                  |)
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 6 |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 7 |),
-              M.read (|
-                M.SubPointer.get_array_field (|
-                  get_constant (|
-                    "core::escape::HEX_DIGITS",
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 16 ]
-                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                  |),
-                  M.cast
-                    (Ty.path "usize")
-                    (M.call_closure (|
-                      Ty.path "u32",
-                      BinOp.Wrap.bit_and,
-                      [
-                        M.call_closure (|
-                          Ty.path "u32",
-                          BinOp.Wrap.shr,
-                          [ M.read (| c |); Value.Integer IntegerKind.I32 4 ]
-                        |);
-                        Value.Integer IntegerKind.U32 15
-                      ]
-                    |))
-                |)
-              |)
+            M.let_ (|
+              ltac:(M.monadic
+                (M.read (|
+                  M.SubPointer.get_array_field (|
+                    get_constant (|
+                      "core::escape::HEX_DIGITS",
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 16 ]
+                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                    |),
+                    M.cast
+                      (Ty.path "usize")
+                      (M.call_closure (|
+                        Ty.path "u32",
+                        BinOp.Wrap.bit_and,
+                        [
+                          M.call_closure (|
+                            Ty.path "u32",
+                            BinOp.Wrap.shr,
+                            [ M.read (| c |); Value.Integer IntegerKind.I32 4 ]
+                          |);
+                          Value.Integer IntegerKind.U32 15
+                        ]
+                      |))
+                  |)
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 7 |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 8 |),
-              M.read (|
-                M.SubPointer.get_array_field (|
-                  get_constant (|
-                    "core::escape::HEX_DIGITS",
-                    Ty.apply
-                      (Ty.path "array")
-                      [ Value.Integer IntegerKind.Usize 16 ]
-                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                  |),
-                  M.cast
-                    (Ty.path "usize")
-                    (M.call_closure (|
-                      Ty.path "u32",
-                      BinOp.Wrap.bit_and,
-                      [
-                        M.call_closure (|
-                          Ty.path "u32",
-                          BinOp.Wrap.shr,
-                          [ M.read (| c |); Value.Integer IntegerKind.I32 0 ]
-                        |);
-                        Value.Integer IntegerKind.U32 15
-                      ]
-                    |))
-                |)
-              |)
+            M.let_ (|
+              ltac:(M.monadic
+                (M.read (|
+                  M.SubPointer.get_array_field (|
+                    get_constant (|
+                      "core::escape::HEX_DIGITS",
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 16 ]
+                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                    |),
+                    M.cast
+                      (Ty.path "usize")
+                      (M.call_closure (|
+                        Ty.path "u32",
+                        BinOp.Wrap.bit_and,
+                        [
+                          M.call_closure (|
+                            Ty.path "u32",
+                            BinOp.Wrap.shr,
+                            [ M.read (| c |); Value.Integer IntegerKind.I32 0 ]
+                          |);
+                          Value.Integer IntegerKind.U32 15
+                        ]
+                      |))
+                  |)
+                |))),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 8 |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 9 |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::RightCurlyBracket" [] [] []
+            M.let_ (|
+              ltac:(M.monadic
+                (Value.StructTuple
+                  "core::ascii::ascii_char::AsciiChar::RightCurlyBracket"
+                  []
+                  []
+                  [])),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 9 |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (|
-                output,
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.add,
-                  [ M.read (| start |); Value.Integer IntegerKind.Usize 0 ]
-                |)
-              |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::ReverseSolidus" [] [] []
+            M.let_ (|
+              ltac:(M.monadic
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::ReverseSolidus" [] [] [])),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (|
+                      output,
+                      M.call_closure (|
+                        Ty.path "usize",
+                        BinOp.Wrap.add,
+                        [ M.read (| start |); Value.Integer IntegerKind.Usize 0 ]
+                      |)
+                    |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (|
-                output,
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.add,
-                  [ M.read (| start |); Value.Integer IntegerKind.Usize 1 ]
-                |)
-              |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallU" [] [] []
+            M.let_ (|
+              ltac:(M.monadic
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallU" [] [] [])),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (|
+                      output,
+                      M.call_closure (|
+                        Ty.path "usize",
+                        BinOp.Wrap.add,
+                        [ M.read (| start |); Value.Integer IntegerKind.Usize 1 ]
+                      |)
+                    |),
+                    rhs'
+                  |)))
             |) in
           let~ _ : Ty.tuple [] :=
-            M.write (|
-              M.SubPointer.get_array_field (|
-                output,
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.add,
-                  [ M.read (| start |); Value.Integer IntegerKind.Usize 2 ]
-                |)
-              |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::LeftCurlyBracket" [] [] []
+            M.let_ (|
+              ltac:(M.monadic
+                (Value.StructTuple
+                  "core::ascii::ascii_char::AsciiChar::LeftCurlyBracket"
+                  []
+                  []
+                  [])),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.SubPointer.get_array_field (|
+                      output,
+                      M.call_closure (|
+                        Ty.path "usize",
+                        BinOp.Wrap.add,
+                        [ M.read (| start |); Value.Integer IntegerKind.Usize 2 ]
+                      |)
+                    |),
+                    rhs'
+                  |)))
             |) in
           M.alloc (|
             Ty.tuple

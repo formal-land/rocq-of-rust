@@ -2174,46 +2174,56 @@ Module locals_safety.
                 self
               |) in
             let idx := M.alloc (| Ty.path "u8", idx |) in
-            M.write (|
-              M.deref (|
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "&mut")
-                    []
-                    [ Ty.path "move_bytecode_verifier::locals_safety::abstract_state::LocalState" ],
-                  M.get_trait_method (|
-                    "core::ops::index::IndexMut",
-                    Ty.apply
-                      (Ty.path "alloc::vec::Vec")
-                      []
-                      [
-                        Ty.path "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    [],
-                    [ Ty.path "usize" ],
-                    "index_mut",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                        "local_states"
+            M.let_ (|
+              ltac:(M.monadic
+                (Value.StructTuple
+                  "move_bytecode_verifier::locals_safety::abstract_state::LocalState::Available"
+                  []
+                  []
+                  [])),
+              fun rhs' =>
+                ltac:(M.monadic
+                  (M.write (|
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.path
+                              "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::index::IndexMut",
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [
+                              Ty.path
+                                "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
+                              Ty.path "alloc::alloc::Global"
+                            ],
+                          [],
+                          [ Ty.path "usize" ],
+                          "index_mut",
+                          [],
+                          []
+                        |),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                              "local_states"
+                            |)
+                          |);
+                          M.cast (Ty.path "usize") (M.read (| idx |))
+                        ]
                       |)
-                    |);
-                    M.cast (Ty.path "usize") (M.read (| idx |))
-                  ]
-                |)
-              |),
-              Value.StructTuple
-                "move_bytecode_verifier::locals_safety::abstract_state::LocalState::Available"
-                []
-                []
-                []
+                    |),
+                    rhs'
+                  |)))
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -2350,50 +2360,56 @@ Module locals_safety.
                 |) in
               M.alloc (|
                 Ty.tuple [],
-                M.write (|
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.path
-                            "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
-                        ],
-                      M.get_trait_method (|
-                        "core::ops::index::IndexMut",
-                        Ty.apply
-                          (Ty.path "alloc::vec::Vec")
-                          []
-                          [
-                            Ty.path
-                              "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        [],
-                        [ Ty.path "usize" ],
-                        "index_mut",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                            "local_states"
+                M.let_ (|
+                  ltac:(M.monadic
+                    (Value.StructTuple
+                      "move_bytecode_verifier::locals_safety::abstract_state::LocalState::Unavailable"
+                      []
+                      []
+                      [])),
+                  fun rhs' =>
+                    ltac:(M.monadic
+                      (M.write (|
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.path
+                                  "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
+                              ],
+                            M.get_trait_method (|
+                              "core::ops::index::IndexMut",
+                              Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [
+                                  Ty.path
+                                    "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              [],
+                              [ Ty.path "usize" ],
+                              "index_mut",
+                              [],
+                              []
+                            |),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                  "local_states"
+                                |)
+                              |);
+                              M.cast (Ty.path "usize") (M.read (| idx |))
+                            ]
                           |)
-                        |);
-                        M.cast (Ty.path "usize") (M.read (| idx |))
-                      ]
-                    |)
-                  |),
-                  Value.StructTuple
-                    "move_bytecode_verifier::locals_safety::abstract_state::LocalState::Unavailable"
-                    []
-                    []
-                    []
+                        |),
+                        rhs'
+                      |)))
                 |)
               |)
             |)))
@@ -4369,9 +4385,11 @@ Module locals_safety.
                           ltac:(M.monadic
                             (M.read (|
                               let~ _ : Ty.tuple [] :=
-                                M.write (|
-                                  M.deref (| M.read (| self |) |),
-                                  M.read (| joined |)
+                                M.let_ (|
+                                  ltac:(M.monadic (M.read (| joined |))),
+                                  fun rhs' =>
+                                    ltac:(M.monadic
+                                      (M.write (| M.deref (| M.read (| self |) |), rhs' |)))
                                 |) in
                               M.alloc (|
                                 Ty.apply

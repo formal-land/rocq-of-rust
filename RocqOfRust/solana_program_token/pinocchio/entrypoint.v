@@ -266,8 +266,12 @@ Module entrypoint.
                                 M.cast
                                   (Ty.path "u64")
                                   (M.read (|
-                                    get_constant (|
-                                      "pinocchio_token_interface::state::Transmutable::LEN",
+                                    get_trait_constant (|
+                                      "pinocchio_token_interface::state::Transmutable",
+                                      Ty.path "pinocchio_token_interface::state::account::Account",
+                                      [],
+                                      [],
+                                      "LEN",
                                       Ty.path "usize"
                                     |)
                                   |))
@@ -357,8 +361,12 @@ Module entrypoint.
                                 M.cast
                                   (Ty.path "u64")
                                   (M.read (|
-                                    get_constant (|
-                                      "pinocchio_token_interface::state::Transmutable::LEN",
+                                    get_trait_constant (|
+                                      "pinocchio_token_interface::state::Transmutable",
+                                      Ty.path "pinocchio_token_interface::state::mint::Mint",
+                                      [],
+                                      [],
+                                      "LEN",
                                       Ty.path "usize"
                                     |)
                                   |))
@@ -448,8 +456,12 @@ Module entrypoint.
                                 M.cast
                                   (Ty.path "u64")
                                   (M.read (|
-                                    get_constant (|
-                                      "pinocchio_token_interface::state::Transmutable::LEN",
+                                    get_trait_constant (|
+                                      "pinocchio_token_interface::state::Transmutable",
+                                      Ty.path "pinocchio_token_interface::state::account::Account",
+                                      [],
+                                      [],
+                                      "LEN",
                                       Ty.path "usize"
                                     |)
                                   |))
@@ -1203,8 +1215,13 @@ Module entrypoint.
                                         M.cast
                                           (Ty.path "u64")
                                           (M.read (|
-                                            get_constant (|
-                                              "pinocchio_token_interface::state::Transmutable::LEN",
+                                            get_trait_constant (|
+                                              "pinocchio_token_interface::state::Transmutable",
+                                              Ty.path
+                                                "pinocchio_token_interface::state::account::Account",
+                                              [],
+                                              [],
+                                              "LEN",
                                               Ty.path "usize"
                                             |)
                                           |))
@@ -1302,8 +1319,13 @@ Module entrypoint.
                                         M.cast
                                           (Ty.path "u64")
                                           (M.read (|
-                                            get_constant (|
-                                              "pinocchio_token_interface::state::Transmutable::LEN",
+                                            get_trait_constant (|
+                                              "pinocchio_token_interface::state::Transmutable",
+                                              Ty.path
+                                                "pinocchio_token_interface::state::account::Account",
+                                              [],
+                                              [],
+                                              "LEN",
                                               Ty.path "usize"
                                             |)
                                           |))

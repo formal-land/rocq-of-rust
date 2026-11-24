@@ -34,16 +34,10 @@ Module signed.
                   let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                   let result :=
                     M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
+                      Ty.apply (Ty.path "alloy_primitives::signed::int::Signed") [ BITS; LIMBS ] [],
                       γ0_0
                     |) in
-                  let overflow :=
-                    M.copy (|
-                      Ty.path
-                        "Type for variables in patterns in function parameters is not handled",
-                      γ0_1
-                    |) in
+                  let overflow := M.copy (| Ty.path "bool", γ0_1 |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
                       M.match_operator (|
@@ -511,70 +505,76 @@ Module signed.
                     LIMBS
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  let β :=
-                    M.SubPointer.get_array_field (|
-                      limbs,
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.sub,
-                        [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
-                      |)
-                    |) in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "u64",
-                      BinOp.Wrap.bit_and,
-                      [
-                        M.read (| β |);
-                        M.read (|
-                          get_associated_constant (|
-                            Ty.apply
-                              (Ty.path "alloy_primitives::signed::int::Signed")
-                              [ BITS; LIMBS ]
-                              [],
-                            "MASK",
-                            Ty.path "u64"
-                          |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.read (|
+                        get_associated_constant (|
+                          Ty.apply
+                            (Ty.path "alloy_primitives::signed::int::Signed")
+                            [ BITS; LIMBS ]
+                            [],
+                          "MASK",
+                          Ty.path "u64"
                         |)
-                      ]
-                    |)
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (let β :=
+                          M.SubPointer.get_array_field (|
+                            limbs,
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.sub,
+                              [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
+                            |)
+                          |) in
+                        M.write (|
+                          β,
+                          M.call_closure (|
+                            Ty.path "u64",
+                            BinOp.Wrap.bit_and,
+                            [ M.read (| β |); rhs' ]
+                          |)
+                        |)))
                   |) in
                 let~ _ : Ty.tuple [] :=
-                  let β :=
-                    M.SubPointer.get_array_field (|
-                      limbs,
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.sub,
-                        [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
-                      |)
-                    |) in
-                  M.write (|
-                    β,
-                    M.call_closure (|
-                      Ty.path "u64",
-                      BinOp.Wrap.bit_and,
-                      [
-                        M.read (| β |);
-                        M.call_closure (|
-                          Ty.path "u64",
-                          UnOp.not,
-                          [
-                            M.read (|
-                              get_associated_constant (|
-                                Ty.apply
-                                  (Ty.path "alloy_primitives::signed::int::Signed")
-                                  [ BITS; LIMBS ]
-                                  [],
-                                "SIGN_BIT",
-                                Ty.path "u64"
-                              |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.call_closure (|
+                        Ty.path "u64",
+                        UnOp.not,
+                        [
+                          M.read (|
+                            get_associated_constant (|
+                              Ty.apply
+                                (Ty.path "alloy_primitives::signed::int::Signed")
+                                [ BITS; LIMBS ]
+                                [],
+                              "SIGN_BIT",
+                              Ty.path "u64"
                             |)
-                          ]
-                        |)
-                      ]
-                    |)
+                          |)
+                        ]
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (let β :=
+                          M.SubPointer.get_array_field (|
+                            limbs,
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.sub,
+                              [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
+                            |)
+                          |) in
+                        M.write (|
+                          β,
+                          M.call_closure (|
+                            Ty.path "u64",
+                            BinOp.Wrap.bit_and,
+                            [ M.read (| β |); rhs' ]
+                          |)
+                        |)))
                   |) in
                 M.alloc (|
                   Ty.apply (Ty.path "alloy_primitives::signed::int::Signed") [ BITS; LIMBS ] [],
@@ -667,25 +667,31 @@ Module signed.
                 let~ limbs : Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] :=
                   lib.repeat (| Value.Integer IntegerKind.U64 0, LIMBS |) in
                 let~ _ : Ty.tuple [] :=
-                  M.write (|
-                    M.SubPointer.get_array_field (|
-                      limbs,
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.sub,
-                        [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
-                      |)
-                    |),
-                    M.read (|
-                      get_associated_constant (|
-                        Ty.apply
-                          (Ty.path "alloy_primitives::signed::int::Signed")
-                          [ BITS; LIMBS ]
-                          [],
-                        "SIGN_BIT",
-                        Ty.path "u64"
-                      |)
-                    |)
+                  M.let_ (|
+                    ltac:(M.monadic
+                      (M.read (|
+                        get_associated_constant (|
+                          Ty.apply
+                            (Ty.path "alloy_primitives::signed::int::Signed")
+                            [ BITS; LIMBS ]
+                            [],
+                          "SIGN_BIT",
+                          Ty.path "u64"
+                        |)
+                      |))),
+                    fun rhs' =>
+                      ltac:(M.monadic
+                        (M.write (|
+                          M.SubPointer.get_array_field (|
+                            limbs,
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.sub,
+                              [ LIMBS; Value.Integer IntegerKind.Usize 1 ]
+                            |)
+                          |),
+                          rhs'
+                        |)))
                   |) in
                 M.alloc (|
                   Ty.apply (Ty.path "alloy_primitives::signed::int::Signed") [ BITS; LIMBS ] [],
