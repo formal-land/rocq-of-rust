@@ -9,6 +9,7 @@ Require Import ruint.links.cmp.
 Require Import ruint.links.bits.
 Require Import ruint.links.from.
 Require Import ruint.links.macros.
+Require Import ruint.links.add.
 
 (* pub fn calculate_iteration_count<const MULTIPLIER: u64>(
      exp_length: u64,
@@ -96,3 +97,66 @@ Proof.
 Defined.
 
 Global Opaque run_berlin_gas_calc.
+
+(* pub fn osaka_gas_calc(base_len: u64, exp_len: u64, mod_len: u64, exp_highp: &U256) -> u64 *)
+Instance run_osaka_gas_calc
+    (base_len exp_len mod_len : u64)
+    (exp_highp : '& aliases.U256.t) :
+  Run.Trait
+    modexp.osaka_gas_calc
+    [] []
+    [ φ base_len; φ exp_len; φ mod_len; φ exp_highp ]
+    u64.
+Proof.
+  constructor.
+  run_symbolic.
+  match goal with
+  | |- context [Value.Closure (existS (_, _) ?body)] =>
+    unshelve epose proof (run_gas_calc
+      {| Integer.value := 500 |} {| Integer.value := 16 |} {| Integer.value := 1 |}
+      (Function1.t u64 aliases.U256.t)
+      (function.Impl_Fn_for_Function1.run u64 aliases.U256.t)
+      value value0 value1 (Ref.cast_to Pointer.Kind.Ref value2)
+      {| Function1.f := body; Function1.run := _ |}) as H_gas_calc
+  end.
+  2: exact H_gas_calc.
+  intros a.
+  cbn beta iota.
+  destruct (Impl_Mul_for_Uint_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
+  run_symbolic.
+Defined.
+
+Global Opaque run_osaka_gas_calc.
+
+(* pub fn byzantium_gas_calc(base_len: u64, exp_len: u64, mod_len: u64, exp_highp: &U256) -> u64 *)
+Instance run_byzantium_gas_calc
+    (base_len exp_len mod_len : u64)
+    (exp_highp : '& aliases.U256.t) :
+  Run.Trait
+    modexp.byzantium_gas_calc
+    [] []
+    [ φ base_len; φ exp_len; φ mod_len; φ exp_highp ]
+    u64.
+Proof.
+  constructor.
+  run_symbolic.
+  match goal with
+  | |- context [Value.Closure (existS (_, _) ?body)] =>
+    unshelve epose proof (run_gas_calc
+      {| Integer.value := 0 |} {| Integer.value := 8 |} {| Integer.value := 20 |}
+      (Function1.t u64 aliases.U256.t)
+      (function.Impl_Fn_for_Function1.run u64 aliases.U256.t)
+      value value0 value1 (Ref.cast_to Pointer.Kind.Ref value2)
+      {| Function1.f := body; Function1.run := _ |}) as H_gas_calc
+  end.
+  2: exact H_gas_calc.
+  intros a.
+  cbn beta iota.
+  destruct (Impl_Mul_for_Uint_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
+  destruct (Impl_Div_for_Uint_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
+  destruct (Impl_Add_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
+  destruct (Impl_Sub_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
+  run_symbolic.
+Defined.
+
+Global Opaque run_byzantium_gas_calc.
