@@ -96,6 +96,14 @@ Module Impl_u64.
     run_symbolic.
   Admitted.
   Global Opaque run_checked_sub.
+    (* pub const fn div_ceil(self, rhs: Self) -> Self *)
+  Instance run_div_ceil (self rhs: Self) :
+    Run.Trait num.Impl_u64.div_ceil [] [] [ φ self; φ rhs ] Self.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_div_ceil.
 End Impl_u64.
 Export (hints) Impl_u64.
 

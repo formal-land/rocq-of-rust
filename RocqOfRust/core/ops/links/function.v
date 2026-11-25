@@ -149,8 +149,34 @@ Module Fn.
 
   Class Run (Self Args Output : Set)
       `{Link Self} `{Link Args} `{Link Output} : Set := {
-    run_FnMut_for_Self :: FnMut.Run Self Args Output;
     method_call :: Method_call Self Args Output;
   }.
 End Fn.
 Export (hints) Fn.
+
+Module Impl_Fn_for_Function1.
+  Instance method_call (A Output : Set) `{Link A} `{Link Output} :
+    Fn.Method_call
+      (Function1.t A Output)
+      (OneElementTuple.t A)
+      Output.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply FunctionTraitAutomaticImpl.FunctionImplementsFn. }
+      { reflexivity. }
+    }
+    (* Admitted: the [call] given by [FunctionTraitAutomaticImpl.FunctionImplementsFn]
+       reads [self] through a [Pointer.Kind.Ref] pointer without an [M.deref], while
+       [Run.CallPrimitiveStateRead] only handles [Pointer.Kind.Raw] pointers. *)
+  Admitted.
+
+  Instance run (A Output : Set) `{Link A} `{Link Output} :
+    Fn.Run
+      (Function1.t A Output)
+      (OneElementTuple.t A)
+      Output :=
+  {}.
+End Impl_Fn_for_Function1.
+Export (hints) Impl_Fn_for_Function1.

@@ -66,3 +66,33 @@ Proof.
 Defined.
 
 Global Opaque run_gas_calc.
+
+(* pub fn berlin_gas_calc(base_len: u64, exp_len: u64, mod_len: u64, exp_highp: &U256) -> u64 *)
+Instance run_berlin_gas_calc
+    (base_len exp_len mod_len : u64)
+    (exp_highp : '& aliases.U256.t) :
+  Run.Trait
+    modexp.berlin_gas_calc
+    [] []
+    [ φ base_len; φ exp_len; φ mod_len; φ exp_highp ]
+    u64.
+Proof.
+  constructor.
+  run_symbolic.
+  match goal with
+  | |- context [Value.Closure (existS (_, _) ?body)] =>
+    unshelve epose proof (run_gas_calc
+      {| Integer.value := 200 |} {| Integer.value := 8 |} {| Integer.value := 3 |}
+      (Function1.t u64 aliases.U256.t)
+      (function.Impl_Fn_for_Function1.run u64 aliases.U256.t)
+      value value0 value1 (Ref.cast_to Pointer.Kind.Ref value2)
+      {| Function1.f := body; Function1.run := _ |}) as H_gas_calc
+  end.
+  2: exact H_gas_calc.
+  intros a.
+  cbn beta iota.
+  destruct (Impl_Mul_for_Uint_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
+  run_symbolic.
+Defined.
+
+Global Opaque run_berlin_gas_calc.
